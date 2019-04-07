@@ -1,4 +1,4 @@
-package com.teacher.model;
+package com.livestream.model;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -8,23 +8,21 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-public class TeacherJDBCDAO implements TeacherDAO_interface {
+public class LiveStreamJDBCDAO implements LiveStreamDAO_interface {
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@localhost:1521:XE";
 	String userid = "weshare";
 	String passwd = "123456";
 	
-	final String INSERT_STMT = "INSERT INTO TEACHER VALUES('TC'||LPAD(TEACHER_seq.NEXTVAL,5,'0'),?,?,?,?,?,?,?)";
-	final String UPDATE_STMT = "UPDATE TEACHER SET MEMID=?,TEACHERSTATUS=?,TEACHERCITY=?,TEACHEREDU=?,IDCARDIMG=?,DIPLOMAIMG=?,TEACHERTEXT=? WHERE TEACHERID=?";
-	final String DELETE_TEACHER = "DELETE FROM TEACHER WHERE TEACHERID=?";
-	final String SEARCH_TEACHER = "SELECT * FROM TEACHER WHERE TEACHERID=?";
-	final String SEARCH_TEACHERALL = "SELECT * FROM TEACHER";
+	final String INSERT_STMT = "INSERT INTO LIVESTREAM VALUES('LV'||LPAD(Course_seq.NEXTVAL,5,'0'),?,?,?,?)";
+	final String UPDATE_STMT = "UPDATE LIVESTREAM SET TEACHERID=?,LSDATE=?,LSVIEWNUM=?,LSCONTENT=? WHERE LSID=?";
+	final String DELETE_LIVESTREAM = "DELETE FROM LIVESTREAM WHERE LSID=?";
+	final String SEARCH_LIVESTREAM = "SELECT * FROM LIVESTREAM WHERE LSID=?";
+	final String SEARCH_LIVESTREAMALL = "SELECT * FROM LIVESTREAM";
 	
 	
 	@Override
-	public void insert(TeacherVO teacherVO) {
+	public void insert(LiveStreamVO liveStreamVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		
@@ -33,15 +31,12 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(INSERT_STMT);
 			
-			pstmt.setString(1, teacherVO.getMemId());
-			pstmt.setInt(2, teacherVO.getTeacherStatus());
-			pstmt.setString(3, teacherVO.getTeacherCity());
-			pstmt.setString(4, teacherVO.getTeacherEdu());
-			pstmt.setBytes(5,teacherVO.getIdCardImg());
-			pstmt.setBytes(6,teacherVO.getDiplomaImg());
-			pstmt.setString(7,teacherVO.getTeacherText());
-			
+			pstmt.setString(1, liveStreamVO.getTeacherId());
+			pstmt.setTimestamp(2, liveStreamVO.getLsDate());
+			pstmt.setInt(3, liveStreamVO.getLsViewNum());
+			pstmt.setBytes(4, liveStreamVO.getLsContent());
 			pstmt.executeUpdate();
+			
 			
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. "
@@ -69,7 +64,7 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 	}
 
 	@Override
-	public void update(TeacherVO teacherVO) {
+	public void update(LiveStreamVO liveStreamVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		
@@ -78,15 +73,11 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(UPDATE_STMT);
 			
-			pstmt.setString(1, teacherVO.getMemId());
-			pstmt.setInt(2, teacherVO.getTeacherStatus());
-			pstmt.setString(3, teacherVO.getTeacherCity());
-			pstmt.setString(4, teacherVO.getTeacherEdu());
-			pstmt.setBytes(5,teacherVO.getIdCardImg());
-			pstmt.setBytes(6,teacherVO.getDiplomaImg());
-			pstmt.setString(7,teacherVO.getTeacherText());
-			pstmt.setString(8, teacherVO.getTeacherId());
-			
+			pstmt.setString(1, liveStreamVO.getTeacherId());
+			pstmt.setTimestamp(2, liveStreamVO.getLsDate());
+			pstmt.setInt(3, liveStreamVO.getLsViewNum());
+			pstmt.setBytes(4, liveStreamVO.getLsContent());
+			pstmt.setString(5, liveStreamVO.getLsId());
 			pstmt.executeUpdate();
 			
 			
@@ -116,7 +107,7 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 	}
 
 	@Override
- 	public void delete(String teacherId) {
+ 	public void delete(String lsId) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		
@@ -125,9 +116,9 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 			con = DriverManager.getConnection(url, userid, passwd);
 			con.setAutoCommit(false);
 			
-			pstmt = con.prepareStatement(DELETE_TEACHER);
+			pstmt = con.prepareStatement(DELETE_LIVESTREAM);
 			
-			pstmt.setString(1, teacherId);
+			pstmt.setString(1, lsId);
 			pstmt.executeUpdate();
 			
 			
@@ -157,7 +148,7 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 	}
 
 	@Override
-	public TeacherVO findByPrimaryKey(String teacherId) {
+	public LiveStreamVO findByPrimaryKey(String lsId) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -165,27 +156,19 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 		try {
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, userid, passwd);
-			pstmt = con.prepareStatement(SEARCH_TEACHER);
+			pstmt = con.prepareStatement(SEARCH_LIVESTREAM);
 			
-			pstmt.setString(1, teacherId);
+			pstmt.setString(1, lsId);
 			rs = pstmt.executeQuery();
-			TeacherVO TeacherVO = new TeacherVO(); 
+			LiveStreamVO liveStreamVO = new LiveStreamVO(); 
 			while(rs.next()) {
-				TeacherVO.setTeacherId(teacherId);
-				TeacherVO.setMemId(rs.getString("memId"));
-				TeacherVO.setTeacherStatus(rs.getInt("teacherStatus"));
-				TeacherVO.setTeacherCity(rs.getString("teacherCity"));
-				TeacherVO.setTeacherEdu(rs.getString("teacherEdu"));
-				try {
-					TeacherVO.setIdCardImg(new byte[rs.getBinaryStream("idCardImg").available()]);
-					TeacherVO.setDiplomaImg(new byte[rs.getBinaryStream("diplomaImg").available()]);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				TeacherVO.setTeacherText(rs.getString("teacherText"));
-				
+				liveStreamVO.setLsId(lsId);
+				liveStreamVO.setTeacherId(rs.getString("teacherId"));
+				liveStreamVO.setLsDate(rs.getTimestamp("lsDate"));
+				liveStreamVO.setLsViewNum(rs.getInt("lsViewNum"));
+				liveStreamVO.setLsContent(rs.getBytes("lsContent"));
 			}
-			return TeacherVO;
+			return liveStreamVO;
 			
 			
 		} catch (ClassNotFoundException e) {
@@ -214,9 +197,9 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 	}
 
 	@Override
-	public List<TeacherVO> getAll() {
-		List<TeacherVO> list = new ArrayList<TeacherVO>();
-		TeacherVO TeacherVO = null;
+	public List<LiveStreamVO> getAll() {
+		List<LiveStreamVO> list = new ArrayList<LiveStreamVO>();
+		LiveStreamVO liveStreamVO = null;
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -226,25 +209,17 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, userid, passwd);
-			pstmt = con.prepareStatement(SEARCH_TEACHERALL);
+			pstmt = con.prepareStatement(SEARCH_LIVESTREAMALL);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				TeacherVO = new TeacherVO();
-				TeacherVO.setTeacherId(rs.getString("teacherId"));
-				TeacherVO.setMemId(rs.getString("memId"));
-				TeacherVO.setTeacherStatus(rs.getInt("teacherStatus"));
-				TeacherVO.setTeacherCity(rs.getString("teacherCity"));
-				TeacherVO.setTeacherEdu(rs.getString("teacherEdu"));
-				try {
-					TeacherVO.setIdCardImg(new byte[rs.getBinaryStream("idCardImg").available()]);
-					TeacherVO.setDiplomaImg(new byte[rs.getBinaryStream("diplomaImg").available()]);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				TeacherVO.setTeacherText(rs.getString("teacherText"));
-				
-				list.add(TeacherVO);
+				liveStreamVO = new LiveStreamVO();
+				liveStreamVO.setLsId(rs.getString("lsId"));
+				liveStreamVO.setTeacherId(rs.getString("teacherId"));
+				liveStreamVO.setLsDate(rs.getTimestamp("lsDate"));
+				liveStreamVO.setLsViewNum(rs.getInt("lsViewNum"));
+				liveStreamVO.setLsContent(rs.getBytes("lsContent"));
+				list.add(liveStreamVO);
 			}
 
 
@@ -283,66 +258,59 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 	
 	public static void main(String args[]) {
 		
-		TeacherJDBCDAO TeacherJDBCDAO = new TeacherJDBCDAO();
+		LiveStreamJDBCDAO liveStreamJDBCDAO = new LiveStreamJDBCDAO();
 		
-	
 		byte[] pic = null;
 		try {
 			pic = getFileByteArray("items/Teacher1.jpg");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-			
+		
 		
 //		//新增
-//		TeacherVO TeacherVO1 =new TeacherVO();
-//		TeacherVO1.setMemId("weshare01");
-//		TeacherVO1.setTeacherStatus(0);
-//		TeacherVO1.setTeacherCity("上海");
-//		TeacherVO1.setTeacherEdu("大學");
-//		TeacherVO1.setIdCardImg(pic);
-//		TeacherVO1.setDiplomaImg(pic);
-//		TeacherVO1.setTeacherText("拉拉拉拉拉");
-//		TeacherJDBCDAO.insert(TeacherVO1);
+//		LiveStreamVO liveStreamVO1 =new LiveStreamVO();
+//		liveStreamVO1.setTeacherId("TC00001");
+//		liveStreamVO1.setLsDate(new Timestamp(new java.util.Date().getTime()));
+//		liveStreamVO1.setLsViewNum(1000);
+//		liveStreamVO1.setLsContent(pic);
+//		liveStreamJDBCDAO.insert(liveStreamVO1);
 		
 //		//修改
-//		TeacherVO TeacherVO2 =new TeacherVO();
-//		TeacherVO2.setTeacherId("TC00001");
-//		TeacherVO2.setMemId("weshare02");
-//		TeacherVO2.setTeacherStatus(0);
-//		TeacherVO2.setTeacherCity("上海");
-//		TeacherVO2.setTeacherEdu("大學");
-//		TeacherVO2.setIdCardImg(pic);
-//		TeacherVO2.setDiplomaImg(pic);
-//		TeacherVO2.setTeacherText("拉拉拉拉拉");
-//		TeacherJDBCDAO.update(TeacherVO2);
+//		LiveStreamVO liveStreamVO2 =new LiveStreamVO();
+//		liveStreamVO2.setLsId("LV00001");
+//		liveStreamVO2.setTeacherId("TC00001");
+//		liveStreamVO2.setLsDate(new Timestamp(new java.util.Date().getTime()));
+//		liveStreamVO2.setLsViewNum(1000);
+//		liveStreamVO2.setLsContent(pic);
+//		liveStreamJDBCDAO.update(liveStreamVO2);
 		
 //		//刪除
-//		TeacherJDBCDAO.delete("TC00002");
+//		liveStreamJDBCDAO.delete("TC00001");
 		
-//		//查詢
-//		TeacherVO TeacherVO3 = TeacherJDBCDAO.findByPrimaryKey("TC00002");
-//		System.out.println("TeacherId="+TeacherVO3.getTeacherId());
-//		System.out.println("MemId="+TeacherVO3.getMemId());
-//		System.out.println("TeacherStatus="+TeacherVO3.getTeacherStatus());
-//		System.out.println("TeacherCity="+TeacherVO3.getTeacherCity());
-//		System.out.println("TeacherEdu="+TeacherVO3.getTeacherEdu());
-//		System.out.println("TeacherText="+TeacherVO3.getTeacherText());
-
+		//查詢
+		LiveStreamVO liveStreamVO3 = liveStreamJDBCDAO.findByPrimaryKey("LV00010");
+		System.out.println("LsId="+liveStreamVO3.getLsId());
+		System.out.println("TeacherId="+liveStreamVO3.getTeacherId());
+		System.out.println("LsDate="+liveStreamVO3.getLsDate());
+		System.out.println("LsViewNum="+liveStreamVO3.getLsViewNum());
+		System.out.println("LsContent="+liveStreamVO3.getLsContent());
+		
 		//查詢全部
-		List<TeacherVO> list = TeacherJDBCDAO.getAll();
-		for (TeacherVO aEmp : list) {
+		List<LiveStreamVO> list = liveStreamJDBCDAO.getAll();
+		for (LiveStreamVO aEmp : list) {
+			System.out.println("LsId="+aEmp.getLsId());
 			System.out.println("TeacherId="+aEmp.getTeacherId());
-			System.out.println("MemId="+aEmp.getMemId());
-			System.out.println("TeacherStatus="+aEmp.getTeacherStatus());
-			System.out.println("TeacherCity="+aEmp.getTeacherCity());
-			System.out.println("TeacherEdu="+aEmp.getTeacherEdu());
-			System.out.println("TeacherText="+aEmp.getTeacherText());
-			System.out.println("IdCardImg="+aEmp.getIdCardImg());
+			System.out.println("LsDate="+aEmp.getLsDate());
+			System.out.println("LsViewNum="+aEmp.getLsViewNum());
+			System.out.println("LsContent="+aEmp.getLsContent());
+			System.out.println();
 		}
-	
-	}
 		
+	}
+
+
+
 	public static byte[] getFileByteArray(String path) throws IOException {
 		File file = new File(path);
 		FileInputStream fis = new FileInputStream(file);
@@ -355,10 +323,6 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 		baos.close();
 		fis.close();
 		return baos.toByteArray();
-	}
-
 }
 
-
-
-
+}

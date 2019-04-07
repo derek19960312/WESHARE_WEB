@@ -21,17 +21,19 @@ public class Login extends HttpServlet {
 
 		String memId = request.getParameter("memId").trim();
 		String memPsw = request.getParameter("memPsw").trim();
-		
-		
-
+		Context ctx;
+		DataSource ds;
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
 		try {
-			Context ctx = new javax.naming.InitialContext();
-			DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestDB");
-			Connection con = ds.getConnection();
+			ctx = new javax.naming.InitialContext();
+			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestDB");
+			con = ds.getConnection();
 
-			PreparedStatement pstmt = con.prepareStatement("select memPsw from member where memId=?");
+			pstmt = con.prepareStatement("select memPsw from member where memId=?");
 			pstmt.setString(1, memId);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				if (rs.getString(1).equals(memPsw)) {
 					out.println("成功");
@@ -41,14 +43,20 @@ public class Login extends HttpServlet {
 			} else {
 				out.println("查無帳號");
 			}
-			rs.close();
-			pstmt.close();
-			con.close();
+			
 
 		} catch (NamingException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				rs.close();
+				pstmt.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
