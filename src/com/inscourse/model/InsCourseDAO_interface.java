@@ -8,4 +8,6 @@ public interface InsCourseDAO_interface {
 	public void delete(String inscId);
 	public InsCourseVO findByPrimaryKey(String inscId);
 	public List<InsCourseVO> getAll();
+	public void updateStatus(InsCourseVO insCourseVO);
+	public List<InsCourseVO> findByCourse(String courseId);
 }

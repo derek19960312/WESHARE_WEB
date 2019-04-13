@@ -11,13 +11,20 @@ public class CourseService {
 		dao = new CourseDAO();
 	}
 
-	public void addCourse(CourseVO courseVO) {
-		
+	public void addCourse(String courseId,Integer courseTypeId,String courseName) {
+		CourseVO courseVO  = new CourseVO();
+		courseVO.setCourseTypeId(courseTypeId);
+		courseVO.setCourseName(courseName);
+		dao.insert(courseVO);
+	}
+	public CourseVO findOneById(String courseId) {
+		return dao.findByPrimaryKey(courseId);
 	}
 	public List<CourseVO> getAll(){
 		List<CourseVO> list = new ArrayList<>();
-		
-		return list;
+		return dao.getAll();
 	}
+	
+	
 }
 

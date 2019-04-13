@@ -37,6 +37,9 @@ public class CourseTypeServlet extends HttpServlet {
 		response.setContentType("text/plain; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		
+		
+		
+		
 		List<CourseTypeVO> courseTypes = new CourseTypeService().getAll();
 		
 		out.println(gson.toJson(courseTypes));	

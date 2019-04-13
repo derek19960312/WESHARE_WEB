@@ -8,17 +8,16 @@ public class CourseTypeService {
 	
 	
 	public CourseTypeService() {
-		dao = new CourseTypeJDBCDAO();
+		dao = new CourseTypeDAO();
 	}
 	
-	public void addCourseType(CourseTypeVO courseTypeVO) {
-		
+	public void addCourseType(Integer courseTypeId, String courseTypeName) {
+		CourseTypeVO courseTypeVO  = new CourseTypeVO();
+		courseTypeVO.setCourseTypeName(courseTypeName);
+		dao.insert(courseTypeVO);
 	}
-	public void updateCourseType(CourseTypeVO courseTypeVO) {
-		
-	}
-	public void deleteCourseType(Integer courseTypeId) {
-		
+	public CourseTypeVO findOneById(Integer courseTypeId) {
+		return dao.findByPrimaryKey(courseTypeId);
 	}
 
 	public List<CourseTypeVO> getAll(){
