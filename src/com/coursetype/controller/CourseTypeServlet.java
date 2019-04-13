@@ -19,11 +19,12 @@ import com.coursetype.model.CourseTypeDAO_interface;
 import com.coursetype.model.CourseTypeJDBCDAO;
 import com.coursetype.model.CourseTypeService;
 import com.coursetype.model.CourseTypeVO;
+import com.google.gson.Gson;
 
 @WebServlet("/CourseType")
 public class CourseTypeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    
+   
 	
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,13 +33,13 @@ public class CourseTypeServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		Gson gson = new Gson();
 		response.setContentType("text/plain; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		
 		List<CourseTypeVO> courseTypes = new CourseTypeService().getAll();
-		JSONArray jsonArr = new JSONArray(courseTypes);
-		out.println(jsonArr);	
+		
+		out.println(gson.toJson(courseTypes));	
 		
 		
 	}

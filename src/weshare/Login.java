@@ -8,6 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.sql.DataSource;
 
+import com.google.gson.Gson;
+
 @WebServlet("/Login")
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -26,6 +28,7 @@ public class Login extends HttpServlet {
 		Connection con = null;
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
+		Gson gson = new Gson();
 		try {
 			ctx = new javax.naming.InitialContext();
 			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestDB");
@@ -36,7 +39,7 @@ public class Login extends HttpServlet {
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				if (rs.getString(1).equals(memPsw)) {
-					out.println("成功");
+					out.println(gson.toJson("0"));
 				} else {
 					out.print("密碼錯誤");
 				}
