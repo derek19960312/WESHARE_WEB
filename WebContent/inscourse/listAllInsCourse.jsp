@@ -100,7 +100,7 @@
 			<td>${InsCourseVO.inscCourser}</td>
 			<td>${InsCourseVO.inscStatus}</td>
 			<td>
-			  <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/Inscourse/InsCourse.do" style="margin-bottom: 0px;">
+			  <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/inscourse/InsCourse.do" style="margin-bottom: 0px;">
 			     <input type="submit" value="修改">
 			     <input type="hidden" name="inscId"  value="${InsCourseVO.inscId}">
 			     <input type="hidden" name="action"	value="getOne_For_Update"></FORM>
