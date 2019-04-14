@@ -9,7 +9,7 @@ public class InsCourseService {
 		dao = new InsCourseDAO();
 	}
 
-	public void addInsCourse(String inscId, String teacherId, String courseId, String inscLoc, Integer inscType,
+	public void addInsCourse(String teacherId, String courseId, String inscLoc, Integer inscType,
 			Integer inscPeople, String inscLang, Integer inscPrice, String inscCourser, Integer inscStatus) {
 		
 		InsCourseVO insCourseVO = new InsCourseVO();
@@ -24,6 +24,27 @@ public class InsCourseService {
 		insCourseVO.setInscStatus(inscStatus);
 		dao.insert(insCourseVO);
 	}
+	
+	public void updateInsCourse(String inscId, String teacherId, String courseId, String inscLoc, Integer inscType,
+			Integer inscPeople, String inscLang, Integer inscPrice, String inscCourser, Integer inscStatus) {
+		
+		InsCourseVO insCourseVO = new InsCourseVO();
+		insCourseVO.setInscId(inscId);
+		insCourseVO.setTeacherId(teacherId);
+		insCourseVO.setCourseId(courseId);
+		insCourseVO.setInscLoc(inscLoc);
+		insCourseVO.setInscType(inscType);
+		insCourseVO.setInscPeople(inscPeople);
+		insCourseVO.setInscLang(inscLang);
+		insCourseVO.setInscPrice(inscPrice);
+		insCourseVO.setInscCourser(inscCourser);
+		insCourseVO.setInscStatus(inscStatus);
+		dao.update(insCourseVO);
+		
+	}
+	
+
+	
 	public void updateStatus(String inscId,Integer inscStatus) {
 
 		InsCourseVO insCourseVO = new InsCourseVO();

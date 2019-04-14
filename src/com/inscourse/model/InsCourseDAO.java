@@ -164,7 +164,7 @@ public class InsCourseDAO implements InsCourseDAO_interface {
 		ResultSet rs = null;
 		try {
 			con = ds.getConnection();
-pstmt = con.prepareStatement(SEARCH_COURSE);
+			pstmt = con.prepareStatement(SEARCH_COURSE);
 			
 			pstmt.setString(1, inscId);
 			rs = pstmt.executeQuery();
