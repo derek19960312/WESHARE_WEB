@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 import com.inscourse.model.InsCourseService;
 import com.inscourse.model.InsCourseVO;
 
-@WebServlet("/Inscourse/InsCourse.do")
+@WebServlet("/InsCourseServlet")
 public class InsCourseServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
