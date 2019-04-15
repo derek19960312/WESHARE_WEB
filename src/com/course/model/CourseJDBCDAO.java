@@ -291,4 +291,10 @@ public class CourseJDBCDAO implements CourseDAO_interface {
 		
 	}
 
+	@Override
+	public List<CourseVO> findByCourseType(Integer courseTypeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

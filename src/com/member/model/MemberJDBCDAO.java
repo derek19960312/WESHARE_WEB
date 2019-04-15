@@ -514,16 +514,16 @@ public class MemberJDBCDAO implements MemberDAO_interface {
 //		}
 //		
 		// 查詢單筆
-		MemberVO memberVO3 = dao.findByPrimaryKey("weshare03");
+		MemberVO memberVO3 = dao.findByPrimaryKey("weshare01");
 			System.out.print(memberVO3.getMemId() + ",");
 			System.out.print(memberVO3.getMemPsw()+ ",");
 			System.out.print(memberVO3.getMemPswHint()+ ",");
 			System.out.print(memberVO3.getMemIdCard()+ ",");
 			System.out.print(memberVO3.getMemName()+ ",");
 			System.out.print(memberVO3.getMemSex()+ ",");
-			Base64.Encoder encoder = Base64.getEncoder();
-			String encodedText = encoder.encodeToString(memberVO3.getMemImage());
-			System.out.println("???"+encodedText);
+//			Base64.Encoder encoder = Base64.getEncoder();
+//			String encodedText = encoder.encodeToString(memberVO3.getMemImage());
+			//System.out.println("???"+encodedText);
 			System.out.print(memberVO3.getMemEmail()+ ",");
 			System.out.print(memberVO3.getMemPhone()+ ",");
 			System.out.print(memberVO3.getMemBirth()+ ",");

@@ -8,4 +8,5 @@ public interface CourseDAO_interface {
 	public void delete(String courseId);
 	public CourseVO findByPrimaryKey(String courseId);
 	public List<CourseVO> getAll();
+	public List<CourseVO> findByCourseType(Integer courseTypeId);
 }

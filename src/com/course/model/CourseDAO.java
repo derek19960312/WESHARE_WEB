@@ -32,6 +32,7 @@ public class CourseDAO implements CourseDAO_interface {
 	final String DELETE_COURSE = "DELETE FROM COURSE WHERE COURSEID=?";
 	final String SEARCH_COURSE = "SELECT * FROM COURSE WHERE COURSEID=?";
 	final String SEARCH_COURSEALL = "SELECT * FROM COURSE";
+	final String FIND_BY_COURSETYPE = "SELECT * FROM COURSE WHERE COURSETYPEID=?";
 	
 	
 	
@@ -237,6 +238,60 @@ public class CourseDAO implements CourseDAO_interface {
 		}
 		return null;
 	}
+
+	@Override
+	public List<CourseVO> findByCourseType(Integer courseTypeId) {
+		List<CourseVO> list = new ArrayList<CourseVO>();
+		CourseVO courseVO = null;
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(FIND_BY_COURSETYPE);
+			pstmt.setInt(1, courseTypeId);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				courseVO = new CourseVO();
+				courseVO.setCourseId(rs.getString("CourseId"));
+				courseVO.setCourseTypeId(rs.getInt("CourseTypeId"));
+				courseVO.setCourseName(rs.getString("CourseName"));
+				list.add(courseVO);
+			}
+
+			
+			
+		}catch(SQLException se) {
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+		}finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return list;
+	}
+		
 
 
 

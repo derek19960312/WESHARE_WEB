@@ -15,7 +15,7 @@ public class MemberVO  implements java.io.Serializable {
 	private byte[] memImage;
 	private String memEmail;
 	private String memPhone;
-	private Date 	memBirth;
+	private Date  memBirth;
 	private String  memAdd;
 	private String memText;
 	private String memBank;
