@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
+
 @WebServlet("/MemberServlet")
 public class MemberServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -60,75 +62,55 @@ public class MemberServlet extends HttpServlet {
 		
 		
 		
-		
 
-//		if ("login".equals(action)) {// 來自loginMember.jsp的請求
-//
-//			List<String> errorMsgs = new LinkedList<String>();
-//			// Store this set in the request scope, in case we need to
-//			// send the ErrorPage view.
-//			req.setAttribute("errorMsgs", errorMsgs);
-//
-//			try {
-//				/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
-//				String memId = req.getParameter("memId");
-//				if (memId == null || (memId.trim()).length() == 0) {
-//					errorMsgs.add("請輸入帳號");
-//				}
-//				// Send the use back to the form, if there were errors
-//				if (!errorMsgs.isEmpty()) {
-//					RequestDispatcher failureView = req.getRequestDispatcher("/member/loginMember.jsp");
-//					failureView.forward(req, res);
-//					return;// 程式中斷
-//				}
-//
-//				String memPsw = req.getParameter("memPsw");
-//				if (memPsw == null || (memPsw.trim()).length() == 0) {
-//					errorMsgs.add("請輸入密碼");
-//				}
-//				// Send the use back to the form, if there were errors
-//				if (!errorMsgs.isEmpty()) {
-//					RequestDispatcher failureView = req.getRequestDispatcher("/member/loginMember.jsp");
-//					failureView.forward(req, res);
-//					return;// 程式中斷
-//				}
-//
-//				/*************************** 2.開始查詢資料 *****************************************/
-//				MemberService memSvc = new MemberService();
-//				MemberVO memberVO = memSvc.getOneMember(memId);
-//				if (memberVO == null) {
-//					errorMsgs.add("此帳號不存在");
-//				}
-//				try {
-//					if (!memPsw.equals(memberVO.getMemPsw())) {
-//						errorMsgs.add("錯誤的密碼");
-//					}
-//				} catch (NullPointerException npe) {
-//					RequestDispatcher failureView = req.getRequestDispatcher("/member/loginMember.jsp");
-//					failureView.forward(req, res);
-//
-//				}
-//
-//				// Send the use back to the form, if there were errors
-//				if (!errorMsgs.isEmpty()) {
-//					RequestDispatcher failureView = req.getRequestDispatcher("/member/loginMember.jsp");
-//					failureView.forward(req, res);
-//					return;// 程式中斷
-//				}
-//				/*************************** 3.查詢完成,準備轉交(Send the Success view) *************/
-//				req.setAttribute("memberVO", memberVO); // 資料庫取出的memberVO物件,存入req
-//				String url = "/loginSuccess.jsp";
-//				RequestDispatcher successView = req.getRequestDispatcher(url); // 成功轉交 loginSuccess.jsp
-//				successView.forward(req, res);
-//
-//			} catch (Exception e) {
-//				errorMsgs.add("無法取得資料:" + e.getMessage());
-//				RequestDispatcher failureView = req.getRequestDispatcher("/member/loginMember.jsp");
-//				failureView.forward(req, res);
-//			}
-//
-//		}
-//
+
+		if ("login".equals(action)) {
+			final int SUCCESS = 0;
+		    final int FALSE = 1;
+		    MemberVO memberVO = null;
+			Set<String> errorMsgs = new HashSet<String>();
+			JSONObject jsonString = new JSONObject();
+			for(int i=0 ; i<1; i++) {
+				try {
+					String memId = req.getParameter("memId");
+					if (memId == null || (memId.trim()).length() == 0) {
+						errorMsgs.add("NoAccount");
+						break;
+					}
+	
+					String memPsw = req.getParameter("memPsw");
+					if (memPsw == null || (memPsw.trim()).length() == 0) {
+						errorMsgs.add("NoPassword");
+						break;
+					}
+					
+					MemberService memSvc = new MemberService();
+					memberVO = memSvc.getOneMember(memId);
+					if (memberVO == null || !memPsw.equals(memberVO.getMemPsw())) {
+						errorMsgs.add("LoginFalse");
+						break;
+					}
+				} catch (Exception e) {
+					errorMsgs.add("ConnectionProblem");
+					System.out.println("ERROR");
+					break;
+				}
+			}
+			try {
+				if(errorMsgs.size() == 0 && memberVO != null) {
+					jsonString.put("LoginStatus", SUCCESS);
+					jsonString.put("memberVO", memberVO);
+				}else {
+					jsonString.put("LoginStatus", FALSE);
+					jsonString.put("errorMsgs", errorMsgs);
+				}
+			}catch(Exception e){
+				
+			}
+			out.println(gson.toJson(jsonString));
+
+		}
+
 //		if ("insert".equals(action)) { // 來自addMember.jsp的請求
 //
 //			List<String> errorMsgs = new <String>LinkedList();
