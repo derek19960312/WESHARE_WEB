@@ -1,8 +1,11 @@
 
 
+import java.awt.image.BufferedImage;
 import java.io.*;
 
 import java.sql.*;
+
+import javax.imageio.ImageIO;
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -74,6 +77,12 @@ public class DBGifReader extends HttpServlet {
 			}
 			
 			System.out.println(bPic.length);
+			
+		
+			bPic = resizeImage(bPic,1f);
+			
+			System.out.println(bPic.length);
+			
 			base64 = Base64.encodeBase64String(bPic);
 			out.print(base64);
 
@@ -81,32 +90,6 @@ public class DBGifReader extends HttpServlet {
 		}
 		
 		
-		
-		
-//		ServletOutputStream out = res.getOutputStream();
-//
-//		try {
-//			pstmt = con.prepareStatement(INSERT_STMT);
-//			pstmt.setString(1,req.getParameter("memId"));
-//			rs = pstmt.executeQuery();
-//	
-//
-//			if (rs.next()) {
-//				BufferedInputStream in = new BufferedInputStream(rs.getBinaryStream("memImage"));
-//				byte[] buf = new byte[4 * 1024]; // 4K buffer
-//				int len;
-//				while ((len = in.read(buf)) != -1) {
-//					out.write(buf, 0, len);
-//				}
-//				in.close();
-//			} else {
-//				res.sendError(HttpServletResponse.SC_NOT_FOUND);
-//			}
-//			rs.close();
-//			pstmt.close();
-//		} catch (Exception e) {
-//			System.out.println(e);
-//		}
 	}
 
 	public void init() throws ServletException {
@@ -127,5 +110,33 @@ public class DBGifReader extends HttpServlet {
 			System.out.println(e);
 		}
 	}
-
+	public byte[] resizeImage(byte[] b, float resizeTimes) { 
+		
+		ByteArrayInputStream bais = new ByteArrayInputStream(b);
+		
+		BufferedImage im = null;
+		try {
+			im = ImageIO.read(bais);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+		/*原始影象的寬度和高度*/ 
+		int width = im.getWidth(); 
+		int height = im.getHeight(); 
+		/*調整後的圖片的寬度和高度*/ 
+		int toWidth = (int) (Float.parseFloat(String.valueOf(width)) / resizeTimes); 
+		int toHeight = (int) (Float.parseFloat(String.valueOf(height)) / resizeTimes); 
+		/*新生成結果圖片*/ 
+		BufferedImage result = new BufferedImage(toWidth, toHeight, BufferedImage.TYPE_INT_RGB); 
+		result.getGraphics().drawImage(im.getScaledInstance(toWidth, toHeight, java.awt.Image.SCALE_SMOOTH), 0, 0, null); 
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(im, "jpg",baos);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return baos.toByteArray(); 
+		} 
 }
