@@ -10,10 +10,12 @@
     pageContext.setAttribute("list",list);
 %>
 
-
+<jsp:useBean id="memSvc" scope="request" class="com.member.model.MemberService"/>
+<jsp:useBean id="teacherSvc" scope="request" class="com.teacher.model.TeacherService"/>
+<jsp:useBean id="courseSvc" scope="request" class="com.course.model.CourseService"/>
 <html>
 <head>
-<title>所有員工資料 - listAllInsCourse.jsp</title>
+<title>所有課程資料 - listAllInsCourse.jsp</title>
 
 <style>
 	div{
@@ -71,6 +73,8 @@
 	</ul>
 </c:if>
 
+
+
 <table>
 	<tr>
 		<th>課程編號</th>
@@ -79,33 +83,43 @@
 		<th>可上課地點</th>
 		<th>課程類型</th>
 		<th>人數</th>
-		<th>語言</th>
+		<th>上課語言</th>
 		<th>價錢</th>
 		<th>課綱</th>
-		<th>狀態</th>
 		<th>修改</th>
 	</tr>
 	<%@ include file="page1.file" %> 
 	<c:forEach var="InsCourseVO" items="${list}" begin="<%=pageIndex%>" end="<%=pageIndex+rowsPerPage-1%>">
-		
-		<tr>
-			<td>${InsCourseVO.inscId}</td>
-			<td>${InsCourseVO.teacherId}</td>
-			<td>${InsCourseVO.courseId}</td>
-			<td>${InsCourseVO.inscLoc}</td>
-			<td>${InsCourseVO.inscType}</td>
-			<td>${InsCourseVO.inscPeople}</td> 
-			<td>${InsCourseVO.inscLang}</td>
-			<td>${InsCourseVO.inscPrice}</td>
-			<td>${InsCourseVO.inscCourser}</td>
-			<td>${InsCourseVO.inscStatus}</td>
-			<td>
-			  <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/inscourse/InsCourse.do" style="margin-bottom: 0px;">
-			     <input type="submit" value="修改">
-			     <input type="hidden" name="inscId"  value="${InsCourseVO.inscId}">
-			     <input type="hidden" name="action"	value="getOne_For_Update"></FORM>
-			</td>
-		</tr>
+		<c:if test="${InsCourseVO.inscStatus == 0}">	
+			<tr>
+				<td>${InsCourseVO.inscId}</td>
+					<c:set var="teacherVO" value="${teacherSvc.findOneById(InsCourseVO.teacherId)}"/>
+					<c:set var="memberVO" value="${memSvc.getOneMember(teacherVO.memId)}" />
+				<td>${memberVO.memName}</td>
+					<c:set var="courseVO" value="${courseSvc.findOneById(InsCourseVO.courseId)}" />			
+				<td>${courseVO.courseName}</td>
+				<td>${InsCourseVO.inscLoc}</td>
+					<c:choose>
+						<c:when test="${InsCourseVO.inscType == 0}">
+							<td>個人課程</td>
+						</c:when>
+						<c:otherwise>
+							<td>團體課程</td>
+						</c:otherwise>
+					</c:choose>
+				<td>${InsCourseVO.inscPeople} 人</td> 
+				<td>${InsCourseVO.inscLang}</td>
+				<td>NT:${InsCourseVO.inscPrice}</td>
+				<td>${InsCourseVO.inscCourser}</td>
+				<td>
+			  		<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/inscourse/InsCourse.do" style="margin-bottom: 0px;">
+			    		<input type="submit" value="修改">
+			    		<input type="hidden" name="requestURL"	value="<%=request.getServletPath()%>">
+			     		<input type="hidden" name="inscId"  value="${InsCourseVO.inscId}">
+			    		<input type="hidden" name="action"	value="getOne_For_Update"></FORM>
+				</td>
+			</tr>
+		</c:if>		
 	</c:forEach>
 </table>
 <%@ include file="page2.file" %>

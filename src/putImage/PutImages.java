@@ -1,63 +1,51 @@
 package putImage;
 
 import java.io.BufferedInputStream;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+
+import com.member.model.MemberService;
+import com.member.model.MemberVO;
 
 public class PutImages {
 	public static void main(String args[]) {
-		Context ctx;
-		DataSource ds;
-		Connection con = null;
-		ResultSet rs = null;
-		PreparedStatement pstmt = null;
-		File file;
-		
-		try {
-			ctx = new javax.naming.InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestDB");
-			con = ds.getConnection();
-			
-			rs = con.createStatement().executeQuery("select memId from Member");
-			
-			for(int i=0; i<10; i++) {
-				file = new File("images/teacher"+i+".jpg");
-				BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-				pstmt = con.prepareStatement("update member set memImage=? where memId=?");
-				rs.next();
-				pstmt.setString(1,rs.getString("memId"));
-				pstmt.executeUpdate();
-			}
-			
-			
-			
 
-		} catch (NamingException e) {
+		File file;
+		BufferedInputStream bis = null;
+		try {
+
+			MemberService memSvc = new MemberService();
+			List<MemberVO> memList = memSvc.getAll();
+
+			
+			for (int i = 1; i <= memList.size(); i++) {
+				file = new File("WebContent/images/Teacher/Teacher" + i + ".jpg");
+				
+				bis = new BufferedInputStream(new FileInputStream(file));
+				
+				byte[] b = new byte[(int)bis.available()];
+				bis.read(b);
+				
+				MemberVO memberVO = memList.get(i - 1);
+				memSvc.updateMember(memberVO.getMemId(), memberVO.getMemSkill(), memberVO.getMemWantSkill(),
+						memberVO.getMemPair(), memberVO.getMemIdCard(), memberVO.getMemPsw(), b,
+						memberVO.getMemEmail(), memberVO.getMemAdd(), memberVO.getMemText(), memberVO.getMemBank(),
+						memberVO.getMemBalance(), memberVO.getMemBlock(), memberVO.getMemStatus());
+
+			}
+
+		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (IOException e){
-			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
-				rs.close();
-				pstmt.close();
-				con.close();
-			} catch (SQLException e) {
+				bis.close();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		
-		
-		
 		}
 	}
 }

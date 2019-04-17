@@ -25,7 +25,7 @@ public class InsCourseService {
 		dao.insert(insCourseVO);
 	}
 	
-	public void updateInsCourse(String inscId, String teacherId, String courseId, String inscLoc, Integer inscType,
+	public InsCourseVO updateInsCourse(String inscId, String teacherId, String courseId, String inscLoc, Integer inscType,
 			Integer inscPeople, String inscLang, Integer inscPrice, String inscCourser, Integer inscStatus) {
 		
 		InsCourseVO insCourseVO = new InsCourseVO();
@@ -40,7 +40,7 @@ public class InsCourseService {
 		insCourseVO.setInscCourser(inscCourser);
 		insCourseVO.setInscStatus(inscStatus);
 		dao.update(insCourseVO);
-		
+		return insCourseVO;
 	}
 	
 

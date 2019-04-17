@@ -2,10 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="com.inscourse.model.*"%>
 
-<%
-  InsCourseVO insCourseVO = (InsCourseVO) request.getAttribute("insCourseVO"); //EmpServlet.java (Concroller) 存入req的insCourseVO物件 (包括幫忙取出的insCourseVO, 也包括輸入資料錯誤時的insCourseVO物件)
-%>
 
+<jsp:useBean id="memSvc" scope="page" class="com.member.model.MemberService"/>
+<jsp:useBean id="insCourseSvc" scope="page" class="com.inscourse.model.InsCourseService"/>
+<jsp:useBean id="teacherSvc" scope="page" class="com.teacher.model.TeacherService"/>
+<jsp:useBean id="courseSvc" scope="page" class="com.course.model.CourseService"/>
 <html>
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -41,6 +42,7 @@
   th, td {
     padding: 1px;
   }
+
 </style>
 
 </head>
@@ -65,55 +67,97 @@
 	</ul>
 </c:if>
 
-<FORM METHOD="post" ACTION="InsCourse.do" name="form1">
-
+<FORM METHOD="post" ACTION="<%= request.getContextPath()%>/inscourse/InsCourse.do" name="form1">
 
 <table>
 	<tr>
 		<td>課程編號:<font color=red><b>*</b></font></td>
-		<td><%=insCourseVO.getInscId()%></td>
+		<td><input type="TEXT" name="inscId" size="10" readonly value="${insCourseVO.inscId}"/></td>
 	</tr>
 	<tr>
 		<td>老師:</td>
-		<td><input type="TEXT" name="teacherId" size="45" value="<%=insCourseVO.getTeacherId()%>" /></td>
+		<c:set var="teacherVO" value="${teacherSvc.findOneById(insCourseVO.teacherId)}"/>
+		<c:set var="memberVO" value="${memSvc.getOneMember(teacherVO.memId)}" />
+		<td><input type="TEXT" name="nameforread" size="10" readonly value="${memberVO.memName}"/>
+			<input type="hidden" name="teacherId" size="1" value="${insCourseVO.teacherId}"/></td>
+		
 	</tr>
 	<tr>
-		<td>課程種類:</td>
-		<td><input type="TEXT" name="courseId" size="45"	value="<%=insCourseVO.getCourseId()%>" /></td>
+		<td>課程種類:</td>	
+		<td>
+			<select size="1" name="courseId">
+		         <c:forEach var="courseVO" items="${courseSvc.all}" >
+		         	  <c:choose>
+		         		<c:when test="${courseVO.courseId == insCourseVO.courseId}">
+		         			<option value="${courseVO.courseId}" selected>${courseVO.courseName}</option>
+		         		</c:when>
+		         		<c:otherwise>
+							<option value="${courseVO.courseId}">${courseVO.courseName}</option>
+						</c:otherwise>
+			          </c:choose>
+		         </c:forEach>   
+	       </select>
+		</td>
 	</tr>
 	<tr>
 		<td>可上課地點:</td>
-		<td><input type="TEXT" name="inscLoc" size="45"	value="<%=insCourseVO.getInscLoc()%>" /></td>
+		<td><input type="TEXT" name="inscLoc" size="45"	value="${insCourseVO.getInscLoc()}" /></td>
 	</tr>
 	<tr>
 		<td>課程類型:</td>
-		<td><input type="TEXT" name="inscType" size="45"	value="<%=insCourseVO.getInscType()%>" /></td>
+		<td>
+			<select size="1" name="inscType">
+		         <c:choose>
+		         	<c:when test="${insCourseVO.inscType == 0}">
+		         		<option value="${insCourseVO.inscType}" selected>個人</option>
+		         		<option value="1" >團體</option>
+		         	</c:when>
+		         	<c:otherwise>
+						<option value="${insCourseVO.inscType}" selected>團體</option>
+						<option value="0" >個人</option>
+					</c:otherwise>
+			        </c:choose>
+	       </select>	
+		</td>
 	</tr>
 	<tr>
 		<td>人數:</td>
-		<td><input type="TEXT" name="inscPeople" size="45"	value="<%=insCourseVO.getInscPeople()%>" /></td>
+		<td><input type="TEXT" name="inscPeople" size="1" style="text-align: right" value="${insCourseVO.getInscPeople()}" />人</td>
 	</tr>
 	<tr>
 		<td>語言:</td>
-		<td><input type="TEXT" name="inscLang" size="45" value="<%=insCourseVO.getInscLang()%>" /></td>
+		<td><input type="TEXT" name="inscLang" size="1" value="${insCourseVO.getInscLang()}" /></td>
 	</tr>
 	<tr>
 		<td>價錢:</td>
-		<td><input type="TEXT" name="inscPrice" size="45" value="<%=insCourseVO.getInscPrice()%>" /></td>
+		<td>NT:<input type="TEXT" name="inscPrice" size="1" value="${insCourseVO.getInscPrice()}" /></td>
 	</tr>
 	<tr>
 		<td>課綱:</td>
-		<td><input type="TEXT" name="inscCourser" size="45" value="<%=insCourseVO.getInscCourser()%>" /></td>
+		<td><textarea name="inscCourser" rows="10" cols="30">${insCourseVO.getInscCourser()}</textarea></td>
 	</tr>
 	<tr>
 		<td>狀態:</td>
-		<td><input type="TEXT" name="inscStatus" size="45" value="<%=insCourseVO.getInscStatus()%>" /></td>
+		<td>
+			<select size="1" name="inscStatus">
+		         <c:choose>
+		         	<c:when test="${insCourseVO.inscStatus == 0}">
+		         		<option value="${insCourseVO.inscStatus}" selected>上架</option>
+		         		<option value="1" >下架</option>
+		         	</c:when>
+		         	<c:otherwise>
+						<option value="${insCourseVO.inscStatus}" selected>下架</option>
+						<option value="0" >上架</option>
+					</c:otherwise>
+			        </c:choose>
+	       </select>
+		</td>
 
 
 </table>
 <br>
 <input type="hidden" name="action" value="update">
-<input type="hidden" name="inscId" value="<%=insCourseVO.getInscId()%>">
+<input type="hidden" name="inscId" value="${insCourseVO.getInscId()}">
 <input type="submit" value="送出修改"></FORM>
 </body>
 

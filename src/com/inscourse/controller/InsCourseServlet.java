@@ -108,7 +108,7 @@ public class InsCourseServlet extends HttpServlet {
 			List<String> errorMsgs = new LinkedList<String>();
 
 			req.setAttribute("errorMsgs", errorMsgs);
-
+			String requestURL = req.getParameter("requestURL");
 			try {
 				/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
 				String inscId = req.getParameter("inscId").trim();
@@ -124,8 +124,11 @@ public class InsCourseServlet extends HttpServlet {
 				Integer inscPeople = null;
 				try {
 					inscPeople = new Integer(req.getParameter("inscPeople").trim());
+					if(inscPeople<1) {
+						errorMsgs.add("人數不可小於１");
+					}
 				} catch (NumberFormatException e) {
-					inscPeople = 0;
+					inscPeople = 1; 
 					errorMsgs.add("人數請填數字.");
 				}
 
@@ -160,18 +163,17 @@ public class InsCourseServlet extends HttpServlet {
 
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("insCourseVO", insCourseVO);
-					RequestDispatcher failureView = req.getRequestDispatcher("/inscourse/update_insCourse_input.jsp");
+					RequestDispatcher failureView = req.getRequestDispatcher("/inscourse/update_InsCourse_input.jsp");
 					failureView.forward(req, res);
 					return;
 				}
 
 				InsCourseService insCourseSvc = new InsCourseService();
-				insCourseSvc.updateInsCourse(inscId, teacherId, courseId, inscLoc, inscType, inscPeople, inscLang,
+				insCourseVO = insCourseSvc.updateInsCourse(inscId, teacherId, courseId, inscLoc, inscType, inscPeople, inscLang,
 						inscPrice, inscCourser, inscStatus);
 
 				req.setAttribute("insCourseVO", insCourseVO); 
-				String url = "/inscourse/listOneInsCourse.jsp";
-				RequestDispatcher successView = req.getRequestDispatcher(url); 
+				RequestDispatcher successView = req.getRequestDispatcher("/inscourse/listOneInsCourse.jsp"); 
 				successView.forward(req, res);
 
 			} catch (Exception e) {
@@ -235,7 +237,7 @@ public class InsCourseServlet extends HttpServlet {
 
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("insCourseVO", insCourseVO);
-					RequestDispatcher failureView = req.getRequestDispatcher("/inscourse/update_insCourse_input.jsp");
+					RequestDispatcher failureView = req.getRequestDispatcher("/inscourse/addInsCourse.jsp");
 					failureView.forward(req, res);
 					return;
 				}

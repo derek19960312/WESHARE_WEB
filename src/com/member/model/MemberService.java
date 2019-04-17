@@ -128,7 +128,7 @@ public class MemberService {
     }
     
     
-    public List<MemberVO> getAll(){
+     public List<MemberVO> getAll(){
     	return dao.getAll();
     }
     	

@@ -57,7 +57,7 @@ public class CourseTypeServlet extends HttpServlet {
 			CourseService courseSvc = new CourseService();
 			Integer courseTypeId = new Integer(req.getParameter("courseTypeId"));
 			
-			List<CourseVO> courseVOs = courseSvc.finByCourseType(courseTypeId);
+			List<CourseVO> courseVOs = courseSvc.findByCourseType(courseTypeId);
 			
 			List<InsCourseVO> insCourseVOs = new ArrayList();
 			

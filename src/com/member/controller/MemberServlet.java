@@ -59,7 +59,7 @@ public class MemberServlet extends HttpServlet {
 			memberVO.setMemImage(null);
 			
 			out.println(gson.toJson(memberVO));
-			
+	
 		}
 		
 

@@ -55,9 +55,10 @@
   <li><a href='listAllInsCourse.jsp'>List</a> all InsCourseServlets.  <br><br></li>
   
   
+  
   <li>
     <FORM METHOD="post" ACTION="InsCourse.do" >
-        <b>輸入課程編號 (如7001):</b>
+        <b>輸入課程編號 (如IC00001):</b>
         <input type="text" name="inscId">
         <input type="hidden" name="action" value="getOne_For_Display">
         <input type="submit" value="送出">

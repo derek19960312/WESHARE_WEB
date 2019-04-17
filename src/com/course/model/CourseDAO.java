@@ -236,7 +236,7 @@ public class CourseDAO implements CourseDAO_interface {
 				}
 			}
 		}
-		return null;
+		return list;
 	}
 
 	@Override
