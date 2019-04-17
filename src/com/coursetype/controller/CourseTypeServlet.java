@@ -59,7 +59,7 @@ public class CourseTypeServlet extends HttpServlet {
 			
 			List<CourseVO> courseVOs = courseSvc.findByCourseType(courseTypeId);
 			
-			List<InsCourseVO> insCourseVOs = new ArrayList();
+			List<InsCourseVO> insCourseVOs = new ArrayList<>();
 			
 			
 			//查詢對應課程
@@ -85,7 +85,6 @@ public class CourseTypeServlet extends HttpServlet {
 			}
 			
 		
-			
 			
 			out.println(gson.toJson(insCourseVOs));
 			

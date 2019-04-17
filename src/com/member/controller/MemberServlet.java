@@ -44,7 +44,7 @@ public class MemberServlet extends HttpServlet {
 		
 		
 		
-		if("get_one_by_android".equals(action)){
+		if("get_one_by_teacherId".equals(action)){
 			
 			
 			String teacherId = req.getParameter("teacherId");

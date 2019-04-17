@@ -79,7 +79,7 @@ public class DBGifReader extends HttpServlet {
 			System.out.println(bPic.length);
 			
 		
-			bPic = resizeImage(bPic,1f);
+			bPic = resizeImage(bPic,2f);
 			
 			System.out.println(bPic.length);
 			
@@ -129,7 +129,7 @@ public class DBGifReader extends HttpServlet {
 		int toHeight = (int) (Float.parseFloat(String.valueOf(height)) / resizeTimes); 
 		/*新生成結果圖片*/ 
 		BufferedImage result = new BufferedImage(toWidth, toHeight, BufferedImage.TYPE_INT_RGB); 
-		result.getGraphics().drawImage(im.getScaledInstance(toWidth, toHeight, java.awt.Image.SCALE_SMOOTH), 0, 0, null); 
+		result.getGraphics().drawImage(im.getScaledInstance(toWidth, toHeight, java.awt.Image.SCALE_SMOOTH), 0, 0,null); 
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
