@@ -37,7 +37,9 @@ public class CourseServlet extends HttpServlet {
 		String action = req.getParameter("action");
 		System.out.println(action);
 		
-		
+		if("search_for_course".equals(action)) {
+			
+		}
 		
 	}
 
