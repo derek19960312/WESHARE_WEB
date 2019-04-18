@@ -159,7 +159,6 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 			while (rs.next()) {
 				courseReservationVO = new CourseReservationVO();
 				courseReservationVO.setCrvId(rs.getString("crvId"));
-				courseReservationVO.setCrvDate(rs.getDate("crvDate"));
 				courseReservationVO.setTeacherId(rs.getString("teacherId"));
 				courseReservationVO.setMemId(rs.getString("memId"));
 				courseReservationVO.setInscId(rs.getString("inscId"));
@@ -234,7 +233,6 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 			while (rs.next()) {
 				courseReservationVO = new CourseReservationVO();
 				courseReservationVO.setCrvId(rs.getString("crvId"));
-				courseReservationVO.setCrvDate(rs.getDate("crvDate"));
 				courseReservationVO.setTeacherId(rs.getString("teacherId"));
 				courseReservationVO.setMemId(rs.getString("memId"));
 				courseReservationVO.setInscId(rs.getString("inscId"));
@@ -305,7 +303,6 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 			while (rs.next()) {
 				courseReservationVO = new CourseReservationVO();
 				courseReservationVO.setCrvId(rs.getString("crvId"));
-				courseReservationVO.setCrvDate(rs.getDate("crvDate"));
 				courseReservationVO.setTeacherId(rs.getString("teacherId"));
 				courseReservationVO.setMemId(rs.getString("memId"));
 				courseReservationVO.setInscId(rs.getString("inscId"));
@@ -391,7 +388,6 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 //		List<CourseReservationVO> list = dao.getAll();
 //		for (CourseReservationVO courseReservationVO3 : list) {
 //			System.out.print(courseReservationVO3.getCrvId()+",");
-//			System.out.print(courseReservationVO3.getCrvDate()+ ",");
 //			System.out.print(courseReservationVO3.getTeacherId()+ ",");
 //			System.out.print(courseReservationVO3.getMemId()+ ",");
 //			System.out.print(courseReservationVO3.getTeamId()+ ",");
@@ -412,7 +408,6 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 //		List<CourseReservationVO> list = dao.findByPrimaryKey("TC00001");
 //		for (CourseReservationVO courseReservationVO4 : list) {
 //			System.out.print(courseReservationVO4.getCrvId()+",");
-//			System.out.print(courseReservationVO4.getCrvDate()+ ",");
 //			System.out.print(courseReservationVO4.getTeacherId()+ ",");
 //			System.out.print(courseReservationVO4.getMemId()+ ",");
 //			System.out.print(courseReservationVO4.getTeamId()+ ",");
@@ -430,25 +425,24 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 //		}
 		
 		// 複合查詢狀態
-				List<CourseReservationVO> list = dao.findByStatus(1);
-				for (CourseReservationVO courseReservationVO5 : list) {
-					System.out.print(courseReservationVO5.getCrvId()+",");
-					System.out.print(courseReservationVO5.getCrvDate()+ ",");
-					System.out.print(courseReservationVO5.getTeacherId()+ ",");
-					System.out.print(courseReservationVO5.getMemId()+ ",");
-					System.out.print(courseReservationVO5.getTeamId()+ ",");
-					System.out.print(courseReservationVO5.getCrvStatus()+ ",");
-					System.out.print(courseReservationVO5.getClassStatus()+ ",");
-					System.out.print(courseReservationVO5.getTranStatus()+ ",");
-					System.out.print(courseReservationVO5.getCrvMFD()+ ",");
-					System.out.print(courseReservationVO5.getCrvEXP()+ ",");
-					System.out.print(courseReservationVO5.getCrvLoc()+ ",");
-					System.out.print(courseReservationVO5.getCrvTotalTime()+ ",");
-					System.out.print(courseReservationVO5.getCrvTotalPrice()+ ",");
-					System.out.print(courseReservationVO5.getCrvScore()+ ",");
-					System.out.println(courseReservationVO5.getCrvRate()+ ",");
-					System.out.println();
-				}
+//				List<CourseReservationVO> list = dao.findByStatus(1);
+//				for (CourseReservationVO courseReservationVO5 : list) {
+//					System.out.print(courseReservationVO5.getCrvId()+",");
+//					System.out.print(courseReservationVO5.getTeacherId()+ ",");
+//					System.out.print(courseReservationVO5.getMemId()+ ",");
+//					System.out.print(courseReservationVO5.getTeamId()+ ",");
+//					System.out.print(courseReservationVO5.getCrvStatus()+ ",");
+//					System.out.print(courseReservationVO5.getClassStatus()+ ",");
+//					System.out.print(courseReservationVO5.getTranStatus()+ ",");
+//					System.out.print(courseReservationVO5.getCrvMFD()+ ",");
+//					System.out.print(courseReservationVO5.getCrvEXP()+ ",");
+//					System.out.print(courseReservationVO5.getCrvLoc()+ ",");
+//					System.out.print(courseReservationVO5.getCrvTotalTime()+ ",");
+//					System.out.print(courseReservationVO5.getCrvTotalPrice()+ ",");
+//					System.out.print(courseReservationVO5.getCrvScore()+ ",");
+//					System.out.println(courseReservationVO5.getCrvRate()+ ",");
+//					System.out.println();
+//				}
 		
 		
 	

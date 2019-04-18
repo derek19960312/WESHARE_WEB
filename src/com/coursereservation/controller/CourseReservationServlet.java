@@ -1,4 +1,4 @@
-package com.coursereservation.controller;
+   package com.coursereservation.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,10 +10,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.course.model.CourseService;
+import com.course.model.CourseVO;
 import com.coursereservation.model.CourseReservationService;
 import com.coursereservation.model.CourseReservationVO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.inscourse.model.InsCourseService;
+import com.inscourse.model.InsCourseVO;
 
 @WebServlet("/CourseReservationServlet")
 public class CourseReservationServlet extends HttpServlet {
@@ -41,9 +45,19 @@ public class CourseReservationServlet extends HttpServlet {
 		if("find_my_reservation".equals(action)) {
 			
 			String param = req.getParameter("param");
-			System.out.println(param);
 			CourseReservationService crSvc = new CourseReservationService();
 			List<CourseReservationVO> crList = crSvc.findByPrimaryKey(param);
+			
+			
+			InsCourseService inscSvc = new InsCourseService();
+			CourseService courseSvc = new CourseService();
+			
+			for(CourseReservationVO crVO : crList) {
+				InsCourseVO inscVO = inscSvc.findOneById(crVO.getInscId());
+				CourseVO courseVO = courseSvc.findOneById(inscVO.getCourseId());
+				crVO.setInscId(courseVO.getCourseName());
+					
+			}
 			out.print(gson.toJson(crList));
 			
 		}

@@ -28,6 +28,7 @@ public class TeacherDAO implements TeacherDAO_interface {
 	final String UPDATE_STMT = "UPDATE TEACHER SET MEMID=?,TEACHERSTATUS=?,TEACHERCITY=?,TEACHEREDU=?,IDCARDIMG=?,DIPLOMAIMG=?,TEACHERTEXT=? WHERE TEACHERID=?";
 	final String DELETE_TEACHER = "DELETE FROM TEACHER WHERE TEACHERID=?";
 	final String SEARCH_TEACHER = "SELECT * FROM TEACHER WHERE TEACHERID=?";
+	final String SEARCH_BY_MEMBER = "SELECT * FROM TEACHER WHERE MEMID=?";
 	final String SEARCH_TEACHERALL = "SELECT * FROM TEACHER";
 	
 
@@ -262,6 +263,62 @@ public class TeacherDAO implements TeacherDAO_interface {
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public TeacherVO findByMemId(String memId) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(SEARCH_BY_MEMBER);
+			
+			pstmt.setString(1, memId);
+			rs = pstmt.executeQuery();
+			TeacherVO TeacherVO = new TeacherVO(); 
+			while(rs.next()) {
+				TeacherVO.setTeacherId(rs.getString("teacherId"));
+				TeacherVO.setMemId(memId);
+				TeacherVO.setTeacherStatus(rs.getInt("teacherStatus"));
+				TeacherVO.setTeacherCity(rs.getString("teacherCity"));
+				TeacherVO.setTeacherEdu(rs.getString("teacherEdu"));
+				try {
+					TeacherVO.setIdCardImg(new byte[rs.getBinaryStream("idCardImg").available()]);
+					TeacherVO.setDiplomaImg(new byte[rs.getBinaryStream("diplomaImg").available()]);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				TeacherVO.setTeacherText(rs.getString("teacherText"));
+				
+			}
+			return TeacherVO;
+		}catch(SQLException se) {
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+		}finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
 	}
 
 }

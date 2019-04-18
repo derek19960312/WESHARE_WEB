@@ -357,6 +357,12 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 		return baos.toByteArray();
 	}
 
+	@Override
+	public TeacherVO findByMemId(String memId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
 
 

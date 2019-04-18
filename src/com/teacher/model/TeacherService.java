@@ -27,4 +27,8 @@ public class TeacherService {
 	public List<TeacherVO> getAll(){
 		return dao.getAll();
 	}
+	public TeacherVO findByMemId(String memId) {
+		return dao.findByMemId(memId);
+	}
+	
 }

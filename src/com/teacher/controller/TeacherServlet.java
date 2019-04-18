@@ -1,11 +1,18 @@
 package com.teacher.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.teacher.model.TeacherService;
+import com.teacher.model.TeacherVO;
 
 
 @WebServlet("/TeacherServlet")
@@ -21,15 +28,24 @@ public class TeacherServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		
+		Gson gson = new GsonBuilder()  
+				  .setDateFormat("yyyy-MM-dd HH:mm:ss")  
+				  .create(); 
+		req.setCharacterEncoding("UTF-8");
+		res.setContentType("text/plain; charset=UTF-8");
+		PrintWriter out = res.getWriter();
+
 		String action = req.getParameter("action");
+		System.out.println(action);
 		
-//		if("find_one_by_TeacherId".equals(action)) {
-//			
-//			String = 
-//			
-//			
-//			
-//		}
+		if("find_by_memId".equals(action)) {
+			
+			String memId = req.getParameter("memId");
+			TeacherService tchSvc = new TeacherService();
+			TeacherVO tchVO = tchSvc.findByMemId(memId);
+			out.print(gson.toJson(tchVO));
+			
+		}
 		
 	}
 

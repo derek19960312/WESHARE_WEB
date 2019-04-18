@@ -23,7 +23,6 @@ public class CourseReservationService {
 		CourseReservationVO courseReservationVO = new CourseReservationVO();
 		
 		courseReservationVO.setCrvId(crvId);
-		courseReservationVO.setCrvDate(crvDate);
 		courseReservationVO.setTeacherId(teacherId);
 		courseReservationVO.setMemId(memId);
 		courseReservationVO.setInscId(inscId);
@@ -37,7 +36,6 @@ public class CourseReservationService {
 		courseReservationVO.setCrvTotalTime(crvTotalTime);
 		courseReservationVO.setCrvTotalPrice(crvTotalPrice);
 		courseReservationVO.setCrvScore(crvScore);
-		courseReservationVO.setCrvDate(crvDate);
 		
 		dao.insert(courseReservationVO);
 		return courseReservationVO;

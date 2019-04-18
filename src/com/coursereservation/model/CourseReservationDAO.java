@@ -141,7 +141,6 @@ public class CourseReservationDAO implements CourseReservationDAO_interface {
 			while (rs.next()) {
 				courseReservationVO = new CourseReservationVO();
 				courseReservationVO.setCrvId(rs.getString("crvId"));
-				courseReservationVO.setCrvDate(rs.getDate("crvDate"));
 				courseReservationVO.setTeacherId(rs.getString("teacherId"));
 				courseReservationVO.setMemId(rs.getString("memId"));
 				courseReservationVO.setInscId(rs.getString("inscId"));
@@ -206,7 +205,6 @@ public class CourseReservationDAO implements CourseReservationDAO_interface {
 			while (rs.next()) {
 				courseReservationVO = new CourseReservationVO();
 				courseReservationVO.setCrvId(rs.getString("crvId"));
-				courseReservationVO.setCrvDate(rs.getDate("crvDate"));
 				courseReservationVO.setTeacherId(rs.getString("teacherId"));
 				courseReservationVO.setMemId(rs.getString("memId"));
 				courseReservationVO.setInscId(rs.getString("inscId"));
@@ -267,7 +265,6 @@ public class CourseReservationDAO implements CourseReservationDAO_interface {
 			while (rs.next()) {
 				courseReservationVO = new CourseReservationVO();
 				courseReservationVO.setCrvId(rs.getString("crvId"));
-				courseReservationVO.setCrvDate(rs.getDate("crvDate"));
 				courseReservationVO.setTeacherId(rs.getString("teacherId"));
 				courseReservationVO.setMemId(rs.getString("memId"));
 				courseReservationVO.setInscId(rs.getString("inscId"));

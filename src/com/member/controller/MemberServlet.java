@@ -41,7 +41,17 @@ public class MemberServlet extends HttpServlet {
 		PrintWriter out = res.getWriter(); 
 		
 		
-		
+		if("get_one_by_memId".equals(action)) {
+			
+			String memId = req.getParameter("memId");
+			MemberService memberSvc = new MemberService();
+			
+			MemberVO memberVO= memberSvc.getOneMember(memId);
+			memberVO.setMemImage(null);
+			
+			out.println(gson.toJson(memberVO));
+			
+		}
 		
 		
 		if("get_one_by_teacherId".equals(action)){
@@ -87,7 +97,7 @@ public class MemberServlet extends HttpServlet {
 					
 					MemberService memSvc = new MemberService();
 					memberVO = memSvc.getOneMember(memId);
-					memberVO.setMemImage(null);
+					
 					if (memberVO == null || !memPsw.equals(memberVO.getMemPsw())) {
 						errorMsgs = "LoginFalse";
 						break;
@@ -100,6 +110,7 @@ public class MemberServlet extends HttpServlet {
 			}
 			try {
 				if(errorMsgs == null && memberVO != null) {
+					memberVO.setMemImage(null);
 					out.println(gson.toJson(memberVO));
 				}else {
 					jsonString.addProperty("LoginStatus", FALSE);
