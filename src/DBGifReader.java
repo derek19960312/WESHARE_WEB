@@ -40,7 +40,7 @@ public class DBGifReader extends HttpServlet {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		res.setContentType("image/gif");
+		res.setContentType("image/jpeg");
 		
 		if("get_member_pic".equals(action)) {
 			
@@ -50,10 +50,9 @@ public class DBGifReader extends HttpServlet {
 			byte[] bPic = null;
 			InputStream is = null;
 			OutputStream os = null;
-			try {
-				
-				
 			
+			try {
+					
 				pstmt = con.prepareStatement(GET_ONE_BY_MEMID);
 				pstmt.setString(1,req.getParameter("memId"));
 				
@@ -76,19 +75,18 @@ public class DBGifReader extends HttpServlet {
 				}
 			}
 			
-			System.out.println(bPic.length);
+			System.out.println(bPic.length);	
+			int imageSize = Integer.parseInt(req.getParameter("imageSize"));
 			
-		
-			bPic = resizeImage(bPic,2f);
+			bPic = ImageUtil.shrink(bPic,imageSize);
 			
 			System.out.println(bPic.length);
+			System.out.println(imageSize);
 			
 			base64 = Base64.encodeBase64String(bPic);
 			out.print(base64);
-
 						
 		}
-		
 		
 	}
 
@@ -110,33 +108,4 @@ public class DBGifReader extends HttpServlet {
 			System.out.println(e);
 		}
 	}
-	public byte[] resizeImage(byte[] b, float resizeTimes) { 
-		
-		ByteArrayInputStream bais = new ByteArrayInputStream(b);
-		
-		BufferedImage im = null;
-		try {
-			im = ImageIO.read(bais);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	
-		/*原始影象的寬度和高度*/ 
-		int width = im.getWidth(); 
-		int height = im.getHeight(); 
-		/*調整後的圖片的寬度和高度*/ 
-		int toWidth = (int) (Float.parseFloat(String.valueOf(width)) / resizeTimes); 
-		int toHeight = (int) (Float.parseFloat(String.valueOf(height)) / resizeTimes); 
-		/*新生成結果圖片*/ 
-		BufferedImage result = new BufferedImage(toWidth, toHeight, BufferedImage.TYPE_INT_RGB); 
-		result.getGraphics().drawImage(im.getScaledInstance(toWidth, toHeight, java.awt.Image.SCALE_SMOOTH), 0, 0,null); 
-		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {
-			ImageIO.write(im, "jpg",baos);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return baos.toByteArray(); 
-		} 
 }
