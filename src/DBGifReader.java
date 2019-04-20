@@ -75,13 +75,14 @@ public class DBGifReader extends HttpServlet {
 				}
 			}
 			
-			System.out.println(bPic.length);	
+			System.out.println("圖片"+req.getParameter("memId"));	
+			System.out.println("壓縮前"+bPic.length);	
 			int imageSize = Integer.parseInt(req.getParameter("imageSize"));
 			
 			bPic = ImageUtil.shrink(bPic,imageSize);
 			
-			System.out.println(bPic.length);
-			System.out.println(imageSize);
+			System.out.println("壓縮後"+bPic.length);
+			System.out.println("圖片大小"+imageSize);
 			
 			base64 = Base64.encodeBase64String(bPic);
 			out.print(base64);

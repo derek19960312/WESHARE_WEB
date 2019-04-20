@@ -352,5 +352,11 @@ public class InsCourseJDBCDAO implements InsCourseDAO_interface {
 		return null;
 	}
 
+	@Override
+	public List<InsCourseVO> findByTeacher(String teacherId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
 

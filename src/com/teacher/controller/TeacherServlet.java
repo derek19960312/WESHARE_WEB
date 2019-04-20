@@ -47,6 +47,17 @@ public class TeacherServlet extends HttpServlet {
 			
 		}
 		
+		if("find_by_teacherId".equals(action)) {
+			
+			String teacherId = req.getParameter("teacherId");
+			TeacherService tchSvc = new TeacherService();
+			TeacherVO tchVO = tchSvc.findOneById(teacherId);
+			out.print(gson.toJson(tchVO));
+			
+			
+		}
+		
+		
 	}
 
 }

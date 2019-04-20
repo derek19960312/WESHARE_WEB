@@ -61,5 +61,7 @@ public class InsCourseService {
 	public List<InsCourseVO> findByCourse(String courseId){
 		return dao.findByCourse(courseId);
 	}
-
+	public List<InsCourseVO> findByTeacher(String teacherId){
+		return dao.findByTeacher(teacherId);
+	}
 }

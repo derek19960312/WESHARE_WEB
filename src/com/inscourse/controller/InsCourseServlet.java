@@ -12,8 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.course.model.CourseService;
 import com.course.model.CourseVO;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.inscourse.model.InsCourseService;
 import com.inscourse.model.InsCourseVO;
 
@@ -27,7 +29,9 @@ public class InsCourseServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-
+		Gson gson = new GsonBuilder()  
+				  .setDateFormat("yyyy-MM-dd HH:mm:ss")  
+				  .create();  
 		req.setCharacterEncoding("UTF-8");
 		res.setContentType("text/plain; charset=UTF-8");
 		PrintWriter out = res.getWriter();
@@ -37,7 +41,6 @@ public class InsCourseServlet extends HttpServlet {
 		if ("getOne_For_Display".equals(action)) {
 			List<String> errorMsgs = new LinkedList<String>();
 			req.setAttribute("errorMsgs", errorMsgs);
-			System.out.println("到武一游");
 			try {
 				String inscId = req.getParameter("inscId");
 				if (inscId == null || (inscId.trim()).length() == 0) {
@@ -258,18 +261,34 @@ public class InsCourseServlet extends HttpServlet {
 		}
 
 		
+		if("find_by_teacher".equals(action)) {
+			
+			String teacherId = req.getParameter("teacherId");
+			InsCourseService inscSvc = new InsCourseService();
+			List<InsCourseVO> insCourseVOs = inscSvc.findByTeacher(teacherId);
+			CourseService courseSvc = new CourseService();
+			for(InsCourseVO inscVO : insCourseVOs) {
+				CourseVO cvo = courseSvc.findOneById(inscVO.getCourseId());
+				inscVO.setCourseId(cvo.getCourseName());
+			}
+			
+			out.print(gson.toJson(insCourseVOs));
+		}
+		
+		
+		
 		
 		
 		// for Android
 		if ("search_by_CourseType".equals(action)) {
-			List<String> erroMsgs = new LinkedList();
+			List<String> erroMsgs = new LinkedList<>();
 
 			String courseId = req.getParameter("keyword");
 			InsCourseService insCourseService = new InsCourseService();
 			// insCourseService.findByCourse(courseId);
 			List<InsCourseVO> insCourseVOs = insCourseService.findByCourse("0005");
 
-			Gson gson = new Gson();
+			
 			out.print(gson.toJson(insCourseVOs));
 		}
 	}

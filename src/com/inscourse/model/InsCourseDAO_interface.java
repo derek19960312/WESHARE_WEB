@@ -10,4 +10,5 @@ public interface InsCourseDAO_interface {
 	public List<InsCourseVO> getAll();
 	public void updateStatus(InsCourseVO insCourseVO);
 	public List<InsCourseVO> findByCourse(String courseId);
+	public List<InsCourseVO> findByTeacher(String teacherId);
 }
