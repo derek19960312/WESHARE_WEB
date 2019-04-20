@@ -52,7 +52,7 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 			pstmt.setTimestamp(9,courseReservationVO.getCrvEXP());
 			pstmt.setString(10,courseReservationVO.getCrvLoc());
 			pstmt.setInt(11,courseReservationVO.getCrvTotalTime());
-			pstmt.setInt(12,courseReservationVO.getCrvTotalPrice());
+			pstmt.setDouble(12,courseReservationVO.getCrvTotalPrice());
 			pstmt.setDouble(13,courseReservationVO.getCrvScore());
 			pstmt.setString(14, courseReservationVO.getCrvRate());
 			pstmt.executeUpdate();
@@ -170,7 +170,7 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 				courseReservationVO.setCrvEXP(rs.getTimestamp("crvEXP"));
 				courseReservationVO.setCrvLoc(rs.getString("crvLoc"));
 				courseReservationVO.setCrvTotalTime(rs.getInt("crvTotalTime"));
-				courseReservationVO.setCrvTotalPrice(rs.getInt("crvTotalPrice"));
+				courseReservationVO.setCrvTotalPrice(rs.getDouble("crvTotalPrice"));
 				courseReservationVO.setCrvScore(rs.getDouble("crvScore"));
 				courseReservationVO.setCrvRate(rs.getString("crvRate"));
 				list.add(courseReservationVO); // Store the row in the list
@@ -244,7 +244,7 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 				courseReservationVO.setCrvEXP(rs.getTimestamp("crvEXP"));
 				courseReservationVO.setCrvLoc(rs.getString("crvLoc"));
 				courseReservationVO.setCrvTotalTime(rs.getInt("crvTotalTime"));
-				courseReservationVO.setCrvTotalPrice(rs.getInt("crvTotalPrice"));
+				courseReservationVO.setCrvTotalPrice(rs.getDouble("crvTotalPrice"));
 				courseReservationVO.setCrvScore(rs.getDouble("crvScore"));
 				courseReservationVO.setCrvRate(rs.getString("crvRate"));
 				list.add(courseReservationVO); // Store the row in the list
@@ -314,7 +314,7 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 				courseReservationVO.setCrvEXP(rs.getTimestamp("crvEXP"));
 				courseReservationVO.setCrvLoc(rs.getString("crvLoc"));
 				courseReservationVO.setCrvTotalTime(rs.getInt("crvTotalTime"));
-				courseReservationVO.setCrvTotalPrice(rs.getInt("crvTotalPrice"));
+				courseReservationVO.setCrvTotalPrice(rs.getDouble("crvTotalPrice"));
 				courseReservationVO.setCrvScore(rs.getDouble("crvScore"));
 				courseReservationVO.setCrvRate(rs.getString("crvRate"));
 				list.add(courseReservationVO); // Store the row in the list

@@ -16,7 +16,7 @@ public class CourseReservationVO {
 	private Timestamp crvEXP;
 	private String crvLoc;
 	private Integer crvTotalTime;
-	private Integer crvTotalPrice;
+	private Double crvTotalPrice;
 	private Double crvScore;
 	private String crvRate;
 
@@ -116,11 +116,11 @@ public class CourseReservationVO {
 		this.crvTotalTime = crvTotalTime;
 	}
 
-	public Integer getCrvTotalPrice() {
+	public Double getCrvTotalPrice() {
 		return crvTotalPrice;
 	}
 
-	public void setCrvTotalPrice(Integer crvTotalPrice) {
+	public void setCrvTotalPrice(Double crvTotalPrice) {
 		this.crvTotalPrice = crvTotalPrice;
 	}
 
