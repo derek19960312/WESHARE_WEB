@@ -8,7 +8,7 @@ public class MemberService {
 	private MemberDAO_interface dao;
 
 	public MemberService() {
-		dao = new MemberJDBCDAO();
+		dao = new MemberDAO();
 
 	}
 	

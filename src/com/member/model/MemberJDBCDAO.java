@@ -394,14 +394,14 @@ public class MemberJDBCDAO implements MemberDAO_interface {
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(EDIT_MEMBER_STMT);
-			
-			pstmt.setString(1,memberVO.getMemPsw());
-			pstmt.setBytes(2,memberVO.getMemImage());
-			pstmt.setString(3,memberVO.getMemAdd());
-			pstmt.setString(4,memberVO.getMemText());
-			pstmt.setString(5,memberVO.getMemBank());
-			pstmt.setString(6,memberVO.getMemSkill());
-			pstmt.setString(7,memberVO.getMemWantSkill());
+
+			pstmt.setString(1, memberVO.getMemPsw());
+			pstmt.setBytes(2, memberVO.getMemImage());
+			pstmt.setString(3, memberVO.getMemAdd());
+			pstmt.setString(4, memberVO.getMemText());
+			pstmt.setString(5, memberVO.getMemBank());
+			pstmt.setString(6, memberVO.getMemSkill());
+			pstmt.setString(7, memberVO.getMemWantSkill());
 			pstmt.setString(8, memberVO.getMemId());
 
 			pstmt.executeUpdate();
