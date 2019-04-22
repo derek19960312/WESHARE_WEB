@@ -2,6 +2,7 @@ package com.goods.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -52,7 +53,11 @@ public class GoodsServlet extends HttpServlet {
 			
 			
 			GoodsService goodsSvc = new GoodsService();
-			out.print(gson.toJson(goodsSvc.getAll()));
+			List<GoodsVO> goodsVOs = goodsSvc.getAll();
+			for(GoodsVO gdVO : goodsVOs) {
+				gdVO.setGoodImg(null);
+			}
+			out.print(gson.toJson(goodsVOs));
 		}
 		
 		

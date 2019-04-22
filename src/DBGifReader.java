@@ -23,6 +23,7 @@ public class DBGifReader extends HttpServlet {
 	String userid = "WESHARE";
 	String passwd = "123456";
 	private static final String GET_ONE_BY_MEMID = "SELECT memImage FROM member WHERE memId=?";
+	private static final String GET_ONE_BY_GOODID = "SELECT goodImg FROM goods WHERE goodId=?";
 
 	Connection con;
 	
@@ -42,7 +43,7 @@ public class DBGifReader extends HttpServlet {
 		
 		res.setContentType("image/jpeg");
 		
-		if("get_member_pic".equals(action)) {
+		if("get_member_pic".equals(action) || "get_goods_pic".equals(action)) {
 			
 			PrintWriter out = res.getWriter();
 			
@@ -51,31 +52,61 @@ public class DBGifReader extends HttpServlet {
 			InputStream is = null;
 			OutputStream os = null;
 			
-			try {
+			if("get_member_pic".equals(action)) {
+				try {	
+					pstmt = con.prepareStatement(GET_ONE_BY_MEMID);
+					pstmt.setString(1,req.getParameter("memId"));
 					
-				pstmt = con.prepareStatement(GET_ONE_BY_MEMID);
-				pstmt.setString(1,req.getParameter("memId"));
-				
-				rs = pstmt.executeQuery();
-		
-				if (rs.next()) {
-					bPic = rs.getBytes("memImage");
-				} else {
-					res.sendError(HttpServletResponse.SC_NOT_FOUND);
+					rs = pstmt.executeQuery();
+			
+					if (rs.next()) {
+						bPic = rs.getBytes("memImage");
+					} else {
+						res.sendError(HttpServletResponse.SC_NOT_FOUND);
+					}
+					
+				} catch (Exception e) {
+					System.out.println(e);
+				} finally {	
+					try {
+						rs.close();
+						pstmt.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
-				
-			} catch (Exception e) {
-				System.out.println(e);
-			} finally {	
-				try {
-					rs.close();
-					pstmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				System.out.println("圖片"+req.getParameter("memId"));	
 			}
 			
-			System.out.println("圖片"+req.getParameter("memId"));	
+			if("get_goods_pic".equals(action)) {
+				try {	
+					pstmt = con.prepareStatement(GET_ONE_BY_GOODID);
+					pstmt.setString(1,req.getParameter("goodId"));
+					
+					rs = pstmt.executeQuery();
+			
+					if (rs.next()) {
+						bPic = rs.getBytes("goodImg");
+					} else {
+						res.sendError(HttpServletResponse.SC_NOT_FOUND);
+					}
+					
+				} catch (Exception e) {
+					System.out.println(e);
+				} finally {	
+					try {
+						rs.close();
+						pstmt.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				System.out.println("圖片"+req.getParameter("goodId"));	
+			}
+			
+			
+			
+			
 			System.out.println("壓縮前"+bPic.length);	
 			int imageSize = Integer.parseInt(req.getParameter("imageSize"));
 			

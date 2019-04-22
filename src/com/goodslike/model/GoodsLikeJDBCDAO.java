@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
+public class GoodsLikeJDBCDAO implements GoodsLikeDAO_interface{
 	private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
 	private static final String USER = "weshare";
@@ -21,7 +21,7 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 	private static final String GET_ALL = "SELECT * FROM GoodsDetails";
 	
 	@Override
-	public void insert(GoodsDetailsVO goodDetailsVO) {
+	public void insert(GoodsLikeVO goodDetailsVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		try {
@@ -59,7 +59,7 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 		}
 	}
 	@Override
-	public void update(GoodsDetailsVO goodDetailsVO) {
+	public void update(GoodsLikeVO goodDetailsVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		try {
@@ -131,8 +131,8 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 		}
 	}
 	@Override
-	public GoodsDetailsVO findByPK(String goodOrderId, String goodId) {
-		GoodsDetailsVO details = null;
+	public GoodsLikeVO findByPK(String goodOrderId, String goodId) {
+		GoodsLikeVO details = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -146,7 +146,7 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				details = new GoodsDetailsVO();
+				details = new GoodsLikeVO();
 				details.setGoodOrderId(rs.getString("GoodOrderId"));
 				details.setGoodId(rs.getString("GoodId"));
 				details.setGoodAmount(rs.getInt("GoodAmount"));
@@ -184,9 +184,9 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 		return details;
 	}
 	@Override
-	public List<GoodsDetailsVO> getAll() {
-		List<GoodsDetailsVO> detailsList = new ArrayList<GoodsDetailsVO>();
-		GoodsDetailsVO details = null;
+	public List<GoodsLikeVO> getAll() {
+		List<GoodsLikeVO> detailsList = new ArrayList<GoodsLikeVO>();
+		GoodsLikeVO details = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -198,7 +198,7 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-			    details = new GoodsDetailsVO();
+			    details = new GoodsLikeVO();
 				details.setGoodOrderId(rs.getString("GOODORDERID"));
 				details.setGoodId(rs.getString("GoodId"));
 				details.setGoodAmount(rs.getInt("GoodAmount"));
@@ -237,7 +237,7 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 	}
 	
 	public static void main(String[] args) {
-	GoodsDetailsJDBCDAO dao = new GoodsDetailsJDBCDAO();
+	GoodsLikeJDBCDAO dao = new GoodsLikeJDBCDAO();
 	
 	//insert ??��?��?�主?��
 //	GoodsDetailsVO detail = new GoodsDetailsVO();
@@ -249,7 +249,7 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 //	dao.insert(detail);
 	
 	//update
-	GoodsDetailsVO detalis2 = new GoodsDetailsVO();
+	GoodsLikeVO detalis2 = new GoodsLikeVO();
 	detalis2.setGoodAmount(66);
 	detalis2.setGoodScore(3.5);
 	detalis2.setGoodRate("評價");
