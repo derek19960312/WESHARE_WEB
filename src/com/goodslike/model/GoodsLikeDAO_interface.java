@@ -4,7 +4,8 @@ import java.util.List;
 
 public interface GoodsLikeDAO_interface {
 	
-	void insert(GoodsLikeVO goodLikeVO);
-	void delete(String goodId,String memId);	
+	public void insert(GoodsLikeVO goodLikeVO);
+	public void delete(String goodId,String memId);	
+	public List<GoodsLikeVO> getByMemId(String memId);
 	List<GoodsLikeVO>getAll();
 }

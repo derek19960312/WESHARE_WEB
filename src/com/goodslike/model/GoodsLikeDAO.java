@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoodsLikeDAOImpl implements GoodsLikeDAO_interface {
+public class GoodsLikeDAO implements GoodsLikeDAO_interface {
 
 	private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
@@ -18,6 +18,7 @@ public class GoodsLikeDAOImpl implements GoodsLikeDAO_interface {
 	private static final String INSERT_STMT = "INSERT INTO GoodsLike VALUES (?,?)";
 	private static final String DELETE_STMT = "DELETE FROM GoodsLike where goodId = ? and memId = ? ";
 	private static final String GET_ALL = "SELECT * FROM GoodsLike";
+	private static final String GET_BY_MEMID = "SELECT * FROM GoodsLike where memId = ?";
 
 	@Override
 	public void insert(GoodsLikeVO goodLikeVO) {
@@ -66,6 +67,7 @@ public class GoodsLikeDAOImpl implements GoodsLikeDAO_interface {
 			pstmt.setString(1, goodId);
 			pstmt.setString(2, memId);
 			pstmt.executeUpdate();
+			System.out.println("已刪除一筆資料");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -136,19 +138,71 @@ public class GoodsLikeDAOImpl implements GoodsLikeDAO_interface {
 		}
 		return likeList;
 	}
+	
+	@Override
+	public List<GoodsLikeVO> getByMemId(String memId) {
+		List<GoodsLikeVO> likeList = new ArrayList<GoodsLikeVO>();
+		GoodsLikeVO like = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(GET_BY_MEMID);
+			pstmt.setString(1, memId);
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				like = new GoodsLikeVO();
+				like.setGoodId(rs.getString("GoodId"));
+				like.setMemId(rs.getString("MemId"));
+				likeList.add(like);
+			}
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs == null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt == null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace();
+				}
+			}
+			if (con == null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return likeList;
+	}
 
 	public static void main(String[] args) {
 
-		GoodsLikeDAOImpl dao = new GoodsLikeDAOImpl();
+		GoodsLikeDAO dao = new GoodsLikeDAO();
 		// insert
 //		GoodsLikeVO goodLikeVO = new GoodsLikeVO();
 //		goodLikeVO.setGoodId("GD00003");
 //		goodLikeVO.setMemId("weshare03");
 //		dao.insert(goodLikeVO);
 		
-		// delete
-//		dao.delete("GD00003", "weshare03");
-		
+////		 delete
+//		dao.delete("GD00002", "weshare01");
+//		
 		// getAll
 //		List<GoodsLikeVO> list = dao.getAll();
 //		for(GoodsLikeVO likes : list) {

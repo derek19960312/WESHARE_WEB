@@ -11,13 +11,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.course.model.CourseService;
-import com.course.model.CourseVO;
-import com.courselike.model.CourseLikeService;
-import com.courselike.model.CourseLikeVO;
+import com.goods.model.GoodsService;
+import com.goods.model.GoodsVO;
+import com.goodslike.model.GoodsLikeService;
+import com.goodslike.model.GoodsLikeVO;
 import com.google.gson.Gson;
-import com.inscourse.model.InsCourseService;
-import com.inscourse.model.InsCourseVO;
 
 @WebServlet("/GoodsLikeServlet")
 public class GoodsLikeServlet extends HttpServlet {
@@ -36,39 +34,39 @@ public class GoodsLikeServlet extends HttpServlet {
 
 		// 加入收藏
 		if ("add_to_favorites".equals(action)) {
-			String inscId = req.getParameter("inscId");
+			String goodId = req.getParameter("goodId");
 			String memId = req.getParameter("memId");
-			CourseLikeService clSvc = new CourseLikeService();
+			GoodsLikeService glSvc = new GoodsLikeService();
 
-			clSvc.addCourseLike(memId, inscId);
+			glSvc.addGoodsLike(memId, goodId);
 
 		}
 
 		// 移除收藏
 		if ("delete_from_favorites".equals(action)) {
-			String inscId = req.getParameter("inscId");
+			String goodId = req.getParameter("goodId");
 			String memId = req.getParameter("memId");
-			CourseLikeService clSvc = new CourseLikeService();
-			clSvc.deleteCourseLike(memId, inscId);
+			GoodsLikeService glSvc = new GoodsLikeService();
+			glSvc.deleteGoodsLike(memId, goodId);
 		}
 
 		// 查看我的收藏
 		if ("look_my_favorites".equals(action)) {
 			String memId = req.getParameter("memId");
-			CourseLikeService clSvc = new CourseLikeService();
-			List<CourseLikeVO> courseLikeVOs = clSvc.getMemIdCourseLike(memId);
+			GoodsLikeService glSvc = new GoodsLikeService();
+			List<GoodsLikeVO> goodsLikeVOs = glSvc.getMemIdGoodsLike(memId);
+			System.out.println(memId);
+			
+			GoodsService goodsSvc = new GoodsService();
+			List<GoodsVO> GoodsVOs = new ArrayList<>();
 
-			InsCourseService inscSvc = new InsCourseService();
-			List<InsCourseVO> insCourseVOs = new ArrayList<>();
-
-			CourseService courseSvc = new CourseService();
-			for (int i = 0; i < courseLikeVOs.size(); i++) {
-				InsCourseVO inscVO = inscSvc.findOneById(courseLikeVOs.get(i).getInscId());
-				CourseVO courseVO = courseSvc.findOneById(inscVO.getCourseId());
-				inscVO.setCourseId(courseVO.getCourseName());
-				insCourseVOs.add(inscVO);
+			for(GoodsLikeVO glvo : goodsLikeVOs) {
+				GoodsVO gvo = goodsSvc.getOneGood(glvo.getGoodId());
+				gvo.setGoodImg(null);
+				GoodsVOs.add(gvo);
 			}
-			out.print(gson.toJson(insCourseVOs));
+			
+			out.print(gson.toJson(GoodsVOs));
 
 		}
 
