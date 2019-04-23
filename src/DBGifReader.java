@@ -86,6 +86,12 @@ public class DBGifReader extends HttpServlet {
 				System.out.println(e);
 			} finally {
 				try {
+					if (con != null)
+						con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+				try {
 					rs.close();
 					pstmt.close();
 				} catch (SQLException e) {
@@ -108,12 +114,4 @@ public class DBGifReader extends HttpServlet {
 
 	}
 
-	public void destroy() {
-		try {
-			if (con != null)
-				con.close();
-		} catch (SQLException e) {
-			System.out.println(e);
-		}
-	}
 }
