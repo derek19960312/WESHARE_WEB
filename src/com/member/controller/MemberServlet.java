@@ -65,7 +65,9 @@ public class MemberServlet extends HttpServlet {
 			TeacherVO teacherVO= teacherSvc.findOneById(teacherId);
 			String memId = teacherVO.getMemId();
 			
-			MemberVO memberVO= memberSvc.getOneMember(memId);
+			System.out.println(memId);
+			
+			MemberVO memberVO = memberSvc.getOneMember(memId);
 			memberVO.setMemImage(null);
 			
 			out.println(gson.toJson(memberVO));

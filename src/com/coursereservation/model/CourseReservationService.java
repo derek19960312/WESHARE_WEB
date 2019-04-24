@@ -11,18 +11,17 @@ public class CourseReservationService {
 	private CourseReservationDAO_interface dao;
 
 	public CourseReservationService() {
-		dao = new CourseReservationDAO();
+		dao = new CourseReservationJDBCDAO();
 
 	}
 	
 	
-	public CourseReservationVO addCourseReservation(String crvId, Date crvDate, String teacherId, String memId, String inscId, String teamId,
+	public CourseReservationVO addCourseReservation(String teacherId, String memId, String inscId, String teamId,
 			Integer crvStatus, Integer classStatus, Integer tranStatus, Timestamp crvMFD, Timestamp crvEXP,
-			String crvLoc, Integer crvTotalTime, Double crvTotalPrice, Double crvScore, String crvRate) {
+			String crvLoc, Double crvTotalTime, Double crvTotalPrice,String crvRate) {
 		
 		CourseReservationVO courseReservationVO = new CourseReservationVO();
 		
-		courseReservationVO.setCrvId(crvId);
 		courseReservationVO.setTeacherId(teacherId);
 		courseReservationVO.setMemId(memId);
 		courseReservationVO.setInscId(inscId);
@@ -35,8 +34,7 @@ public class CourseReservationService {
 		courseReservationVO.setCrvLoc(crvLoc);
 		courseReservationVO.setCrvTotalTime(crvTotalTime);
 		courseReservationVO.setCrvTotalPrice(crvTotalPrice);
-		courseReservationVO.setCrvScore(crvScore);
-		
+		courseReservationVO.setCrvRate(crvRate);
 		dao.insert(courseReservationVO);
 		return courseReservationVO;
 
@@ -56,8 +54,13 @@ public class CourseReservationService {
 	}
 	public List<CourseReservationVO> findByStatus(Integer xxxStatus){
 		return dao.findByStatus(xxxStatus);
+	}
+	
+	public List<CourseReservationVO> findByRate(String inscId){
+		return dao.findByRate(inscId);
 		
 	}
+	
 	public List<CourseReservationVO> findByPrimaryKey(String xxxId){
 		return dao.findByPrimaryKey(xxxId);
 		

@@ -66,7 +66,7 @@ public class DBGifReader extends HttpServlet {
 					} else {
 						res.sendError(HttpServletResponse.SC_NOT_FOUND);
 					}
-					System.out.println("goodId-圖片" + req.getParameter("goodId"));
+					System.out.println("memId-圖片" + req.getParameter("memId"));
 				} else
 
 				if ("get_goods_pic".equals(action)) {
@@ -79,7 +79,7 @@ public class DBGifReader extends HttpServlet {
 					} else {
 						res.sendError(HttpServletResponse.SC_NOT_FOUND);
 					}
-					System.out.println("memId-圖片" + req.getParameter("memId"));
+					System.out.println("goodId-圖片" + req.getParameter("goodId"));
 
 				}
 			} catch (Exception e) {

@@ -3,6 +3,7 @@ package com.inscourse.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,6 +42,66 @@ public class InsCourseServlet extends HttpServlet {
 
 		String action = req.getParameter("action");
 
+		
+
+		if ("find_by_teacher".equals(action)) {
+
+			String teacherId = req.getParameter("teacherId");
+			InsCourseService inscSvc = new InsCourseService();
+			List<InsCourseVO> insCourseVOs = inscSvc.findByTeacher(teacherId);
+			CourseService courseSvc = new CourseService();
+			for (InsCourseVO inscVO : insCourseVOs) {
+				CourseVO cvo = courseSvc.findOneById(inscVO.getCourseId());
+				inscVO.setCourseId(cvo.getCourseName());
+			}
+
+			out.print(gson.toJson(insCourseVOs));
+		}
+
+		// 抓取時間
+		if ("get_time_by_inscId_Date".equals(action)) {
+			
+
+			java.sql.Date inscDate = null;
+			try {
+				inscDate = java.sql.Date.valueOf(req.getParameter("inscDate").trim());
+
+			} catch (IllegalArgumentException e) {
+				inscDate = new java.sql.Date(System.currentTimeMillis());
+			}
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(inscDate);
+			cal.add(Calendar.DAY_OF_YEAR, 1);
+
+			java.sql.Date inscDate2 = new java.sql.Date(cal.getTimeInMillis());
+			String startTime = inscDate.toString();
+			String endTime = inscDate2.toString();
+
+			String inscId = req.getParameter("inscId");
+
+			InsCourseTimeService insCourseTimvc = new InsCourseTimeService();
+
+			List<InsCourseTimeVO> list = insCourseTimvc.findDate(startTime, endTime, inscId);
+
+			out.print(gson.toJson(list));
+
+		}
+
+		
+
+		// for Android
+		if ("search_by_CourseType".equals(action)) {
+			List<String> erroMsgs = new LinkedList<>();
+
+			String courseId = req.getParameter("keyword");
+			InsCourseService insCourseService = new InsCourseService();
+			// insCourseService.findByCourse(courseId);
+			List<InsCourseVO> insCourseVOs = insCourseService.findByCourse("0005");
+
+			out.print(gson.toJson(insCourseVOs));
+		}
+		
+		
 		if ("getOne_For_Display".equals(action)) {
 			List<String> errorMsgs = new LinkedList<String>();
 			req.setAttribute("errorMsgs", errorMsgs);
@@ -259,142 +320,9 @@ public class InsCourseServlet extends HttpServlet {
 				failureView.forward(req, res);
 			}
 		}
-
-		if ("find_by_teacher".equals(action)) {
-
-			String teacherId = req.getParameter("teacherId");
-			InsCourseService inscSvc = new InsCourseService();
-			List<InsCourseVO> insCourseVOs = inscSvc.findByTeacher(teacherId);
-			CourseService courseSvc = new CourseService();
-			for (InsCourseVO inscVO : insCourseVOs) {
-				CourseVO cvo = courseSvc.findOneById(inscVO.getCourseId());
-				inscVO.setCourseId(cvo.getCourseName());
-			}
-
-			out.print(gson.toJson(insCourseVOs));
-		}
-		
-		if ("updateTime".equals(action)) {
-			List<String> errorMsgs = new LinkedList<String>();
-			req.setAttribute("errorMsgs", errorMsgs);
-
-			try {
-
-			String inscTimeId = req.getParameter("inscTimeId").trim();
-			Integer inscPrice = new Integer(req.getParameter("inscPrice").trim());
-
-			InsCourseTimeService insCourseTimvc = new InsCourseTimeService();
-			InsCourseTimeVO insCourseTimeVO = insCourseTimvc.getOneInsCourseTime(inscTimeId);
-//				使用者選擇時段
-			Timestamp inscMFD = insCourseTimeVO.getInscMFD();
-			Timestamp inscEXP = insCourseTimeVO.getInscEXP();
-
-			Double crvTotalTime = (double) (inscEXP.getHours() - inscMFD.getHours());
-			// 價格
-
-			Double price = (double) (inscPrice * crvTotalTime);
-			String crvPrice = String.valueOf(price);
-			Double tax = price * 0.1;
-			String crvTax = String.valueOf(tax);
-
-//				//總金額
-			Double totalPrice = price + tax;
-			String crvTotalPrice = String.valueOf(totalPrice);
-			req.setAttribute("crvPrice", crvPrice);
-			req.setAttribute("crvTax", crvTax);
-			req.setAttribute("crvTotalPrice", crvTotalPrice);
-			req.setAttribute("crvTotalTime", crvTotalTime);
-			req.setAttribute("inscMFD", inscMFD);
-			req.setAttribute("inscEXP", inscEXP);
-			String url = "/inscourse/insCourseDetails.jsp";
-
-			RequestDispatcher successView = req.getRequestDispatcher(url); // 新增成功後轉交listAllEmp.jsp
-			successView.forward(req, res);
-			System.out.println("開心");
-
-		}
-			catch (Exception e) {
-				errorMsgs.add(e.getMessage());
-				RequestDispatcher failureView = req.getRequestDispatcher("/inscourse/insCourseDetails.jsp");
-				failureView.forward(req, res);
-			}
-		}
-
-//		if ("listEmps_ByCompositeQuery".equals(action)) { // 來自select_page.jsp的複合查詢請求
-//			String courseId = "courseId";
-//			List<String> errorMsgs = new LinkedList<String>();
-//			// Store this set in the request scope, in case we need to
-//			// send the ErrorPage view.
-//			req.setAttribute("errorMsgs", errorMsgs);
-//
-//			try {
-//
-//			/*************************** 1.將輸入資料轉為Map **********************************/
-//			// 採用Map<String,String[]> getParameterMap()的方法
-//			// 注意:an immutable java.util.Map
-//			Map<String, String[]> map = req.getParameterMap();
-////				HttpSession session = req.getSession();
-////				System.out.println(session);
-////				Map<String, String[]> map = (Map<String, String[]>)session.getAttribute("map");
-//			if (req.getParameter("whichPage") == null) {
-//				HashMap<String, String[]> map1 = new HashMap<String, String[]>(req.getParameterMap());
-//				req.setAttribute("map", map1);
-//				map = map1;
-//			}
-//			if (map.get(courseId) != null) {
-//				String[] stringArray = map.get(courseId);
-//				if (stringArray[0] == null || stringArray[0].trim().length() == 0) {
-//					System.out.println("I just wanna sleep forever......");
-//				} else {
-//					CourseService courseSvc = new CourseService();
-//					CourseVO courseVO = courseSvc.findByLike(stringArray[0]);
-//					String value = courseVO.getCourseId();
-//					String[] ans = { value };
-//					// 將查詢結果重新放回put內
-//					map.put("courseId", ans);
-//				}
-//
-//			}
-//
-//			/*************************** 2.開始複合查詢 ***************************************/
-//			InsCourseService insCourseSvc = new InsCourseService();
-//			List<InsCourseVO> list = insCourseSvc.getAll(map);
-//
-//			/*************************** 3.查詢完成,準備轉交(Send the Success view) ************/
-//			req.setAttribute("listEmps_ByCompositeQuery", list); // 資料庫取出的list物件,存入request
-//			RequestDispatcher successView = req.getRequestDispatcher("/inscourse/listEmps_ByCompositeQuery.jsp"); // 成功轉交listEmps_ByCompositeQuery.jsp
-//			successView.forward(req, res);
-//			System.out.println("已轉交");
-//
-//			/*************************** 其他可能的錯誤處理 **********************************/
-//		}
-//			catch (Exception e) {
-//				errorMsgs.add(e.getMessage());
-//				RequestDispatcher failureView = req
-//						.getRequestDispatcher("/index.jsp");
-//				failureView.forward(req, res);
-//			}
-
-//	}
 		
 		
 		
-		
-		
-		
-		
-
-		// for Android
-		if ("search_by_CourseType".equals(action)) {
-			List<String> erroMsgs = new LinkedList<>();
-
-			String courseId = req.getParameter("keyword");
-			InsCourseService insCourseService = new InsCourseService();
-			// insCourseService.findByCourse(courseId);
-			List<InsCourseVO> insCourseVOs = insCourseService.findByCourse("0005");
-
-			out.print(gson.toJson(insCourseVOs));
-		}
 	}
 
 }
