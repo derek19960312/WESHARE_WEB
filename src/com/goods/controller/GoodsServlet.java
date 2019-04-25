@@ -38,11 +38,11 @@ public class GoodsServlet extends HttpServlet {
 		
 		if("get_one_by_Id".equals(action)) {
 			
-			String goodsId = req.getParameter("goodsId");
+			String goodId = req.getParameter("goodId");
 			
 			GoodsService goodsSvc = new GoodsService();
 			
-			GoodsVO goodsVO = goodsSvc.getOneGood(goodsId);
+			GoodsVO goodsVO = goodsSvc.getOneGood(goodId);
 			goodsVO.setGoodImg(null);
 			out.print(gson.toJson(goodsVO));
 			

@@ -15,14 +15,14 @@ public class MemberJDBCDAO implements MemberDAO_interface {
 	private static byte[] img=null;
 	
 	private static final String INSERT_STMT = 
-		  "INSERT INTO Member(memId,memIdCard,memPsw,memPswHint,memName,memSex,memImage,memEmail,memPhone,memBirth,memAdd,memText,memBank,memBalance,memBlock,memStatus,memPair,memSkill,memWantSkill) "
-		+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,null,null,null)";
+		  "INSERT INTO Member(memId,,memPsw,memPswHint,memName,memSex,memImage,memEmail,memPhone,memBirth,memAdd,memText,memBank,memBalance,memBlock,memStatus,memPair,memSkill,memWantSkill) "
+		+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,null,null,null)";
 	
 	private static final String REGIST_STMT = 
-			  "INSERT INTO Member(memId,memIdCard,memPsw,memPswHint,memName,memSex,memImage,memEmail,memPhone,memBirth,memAdd,memBalance,memBlock,memStatus)"
-			+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			  "INSERT INTO Member(memId,memPsw,memPswHint,memName,memSex,memImage,memEmail,memPhone,memBirth,memAdd,memBalance,memBlock,memStatus)"
+			+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String GET_ALL_STMT = 
-		"SELECT * FROM Member  order by memId";
+		"SELECT * FROM Member order by memId";
 	private static final String GET_ONE_STMT = 
 		"SELECT * FROM Member where memId = ?";
 	private static final String GET_LOGIN_STMT = 
@@ -44,24 +44,23 @@ public class MemberJDBCDAO implements MemberDAO_interface {
 			pstmt = con.prepareStatement(INSERT_STMT);
 
 			pstmt.setString(1,memberVO.getMemId());
-			pstmt.setString(2,memberVO.getMemIdCard());
-			pstmt.setString(3,memberVO.getMemPsw());
-			pstmt.setString(4,memberVO.getMemPswHint());
-			pstmt.setString(5,memberVO.getMemName());
-			pstmt.setInt(6,memberVO.getMemSex());
-			pstmt.setBytes(7,memberVO.getMemImage());
-			pstmt.setString(8, memberVO.getMemEmail());
-			pstmt.setString(9, memberVO.getMemPhone());
-			pstmt.setDate(10, memberVO.getMemBirth());
-			pstmt.setString(11,memberVO.getMemAdd());
-			pstmt.setString(12,memberVO.getMemText());
-			pstmt.setString(13,memberVO.getMemBank());
-			pstmt.setInt(14,memberVO.getMemBalance());
-			pstmt.setInt(15,memberVO.getMemBlock());
-			pstmt.setInt(16,memberVO.getMemStatus());
-			pstmt.setString(17,memberVO.getMemPair());
-			pstmt.setString(18,memberVO.getMemSkill());
-			pstmt.setString(19,memberVO.getMemWantSkill());
+			pstmt.setString(2,memberVO.getMemPsw());
+			pstmt.setString(3,memberVO.getMemPswHint());
+			pstmt.setString(4,memberVO.getMemName());
+			pstmt.setInt(5,memberVO.getMemSex());
+			pstmt.setBytes(6,memberVO.getMemImage());
+			pstmt.setString(7, memberVO.getMemEmail());
+			pstmt.setString(8, memberVO.getMemPhone());
+			pstmt.setDate(9, memberVO.getMemBirth());
+			pstmt.setString(10,memberVO.getMemAdd());
+			pstmt.setString(11,memberVO.getMemText());
+			pstmt.setString(12,memberVO.getMemBank());
+			pstmt.setInt(13,memberVO.getMemBalance());
+			pstmt.setInt(14,memberVO.getMemBlock());
+			pstmt.setInt(15,memberVO.getMemStatus());
+			pstmt.setString(16,memberVO.getMemPair());
+			pstmt.setString(17,memberVO.getMemSkill());
+			pstmt.setString(18,memberVO.getMemWantSkill());
 	
 			
 		
@@ -109,19 +108,18 @@ public class MemberJDBCDAO implements MemberDAO_interface {
 			pstmt = con.prepareStatement(REGIST_STMT);
 
 			pstmt.setString(1,memberVO.getMemId());
-			pstmt.setString(2,memberVO.getMemIdCard());
-			pstmt.setString(3,memberVO.getMemPsw());
-			pstmt.setString(4,memberVO.getMemPswHint());
-			pstmt.setString(5,memberVO.getMemName());
-			pstmt.setInt(6,memberVO.getMemSex());
-			pstmt.setBytes(7,memberVO.getMemImage());
-			pstmt.setString(8, memberVO.getMemEmail());
-			pstmt.setString(9, memberVO.getMemPhone());
-			pstmt.setDate(10, memberVO.getMemBirth());
-			pstmt.setString(11,memberVO.getMemAdd());
-			pstmt.setInt(12,memberVO.getMemBalance());
-			pstmt.setInt(13,memberVO.getMemBlock());
-			pstmt.setInt(14,memberVO.getMemStatus());
+			pstmt.setString(2,memberVO.getMemPsw());
+			pstmt.setString(3,memberVO.getMemPswHint());
+			pstmt.setString(4,memberVO.getMemName());
+			pstmt.setInt(5,memberVO.getMemSex());
+			pstmt.setBytes(6,memberVO.getMemImage());
+			pstmt.setString(7, memberVO.getMemEmail());
+			pstmt.setString(8, memberVO.getMemPhone());
+			pstmt.setDate(9, memberVO.getMemBirth());
+			pstmt.setString(10,memberVO.getMemAdd());
+			pstmt.setInt(11,memberVO.getMemBalance());
+			pstmt.setInt(12,memberVO.getMemBlock());
+			pstmt.setInt(13,memberVO.getMemStatus());
 
 			pstmt.executeUpdate();
 
@@ -238,17 +236,9 @@ public class MemberJDBCDAO implements MemberDAO_interface {
 				memberVO.setMemPair(rs.getString("memPair"));
 				memberVO.setMemPsw(rs.getString("memPsw"));
 				memberVO.setMemPswHint(rs.getString("memPswHint"));
-				memberVO.setMemIdCard(rs.getString("memIdCard"));
 				memberVO.setMemName(rs.getString("memName"));
 				memberVO.setMemSex(rs.getInt("memSex"));
 				memberVO.setMemImage(rs.getBytes("memImage"));
-				try {
-					memberVO.setMemImage(new byte[rs.getBinaryStream("memImage").available()]);
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch(NullPointerException e) {
-					e.printStackTrace();
-				}
 				memberVO.setMemEmail(rs.getString("memEmail"));
 				memberVO.setMemPhone(rs.getString("memPhone"));
 				memberVO.setMemBirth(rs.getDate("memBirth"));
@@ -322,7 +312,7 @@ public class MemberJDBCDAO implements MemberDAO_interface {
 				memberVO.setMemPair(rs.getString("memPair"));
 				memberVO.setMemPsw(rs.getString("memPsw"));
 				memberVO.setMemPswHint(rs.getString("memPswHint"));
-				memberVO.setMemIdCard(rs.getString("memIdCard"));
+
 				memberVO.setMemName(rs.getString("memName"));
 				memberVO.setMemSex(rs.getInt("memSex"));
 				memberVO.setMemImage(rs.getBytes("memImage"));
@@ -518,7 +508,7 @@ public class MemberJDBCDAO implements MemberDAO_interface {
 			System.out.print(memberVO3.getMemId() + ",");
 			System.out.print(memberVO3.getMemPsw()+ ",");
 			System.out.print(memberVO3.getMemPswHint()+ ",");
-			System.out.print(memberVO3.getMemIdCard()+ ",");
+
 			System.out.print(memberVO3.getMemName()+ ",");
 			System.out.print(memberVO3.getMemSex()+ ",");
 //			Base64.Encoder encoder = Base64.getEncoder();

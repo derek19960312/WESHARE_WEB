@@ -52,43 +52,7 @@ public class CourseTypeServlet extends HttpServlet {
 			out.println(gson.toJson(courseTypes));	
 		}
 		
-		if("find_by_coursetype".equals(action)) {
-			
-			CourseService courseSvc = new CourseService();
-			Integer courseTypeId = new Integer(req.getParameter("courseTypeId"));
-			
-			List<CourseVO> courseVOs = courseSvc.findByCourseType(courseTypeId);
-			
-			List<InsCourseVO> insCourseVOs = new ArrayList<>();
-			
-			
-			//查詢對應課程
-			for(CourseVO cvo : courseVOs) {
-				
-				InsCourseService insCourseSvc = new InsCourseService();
-				List<InsCourseVO> insCourseVOmass = insCourseSvc.findByCourse(cvo.getCourseId());
-				insCourseVOs.addAll(insCourseVOmass);
-				
-			}
-			
-			
-			
-			
-			//去除工程師資料
-			for(InsCourseVO icvo : insCourseVOs) {
-				
-				for(CourseVO cvo : courseVOs) {
-					if(icvo.getCourseId().equals(cvo.getCourseId())) {
-						icvo.setCourseId(cvo.getCourseName());
-					}
-				}
-			}
-			
 		
-			
-			out.println(gson.toJson(insCourseVOs));
-			
-		}
 		
 	}
 

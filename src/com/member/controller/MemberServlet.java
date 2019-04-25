@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.member.model.*;
+import com.picture.ImageUtil;
 import com.teacher.model.TeacherService;
 import com.teacher.model.TeacherVO;
 
@@ -17,7 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONObject;
 
 @WebServlet("/MemberServlet")
@@ -41,6 +42,21 @@ public class MemberServlet extends HttpServlet {
 		PrintWriter out = res.getWriter(); 
 		
 		
+		if("get_member_pic_base64".equals(action)){
+			
+			String memId = req.getParameter("memId");
+			MemberService memberSvc = new MemberService();
+			
+			MemberVO memberVO= memberSvc.getOneMember(memId);
+			byte[] bPic = memberVO.getMemImage();
+			bPic = ImageUtil.shrink(bPic, 480);
+			
+			String base64 = Base64.encodeBase64String(bPic);
+			out.println(base64);
+			
+		}
+		
+		
 		if("get_one_by_memId".equals(action)) {
 			
 			String memId = req.getParameter("memId");
@@ -62,7 +78,7 @@ public class MemberServlet extends HttpServlet {
 			TeacherService teacherSvc = new TeacherService();
 			MemberService memberSvc = new MemberService();
 			
-			TeacherVO teacherVO= teacherSvc.findOneById(teacherId);
+			TeacherVO teacherVO = teacherSvc.findOneById(teacherId);
 			String memId = teacherVO.getMemId();
 			
 			System.out.println(memId);

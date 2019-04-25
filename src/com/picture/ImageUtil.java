@@ -1,3 +1,4 @@
+package com.picture;
 
 
 import java.awt.Graphics;

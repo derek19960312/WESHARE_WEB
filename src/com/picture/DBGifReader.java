@@ -1,3 +1,4 @@
+package com.picture;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -46,14 +47,11 @@ public class DBGifReader extends HttpServlet {
 		ResultSet rs = null;
 		
 		res.setContentType("image/jpeg");
-		PrintWriter out = res.getWriter();
+		OutputStream out = res.getOutputStream();
 
 		if ("get_member_pic".equals(action) || "get_goods_pic".equals(action)) {
 
-			String base64 = null;
 			byte[] bPic = null;
-			InputStream is = null;
-			OutputStream os = null;
 
 			try {
 				con = ds.getConnection();
@@ -107,8 +105,8 @@ public class DBGifReader extends HttpServlet {
 			System.out.println("壓縮後" + bPic.length);
 			System.out.println("圖片大小" + imageSize);
 
-			base64 = Base64.encodeBase64String(bPic);
-			out.print(base64);
+			//base64 = Base64.encodeBase64String(bPic);
+			out.write(bPic);
 
 		}
 

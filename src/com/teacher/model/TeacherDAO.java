@@ -20,17 +20,17 @@ public class TeacherDAO implements TeacherDAO_interface {
 			Context ctx = new InitialContext();
 			ds = (DataSource)ctx.lookup("java:comp/env/jdbc/TestDB");
 		} catch (NamingException e) {
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}
 	}
 	
-	final String INSERT_STMT = "INSERT INTO TEACHER VALUES('TC'||LPAD(TEACHER_seq.NEXTVAL,5,'0'),?,?,?,?,?,?,?)";
-	final String UPDATE_STMT = "UPDATE TEACHER SET MEMID=?,TEACHERSTATUS=?,TEACHERCITY=?,TEACHEREDU=?,IDCARDIMG=?,DIPLOMAIMG=?,TEACHERTEXT=? WHERE TEACHERID=?";
+	final String INSERT_STMT = "INSERT INTO TEACHER VALUES('TC'||LPAD(TEACHER_seq.NEXTVAL,5,'0'),?,?,?,?,?,?)";
+	final String UPDATE_STMT = "UPDATE TEACHER SET MEMID=?,TEACHERSTATUS=?,TEACHERCITY=?,TEACHEREDU=?,DIPLOMAIMG=?,TEACHERTEXT=? WHERE TEACHERID=?";
 	final String DELETE_TEACHER = "DELETE FROM TEACHER WHERE TEACHERID=?";
 	final String SEARCH_TEACHER = "SELECT * FROM TEACHER WHERE TEACHERID=?";
-	final String SEARCH_BY_MEMBER = "SELECT * FROM TEACHER WHERE MEMID=?";
+	final String SEARCH_MEMID = "SELECT TEACHERSTATUS FROM TEACHER WHERE MEMID=?";
 	final String SEARCH_TEACHERALL = "SELECT * FROM TEACHER";
-	
+	final String SEARCH_BY_MEMBER = "SELECT * FROM TEACHER WHERE MEMID=?";
 
 	@Override
 	public void insert(TeacherVO teacherVO) {
@@ -45,9 +45,8 @@ public class TeacherDAO implements TeacherDAO_interface {
 			pstmt.setInt(2, teacherVO.getTeacherStatus());
 			pstmt.setString(3, teacherVO.getTeacherCity());
 			pstmt.setString(4, teacherVO.getTeacherEdu());
-			pstmt.setBytes(5,teacherVO.getIdCardImg());
-			pstmt.setBytes(6,teacherVO.getDiplomaImg());
-			pstmt.setString(7,teacherVO.getTeacherText());
+			pstmt.setBytes(5,teacherVO.getDiplomaImg());
+			pstmt.setString(6,teacherVO.getTeacherText());
 			
 			pstmt.executeUpdate();
 		}catch(SQLException se) {
@@ -85,10 +84,9 @@ public class TeacherDAO implements TeacherDAO_interface {
 			pstmt.setInt(2, teacherVO.getTeacherStatus());
 			pstmt.setString(3, teacherVO.getTeacherCity());
 			pstmt.setString(4, teacherVO.getTeacherEdu());
-			pstmt.setBytes(5,teacherVO.getIdCardImg());
-			pstmt.setBytes(6,teacherVO.getDiplomaImg());
-			pstmt.setString(7,teacherVO.getTeacherText());
-			pstmt.setString(8, teacherVO.getTeacherId());
+			pstmt.setBytes(5,teacherVO.getDiplomaImg());
+			pstmt.setString(6,teacherVO.getTeacherText());
+			pstmt.setString(7, teacherVO.getTeacherId());
 			
 			pstmt.executeUpdate();
 		}catch(SQLException se) {
@@ -167,7 +165,6 @@ public class TeacherDAO implements TeacherDAO_interface {
 				TeacherVO.setTeacherCity(rs.getString("teacherCity"));
 				TeacherVO.setTeacherEdu(rs.getString("teacherEdu"));
 				try {
-					TeacherVO.setIdCardImg(new byte[rs.getBinaryStream("idCardImg").available()]);
 					TeacherVO.setDiplomaImg(new byte[rs.getBinaryStream("diplomaImg").available()]);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -226,7 +223,6 @@ public class TeacherDAO implements TeacherDAO_interface {
 				TeacherVO.setTeacherCity(rs.getString("teacherCity"));
 				TeacherVO.setTeacherEdu(rs.getString("teacherEdu"));
 				try {
-					TeacherVO.setIdCardImg(new byte[rs.getBinaryStream("idCardImg").available()]);
 					TeacherVO.setDiplomaImg(new byte[rs.getBinaryStream("diplomaImg").available()]);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -266,6 +262,24 @@ public class TeacherDAO implements TeacherDAO_interface {
 	}
 
 	@Override
+	public TeacherVO findByStatus(String memId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TeacherVO> getAllStatus(Integer teacherStatus) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void updateStatus(Integer teacherStatus, String teacherId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public TeacherVO findByMemId(String memId) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -284,7 +298,7 @@ public class TeacherDAO implements TeacherDAO_interface {
 				TeacherVO.setTeacherCity(rs.getString("teacherCity"));
 				TeacherVO.setTeacherEdu(rs.getString("teacherEdu"));
 				try {
-					TeacherVO.setIdCardImg(new byte[rs.getBinaryStream("idCardImg").available()]);
+					
 					TeacherVO.setDiplomaImg(new byte[rs.getBinaryStream("diplomaImg").available()]);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -319,6 +333,7 @@ public class TeacherDAO implements TeacherDAO_interface {
 				}
 			}
 		}
+	
 	}
 
 }

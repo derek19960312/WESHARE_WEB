@@ -248,13 +248,7 @@ public class MemberDAO implements MemberDAO_interface {
 				memberVO.setMemName(rs.getString("memName"));
 				memberVO.setMemSex(rs.getInt("memSex"));
 				memberVO.setMemImage(rs.getBytes("memImage"));
-				try {
-					memberVO.setMemImage(new byte[rs.getBinaryStream("memImage").available()]);
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (NullPointerException e) {
-					e.printStackTrace();
-				}
+				
 				memberVO.setMemEmail(rs.getString("memEmail"));
 				memberVO.setMemPhone(rs.getString("memPhone"));
 				memberVO.setMemBirth(rs.getDate("memBirth"));

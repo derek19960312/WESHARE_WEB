@@ -8,19 +8,25 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.inscoursetime.model.InsCourseTimeVO;
+
 
 
 public class TeacherJDBCDAO implements TeacherDAO_interface {
 	String driver = "oracle.jdbc.driver.OracleDriver";
-	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+//	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	String url = "jdbc:oracle:thin:@localhost:49161:XE";
 	String userid = "weshare";
 	String passwd = "123456";
 	
-	final String INSERT_STMT = "INSERT INTO TEACHER VALUES('TC'||LPAD(TEACHER_seq.NEXTVAL,5,'0'),?,?,?,?,?,?,?)";
-	final String UPDATE_STMT = "UPDATE TEACHER SET MEMID=?,TEACHERSTATUS=?,TEACHERCITY=?,TEACHEREDU=?,IDCARDIMG=?,DIPLOMAIMG=?,TEACHERTEXT=? WHERE TEACHERID=?";
+	final String INSERT_STMT = "INSERT INTO TEACHER VALUES('TC'||LPAD(TEACHER_seq.NEXTVAL,5,'0'),?,?,?,?,?,?)";
+	final String UPDATE_STMT = "UPDATE TEACHER SET MEMID=?,TEACHERSTATUS=?,TEACHERCITY=?,TEACHEREDU=?,DIPLOMAIMG=?,TEACHERTEXT=? WHERE TEACHERID=?";
+	final String UPDATE_STATUS = "UPDATE TEACHER SET TEACHERSTATUS=? WHERE TEACHERID=?";
 	final String DELETE_TEACHER = "DELETE FROM TEACHER WHERE TEACHERID=?";
-	final String SEARCH_TEACHER = "SELECT * FROM TEACHER WHERE TEACHERID=?";
+	final String SEARCH_TEACHER = "SELECT * FROM TEACHER where (case when teacherId=? then 1 else 0 end+ case when memId=? then 1 else 0 end)>=1";
+	final String SEARCH_MEMID = "SELECT TEACHERSTATUS FROM TEACHER WHERE MEMID=?";
 	final String SEARCH_TEACHERALL = "SELECT * FROM TEACHER";
+	final String SEARCH_STATUS= "SELECT * FROM Teacher WHERE teacherStatus=?";
 	
 	
 	@Override
@@ -37,9 +43,8 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 			pstmt.setInt(2, teacherVO.getTeacherStatus());
 			pstmt.setString(3, teacherVO.getTeacherCity());
 			pstmt.setString(4, teacherVO.getTeacherEdu());
-			pstmt.setBytes(5,teacherVO.getIdCardImg());
-			pstmt.setBytes(6,teacherVO.getDiplomaImg());
-			pstmt.setString(7,teacherVO.getTeacherText());
+			pstmt.setBytes(5,teacherVO.getDiplomaImg());
+			pstmt.setString(6,teacherVO.getTeacherText());
 			
 			pstmt.executeUpdate();
 			
@@ -68,6 +73,48 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 
 	}
 
+
+	@Override
+	public void updateStatus(Integer teacherStatus, String teacherId) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, userid, passwd);
+			pstmt = con.prepareStatement(UPDATE_STATUS);
+			pstmt.setInt(1, teacherStatus);
+			pstmt.setString(2, teacherId);
+			pstmt.executeUpdate();
+			
+			
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. "
+					+ e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+
+	
+
+	}
+	
 	@Override
 	public void update(TeacherVO teacherVO) {
 		Connection con = null;
@@ -82,10 +129,9 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 			pstmt.setInt(2, teacherVO.getTeacherStatus());
 			pstmt.setString(3, teacherVO.getTeacherCity());
 			pstmt.setString(4, teacherVO.getTeacherEdu());
-			pstmt.setBytes(5,teacherVO.getIdCardImg());
-			pstmt.setBytes(6,teacherVO.getDiplomaImg());
-			pstmt.setString(7,teacherVO.getTeacherText());
-			pstmt.setString(8, teacherVO.getTeacherId());
+			pstmt.setBytes(5,teacherVO.getDiplomaImg());
+			pstmt.setString(6,teacherVO.getTeacherText());
+			pstmt.setString(7, teacherVO.getTeacherId());
 			
 			pstmt.executeUpdate();
 			
@@ -157,7 +203,7 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 	}
 
 	@Override
-	public TeacherVO findByPrimaryKey(String teacherId) {
+	public TeacherVO findByPrimaryKey(String xxxId) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -167,21 +213,17 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(SEARCH_TEACHER);
 			
-			pstmt.setString(1, teacherId);
+			pstmt.setString(1, xxxId);
+			pstmt.setString(2, xxxId);
 			rs = pstmt.executeQuery();
 			TeacherVO TeacherVO = new TeacherVO(); 
 			while(rs.next()) {
-				TeacherVO.setTeacherId(teacherId);
+				TeacherVO.setTeacherId(rs.getString("teacherId"));
 				TeacherVO.setMemId(rs.getString("memId"));
 				TeacherVO.setTeacherStatus(rs.getInt("teacherStatus"));
 				TeacherVO.setTeacherCity(rs.getString("teacherCity"));
 				TeacherVO.setTeacherEdu(rs.getString("teacherEdu"));
-				try {
-					TeacherVO.setIdCardImg(new byte[rs.getBinaryStream("idCardImg").available()]);
-					TeacherVO.setDiplomaImg(new byte[rs.getBinaryStream("diplomaImg").available()]);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				TeacherVO.setDiplomaImg(rs.getBytes("diplomaImg"));
 				TeacherVO.setTeacherText(rs.getString("teacherText"));
 				
 			}
@@ -236,12 +278,8 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 				TeacherVO.setTeacherStatus(rs.getInt("teacherStatus"));
 				TeacherVO.setTeacherCity(rs.getString("teacherCity"));
 				TeacherVO.setTeacherEdu(rs.getString("teacherEdu"));
-				try {
-					TeacherVO.setIdCardImg(new byte[rs.getBinaryStream("idCardImg").available()]);
-					TeacherVO.setDiplomaImg(new byte[rs.getBinaryStream("diplomaImg").available()]);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				TeacherVO.setDiplomaImg(rs.getBytes("diplomaImg"));
+		
 				TeacherVO.setTeacherText(rs.getString("teacherText"));
 				
 				list.add(TeacherVO);
@@ -281,17 +319,125 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 		return list;
 	}
 	
+	@Override
+	public TeacherVO findByStatus(String memId) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, userid, passwd);
+			pstmt = con.prepareStatement(SEARCH_MEMID);
+			
+			pstmt.setString(1, memId);
+			rs = pstmt.executeQuery();
+			TeacherVO TeacherVO = new TeacherVO(); 
+			while(rs.next()) {
+				TeacherVO.setTeacherStatus(rs.getInt("teacherStatus"));		
+			}
+			
+			return TeacherVO;
+			
+			
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. "
+					+ e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+	
+	}
+	
+	@Override
+	public List<TeacherVO> getAllStatus(Integer teacherStatus) {
+		List<TeacherVO> list = new ArrayList<TeacherVO>();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		TeacherVO TeacherVO=null;
+		ResultSet rs = null;
+
+		try {
+
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, userid, passwd);
+			pstmt = con.prepareStatement(SEARCH_STATUS);
+			pstmt.setInt(1, teacherStatus);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				TeacherVO = new TeacherVO();
+				TeacherVO.setTeacherId(rs.getString("teacherId"));
+				TeacherVO.setMemId(rs.getString("memId"));
+				TeacherVO.setTeacherCity(rs.getString("teacherCity"));
+				TeacherVO.setTeacherEdu(rs.getString("teacherEdu"));
+				TeacherVO.setDiplomaImg(rs.getBytes("diplomaImg"));
+				TeacherVO.setTeacherText(rs.getString("teacherText"));
+				list.add(TeacherVO);
+			}
+
+			// Handle any driver errors
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. "
+					+ e.getMessage());
+			// Handle any SQL errors
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return list;
+
+	}
+	
 	public static void main(String args[]) {
 		
 		TeacherJDBCDAO TeacherJDBCDAO = new TeacherJDBCDAO();
 		
 	
-		byte[] pic = null;
-		try {
-			pic = getFileByteArray("items/Teacher1.jpg");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		byte[] pic = null;
+//		try {
+//			pic = getFileByteArray("items/Teacher1.jpg");
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 			
 		
 //		//新增
@@ -318,27 +464,26 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 //		TeacherJDBCDAO.update(TeacherVO2);
 		
 //		//刪除
-//		TeacherJDBCDAO.delete("TC00002");
+		TeacherJDBCDAO.updateStatus(2, "TC00004");
 		
 //		//查詢
-//		TeacherVO TeacherVO3 = TeacherJDBCDAO.findByPrimaryKey("TC00002");
-//		System.out.println("TeacherId="+TeacherVO3.getTeacherId());
-//		System.out.println("MemId="+TeacherVO3.getMemId());
-//		System.out.println("TeacherStatus="+TeacherVO3.getTeacherStatus());
-//		System.out.println("TeacherCity="+TeacherVO3.getTeacherCity());
-//		System.out.println("TeacherEdu="+TeacherVO3.getTeacherEdu());
-//		System.out.println("TeacherText="+TeacherVO3.getTeacherText());
+		TeacherVO TeacherVO3 = TeacherJDBCDAO.findByPrimaryKey("weshare01");
+		System.out.println("TeacherId="+TeacherVO3.getTeacherId());
+		System.out.println("MemId="+TeacherVO3.getMemId());
+		System.out.println("TeacherStatus="+TeacherVO3.getTeacherStatus());
+		System.out.println("TeacherCity="+TeacherVO3.getTeacherCity());
+		System.out.println("DiplomaImg="+TeacherVO3.getDiplomaImg());
+		System.out.println("TeacherEdu="+TeacherVO3.getTeacherEdu());
+		System.out.println("TeacherText="+TeacherVO3.getTeacherText());
 
 		//查詢全部
-		List<TeacherVO> list = TeacherJDBCDAO.getAll();
+		List<TeacherVO> list = TeacherJDBCDAO.getAllStatus(1);
 		for (TeacherVO aEmp : list) {
 			System.out.println("TeacherId="+aEmp.getTeacherId());
 			System.out.println("MemId="+aEmp.getMemId());
-			System.out.println("TeacherStatus="+aEmp.getTeacherStatus());
 			System.out.println("TeacherCity="+aEmp.getTeacherCity());
 			System.out.println("TeacherEdu="+aEmp.getTeacherEdu());
 			System.out.println("TeacherText="+aEmp.getTeacherText());
-			System.out.println("IdCardImg="+aEmp.getIdCardImg());
 		}
 	
 	}
@@ -357,11 +502,19 @@ public class TeacherJDBCDAO implements TeacherDAO_interface {
 		return baos.toByteArray();
 	}
 
+
 	@Override
 	public TeacherVO findByMemId(String memId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+
+
+
+
+
 
 }
 
