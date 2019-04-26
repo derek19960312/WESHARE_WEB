@@ -20,6 +20,11 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 	private static final String FIND_BY_PK = "SELECT * FROM GoodsDetails WHERE GOODORDERID = ?and GOODID = ?";
 	private static final String GET_ALL = "SELECT * FROM GoodsDetails";
 	
+	
+	private static final String FIND_BY_ORDERID = "SELECT * FROM GOODSDETAILS WHERE GOODORDERID=?";
+	
+	
+	
 	@Override
 	public void insert(GoodsDetailsVO goodDetailsVO) {
 		Connection con = null;
@@ -35,7 +40,7 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 			pstmt.setFloat(4, goodDetailsVO.getGoodScore());
 			pstmt.setString(5, goodDetailsVO.getGoodRate());
 			pstmt.executeUpdate();
-			System.out.println("?ñ∞Â¢û‰?Á≠ÜË?áÊ??");
+			System.out.println("?ÔøΩÔøΩÂ¢ûÔøΩ?Á≠ÜÔøΩ?ÔøΩÔøΩ??");
 			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -108,7 +113,7 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 			pstmt.setString(1, goodOrderId);
 			pstmt.setString(2, goodId);
 			pstmt.executeUpdate();
-			System.out.println("Â∑≤Âà™?ô§‰∏?Á≠ÜË?áÊ??");
+			System.out.println("Â∑≤Âà™?ÔøΩÔøΩÔøΩ?Á≠ÜÔøΩ?ÔøΩÔøΩ??");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -240,13 +245,13 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 	
 		GoodsDetailsJDBCDAO dao = new GoodsDetailsJDBCDAO();
 	
-	//insert ??âË?áÂ?à‰∏ª?çµ
+	//insert ??ÔøΩÔøΩ?ÔøΩÔøΩ?ÔøΩ‰∏ª?ÔøΩÔøΩ
 	GoodsDetailsVO detail = new GoodsDetailsVO();
 	detail.setGoodOrderId("GO00003");
 	detail.setGoodId("GD00003");
 	detail.setGoodAmount(66);
 	detail.setGoodScore(new Float(2.3));
-	detail.setGoodRate("?ù±Ë•øÂ?àÁ??");
+	detail.setGoodRate("?ÔøΩÔøΩË•øÔøΩ?ÔøΩÔøΩ??");
 	dao.insert(detail);
 	
 	//update
@@ -280,6 +285,60 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 //		System.out.print(details.getGoodRate());
 //		System.out.println();
 //	}
+	}
+	
+	@Override
+	public List<GoodsDetailsVO> findByOrderId(String goodOrderId) {
+		List<GoodsDetailsVO> detailsList = new ArrayList<GoodsDetailsVO>();
+		GoodsDetailsVO details = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(FIND_BY_ORDERID);
+			pstmt.setString(1, goodOrderId);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+			    details = new GoodsDetailsVO();
+				details.setGoodOrderId(rs.getString("GOODORDERID"));
+				details.setGoodId(rs.getString("GoodId"));
+				details.setGoodAmount(rs.getInt("GoodAmount"));
+				details.setGoodScore(rs.getFloat("GoodScore"));
+				details.setGoodRate(rs.getString("GoodRate"));
+				detailsList.add(details);
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}			
+		return detailsList;
 	}
 	
 }

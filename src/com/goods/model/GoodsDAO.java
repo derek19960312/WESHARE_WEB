@@ -1,43 +1,43 @@
 package com.goods.model;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoodsJDBCDAO implements GoodsDAO_interface {
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
-	private static byte[] pic = null;
+public class GoodsDAO implements GoodsDAO_interface {
+	private static DataSource ds = null;
 
-	private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
-	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
-	private static final String USER = "WESHARE";
-	private static final String PASSWORD = "123456";
+	static {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestDB");
+		} catch (NamingException e) {
 
-	private static final String INSERT_STMT = 
-		"INSERT INTO Goods VALUES (('GD'||LPAD(to_char(Goods_seq.NEXTVAL), 5, '0')),?,?,?,?,?,?)";
-	private static final String UPDATE_STMT = 
-		"UPDATE Goods SET TeacherId=?, goodName=?, goodPrice=?, goodInfo=?, goodImg=?, goodStatus=? WHERE goodId = ?";
+			e.printStackTrace();
+		}
+	}
+
+	private static final String INSERT_STMT = "INSERT INTO Goods VALUES (('GD'||LPAD(to_char(Goods_seq.NEXTVAL), 5, '0')),?,?,?,?,?,?)";
+	private static final String UPDATE_STMT = "UPDATE Goods SET TeacherId=?, goodName=?, goodPrice=?, goodInfo=?, goodImg=?, goodStatus=? WHERE goodId = ?";
 	private static final String FINDBYPK_STMT = "SELECT * FROM Goods WHERE GoodId = ?";
 	private static final String UpdateStatus_STMT = "UPDATE Goods SET goodStatus = ? WHERE GOODID = ?";
-	private static final String GET_ALL = "SELECT * FROM GOODS"; 
+	private static final String GET_ALL = "SELECT GoodId, TeacherId, goodName, goodPrice, goodInfo, goodStatus FROM GOODS";
 	private static final String DELETE_STMT = "DELETE FROM GOODS WHERE goodId = ?";
-											
+
 	@Override
 	public void insert(GoodsVO goodVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
-
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(INSERT_STMT);
 			pstmt.setString(1, goodVO.getTeacherId());
 			pstmt.setString(2, goodVO.getGoodName());
@@ -47,52 +47,9 @@ public class GoodsJDBCDAO implements GoodsDAO_interface {
 			pstmt.setInt(6, goodVO.getGoodStatus());
 			pstmt.executeUpdate();
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace();
-				}
-			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	@Override
-	public void updateGood(GoodsVO goodVO) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
-			pstmt = con.prepareStatement(UPDATE_STMT);
-			pstmt.setString(1, goodVO.getTeacherId());
-			pstmt.setString(2, goodVO.getGoodName());
-			pstmt.setDouble(3, goodVO.getGoodPrice());
-			pstmt.setString(4, goodVO.getGoodInfo());
-			pstmt.setBytes(5, goodVO.getGoodImg());
-			pstmt.setInt(6, goodVO.getGoodStatus());
-			pstmt.setString(7, goodVO.getGoodId());
-
-			pstmt.executeUpdate();
-System.out.println("修改一筆資料");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally {
 			if (pstmt != null) {
 				try {
 					pstmt.close();
@@ -108,75 +65,103 @@ System.out.println("修改一筆資料");
 				}
 			}
 		}
+	}
 
+	@Override
+	public void updateGood(GoodsVO goodVO) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(UPDATE_STMT);
+			pstmt.setString(1, goodVO.getTeacherId());
+			pstmt.setString(2, goodVO.getGoodName());
+			pstmt.setDouble(3, goodVO.getGoodPrice());
+			pstmt.setString(4, goodVO.getGoodInfo());
+			pstmt.setBytes(5, goodVO.getGoodImg());
+			pstmt.setInt(6, goodVO.getGoodStatus());
+			pstmt.setString(7, goodVO.getGoodId());
+
+			pstmt.executeUpdate();
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
 	}
 
 	@Override
 	public void updateStatus(GoodsVO goodVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
-
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(UpdateStatus_STMT);
 
 			pstmt.setInt(1, goodVO.getGoodStatus());
-			pstmt.setString(2, goodVO.getGoodId());			
+			pstmt.setString(2, goodVO.getGoodId());
 			pstmt.executeUpdate();
-		} catch (ClassNotFoundException ce) {
-			ce.printStackTrace();
+
 		} catch (SQLException se) {
-			se.printStackTrace();
+			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
 			if (pstmt != null) {
 				try {
 					pstmt.close();
 				} catch (SQLException se) {
-					se.printStackTrace();
+					se.printStackTrace(System.err);
 				}
 			}
 			if (con != null) {
 				try {
 					con.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
 				}
 			}
 		}
-
 	}
-	
+
 	@Override
 	public void delete(String goodId) {
-		
 		Connection con = null;
 		PreparedStatement pstmt = null;
-
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(DELETE_STMT);
-			
-			pstmt.setString(1, goodId);			
+
+			pstmt.setString(1, goodId);
 			pstmt.executeUpdate();
-		} catch (ClassNotFoundException ce) {
-			ce.printStackTrace();
+
 		} catch (SQLException se) {
-			se.printStackTrace();
+			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
 			if (pstmt != null) {
 				try {
 					pstmt.close();
 				} catch (SQLException se) {
-					se.printStackTrace();
+					se.printStackTrace(System.err);
 				}
 			}
 			if (con != null) {
 				try {
 					con.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
 				}
 			}
 		}
@@ -188,10 +173,8 @@ System.out.println("修改一筆資料");
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(FINDBYPK_STMT);
 
 			pstmt.setString(1, goodId);
@@ -206,13 +189,10 @@ System.out.println("修改一筆資料");
 				goodsVO.setGoodInfo(rs.getString("goodInfo"));
 				goodsVO.setGoodStatus(rs.getInt("goodStatus"));
 			}
-
-		} catch (ClassNotFoundException ce) {
-			ce.printStackTrace();
 		} catch (SQLException se) {
-			se.printStackTrace();
+			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
-			if(rs != null) {
+			if (rs != null) {
 				try {
 					rs.close();
 				} catch (SQLException e) {
@@ -223,14 +203,14 @@ System.out.println("修改一筆資料");
 				try {
 					pstmt.close();
 				} catch (SQLException se) {
-					se.printStackTrace();
+					se.printStackTrace(System.err);
 				}
 			}
 			if (con != null) {
 				try {
 					con.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
 				}
 			}
 		}
@@ -246,8 +226,7 @@ System.out.println("修改一筆資料");
 		ResultSet rs = null;
 
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ALL);
 			rs = pstmt.executeQuery();
 
@@ -261,12 +240,10 @@ System.out.println("修改一筆資料");
 				goodsVO.setGoodStatus(rs.getInt("goodStatus"));
 				goodsList.add(goodsVO);
 			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
-			if(rs != null) {
+			if (rs != null) {
 				try {
 					rs.close();
 				} catch (SQLException e) {
@@ -277,94 +254,18 @@ System.out.println("修改一筆資料");
 				try {
 					pstmt.close();
 				} catch (SQLException se) {
-					se.printStackTrace();
+					se.printStackTrace(System.err);
 				}
 			}
 			if (con != null) {
 				try {
 					con.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
 				}
 			}
 		}
 		return goodsList;
 	}
 
-	public static byte[] getPictureByteArray(String path) throws IOException {
-		File file = new File(path);
-		FileInputStream fis = new FileInputStream(file);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] buffer = new byte[8192];
-		int i;
-		while ((i = fis.read(buffer)) != -1) {
-			baos.write(buffer, 0, i);
-		}
-		baos.close();
-		fis.close();
-
-		return baos.toByteArray();
-	}
-
-	public static void main(String[] args) {
-
-		GoodsJDBCDAO dao = new GoodsJDBCDAO();
-
-//		try {
-//			pic = getPictureByteArray("images/01.jpg");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-
-		// insert
-//		GoodsVO goods1 = new GoodsVO();
-//		goods1.setTeacherId("TC00001");
-//		goods1.setGoodName("深入淺出Servlet");
-//		goods1.setGoodPrice(7788);
-//		goods1.setGoodInfo(null);
-//		goods1.setGoodImg(null);
-//		goods1.setGoodStatus(0);
-//		System.out.println(goods1);
-//		dao.insert(goods1);
-		
-		// update
-		GoodsVO goods2 = new GoodsVO();
-		goods2.setTeacherId("TC00002");
-		goods2.setGoodName("RWD");
-		goods2.setGoodPrice(9898);
-		goods2.setGoodInfo("AAAA");
-		goods2.setGoodImg(pic);
-		goods2.setGoodStatus(1);
-		goods2.setGoodId("GD00001");
-		dao.updateGood(goods2);
-		System.out.println(dao);
-		
-//		 delete
-//		dao.delete("GD00011");
-		
-		// findByPK
-//		GoodsVO goods3 = dao.findByPK("GD00001");
-//		System.out.println(goods3.getGoodId());
-//		System.out.println(goods3.getTeacherId());
-//		System.out.println(goods3.getGoodName());
-//		System.out.println(goods3.getGoodPrice());
-//		System.out.println(goods3.getGoodInfo());
-//		System.out.println(goods3.getGoodImg());
-//		System.out.println(goods3.getGoodStatus());
-		
-		// get_All
-//		List<GoodsVO> list = dao.getAll();
-//		for(GoodsVO good : list) {
-//			System.out.print(good.getGoodId()+",");
-//			System.out.print(good.getTeacherId()+",");
-//			System.out.print(good.getGoodName()+",");
-//			System.out.print(good.getGoodPrice()+",");
-//			System.out.print(good.getGoodInfo()+",");
-//			System.out.print(good.getGoodImg()+",");
-//			System.out.print(good.getGoodStatus());
-//			System.out.println();
-//		}
-	}
-
-	
 }

@@ -64,4 +64,9 @@ public class GoodsOrderService {
 		
 		return goodOrderVO;
 	}
+	
+	
+	public List<GoodsOrderVO> findGoodByMemId(String memId) {
+		return dao.findGoodByMemId(memId);
+	}
 }

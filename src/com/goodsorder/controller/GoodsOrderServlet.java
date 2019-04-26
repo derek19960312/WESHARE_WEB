@@ -1,4 +1,4 @@
-package com.goods.controller;
+package com.goodsorder.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,17 +10,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.goods.model.GoodsService;
-import com.goods.model.GoodsVO;
+import com.goodsorder.model.GoodsOrderService;
+import com.goodsorder.model.GoodsOrderVO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
-@WebServlet("/GoodsServlet")
-public class GoodsServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
-
+@WebServlet("/GoodsOrderServlet")
+public class GoodsOrderServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);
@@ -28,36 +25,26 @@ public class GoodsServlet extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		Gson gson = new Gson();  
+		Gson gson = new GsonBuilder()
+                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                 .create(); 
 		req.setCharacterEncoding("UTF-8");
 		res.setContentType("text/plain; charset=UTF-8");
 		PrintWriter out = res.getWriter();
-
 		String action = req.getParameter("action");
 		
 		
-		if("get_one_by_Id".equals(action)) {
+		if("find_my_good_by_memId".equals(action)) {
 			
-			String goodId = req.getParameter("goodId");
 			
-			GoodsService goodsSvc = new GoodsService();
+			String memId = req.getParameter("memId");
+			GoodsOrderService goSvc = new GoodsOrderService();
+			List<GoodsOrderVO> gvos = goSvc.findGoodByMemId(memId);
 			
-			GoodsVO goodsVO = goodsSvc.getOneGood(goodId);
-			out.print(gson.toJson(goodsVO));
+			out.print(gson.toJson(gvos));
 			
 			
 		}
-		
-		if("get_all".equals(action)) {
-			
-			
-			GoodsService goodsSvc = new GoodsService();
-			List<GoodsVO> goodsVOs = goodsSvc.getAll();
-			out.print(gson.toJson(goodsVOs));
-		}
-		
-		
-		
 		
 	}
 

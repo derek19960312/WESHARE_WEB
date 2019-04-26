@@ -32,6 +32,7 @@ public class MemberDAO implements MemberDAO_interface {
 
 	private static final String REGIST_STMT = "INSERT INTO Member(memId,memIdCard,memPsw,memPswHint,memName,memSex,memImage,memEmail,memPhone,memBirth,memAdd,memBalance,memBlock,memStatus)"
 			+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	
 	private static final String GET_ALL_STMT = "SELECT * FROM Member  order by memId";
 	private static final String GET_ONE_STMT = "SELECT * FROM Member where memId = ?";
 	private static final String GET_LOGIN_STMT = "SELECT * FROM Member where memId = ? and memPsw =?";

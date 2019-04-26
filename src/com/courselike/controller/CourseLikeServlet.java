@@ -35,46 +35,51 @@ public class CourseLikeServlet extends HttpServlet {
 
 		String action = req.getParameter("action");
 
-		
-		//加入收藏
-		if("add_to_favorites".equals(action)) {
+		// 加入收藏
+		if ("add_to_favorites".equals(action)) {
 			String inscId = req.getParameter("inscId");
 			String memId = req.getParameter("memId");
 			CourseLikeService clSvc = new CourseLikeService();
-			
-			clSvc.addCourseLike(memId, inscId);
-			
+			try {
+				clSvc.addCourseLike(memId, inscId);
+			} catch (Exception e) {
+				System.out.println("FUCK");
+			}
+
 		}
-		
-		//移除收藏
-		if("delete_from_favorites".equals(action)) {
+
+		// 移除收藏
+		if ("delete_from_favorites".equals(action)) {
 			String inscId = req.getParameter("inscId");
 			String memId = req.getParameter("memId");
 			CourseLikeService clSvc = new CourseLikeService();
-			clSvc.deleteCourseLike(memId, inscId);
+			try {
+				clSvc.deleteCourseLike(memId, inscId);
+			} catch (Exception e) {
+				System.out.println("FUCK");
+			}
 		}
-		
-		//查看我的收藏
-		if("look_my_favorites".equals(action)) {
+
+		// 查看我的收藏
+		if ("look_my_favorites".equals(action)) {
 			String memId = req.getParameter("memId");
 			CourseLikeService clSvc = new CourseLikeService();
 			List<CourseLikeVO> courseLikeVOs = clSvc.getMemIdCourseLike(memId);
-			
-			InsCourseService inscSvc = new InsCourseService(); 
+
+			InsCourseService inscSvc = new InsCourseService();
 			List<InsCourseVO> insCourseVOs = new ArrayList<>();
-			
+
 			CourseService courseSvc = new CourseService();
-			for(int i=0; i<courseLikeVOs.size(); i++) {
+			for (int i = 0; i < courseLikeVOs.size(); i++) {
 				InsCourseVO inscVO = inscSvc.findOneById(courseLikeVOs.get(i).getInscId());
 				CourseVO courseVO = courseSvc.findOneById(inscVO.getCourseId());
 				inscVO.setCourseId(courseVO.getCourseName());
 				insCourseVOs.add(inscVO);
 			}
 			out.print(gson.toJson(insCourseVOs));
-			
-			
+
 		}
-		
+
 	}
 
 }

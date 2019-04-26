@@ -8,4 +8,5 @@ public interface GoodsDetailsDAO_interface {
 	void delete(String goodOrderId, String goodId);
 	GoodsDetailsVO findByPK(String goodOrderId, String goodId);
 	List<GoodsDetailsVO>getAll();
+	public List<GoodsDetailsVO> findByOrderId (String goodOrderId);
 }

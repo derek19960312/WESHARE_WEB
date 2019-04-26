@@ -10,4 +10,5 @@ public interface GoodsOrderDAO_interface {
 	void delete(String goodOrderId);
 	GoodsOrderVO findByPk(String memId);
 	List<GoodsOrderVO> getAll();
+	public List<GoodsOrderVO> findGoodByMemId(String memId);
 }

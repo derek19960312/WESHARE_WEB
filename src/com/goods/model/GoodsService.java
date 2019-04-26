@@ -7,7 +7,7 @@ public class GoodsService {
 	private GoodsDAO_interface dao;
 
 	public GoodsService() {
-		dao = new GoodsJDBCDAO();
+		dao = new GoodsDAO();
 		
 	}
 	

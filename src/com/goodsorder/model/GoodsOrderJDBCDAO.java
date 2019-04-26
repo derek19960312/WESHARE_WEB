@@ -27,7 +27,8 @@ public class GoodsOrderJDBCDAO implements GoodsOrderDAO_interface {
 	private static final String DELETE_STMT = "DELETE FROM GOODSORDER WHERE GOODORDERID = ?";
 	private static final String FIND_BY_MEMID = "SELECT * FROM GOODSORDER WHERE MEMID = ?";
 	private static final String GET_ALL = "SELECT * FROM GOODSORDER";
-
+	private static final String GET_GOOD_BY_MEMID = "SELECT * FROM GOODSORDER WHERE MEMID = ?";
+	
 	@Override
 	public void insert(GoodsOrderVO goodOrderVO) {
 		Connection con = null;
@@ -248,7 +249,7 @@ public class GoodsOrderJDBCDAO implements GoodsOrderDAO_interface {
 		try {
 			Class.forName(DRIVER);
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
-			pstmt = con.prepareStatement(GET_ALL);
+			pstmt = con.prepareStatement(GET_GOOD_BY_MEMID);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -294,6 +295,67 @@ public class GoodsOrderJDBCDAO implements GoodsOrderDAO_interface {
 		}
 		return orderList;
 
+	}
+	
+	
+	@Override
+	public List<GoodsOrderVO> findGoodByMemId(String memId) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		GoodsOrderVO order = null;
+		List<GoodsOrderVO> orderList = new ArrayList<GoodsOrderVO>();
+
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(GET_GOOD_BY_MEMID);
+			pstmt.setString(1, memId);
+			rs = pstmt.executeQuery();
+
+
+			while (rs.next()) {
+				order = new GoodsOrderVO();
+				order.setGoodOrderId(rs.getString("GoodOrderId"));
+				order.setMemId(rs.getString("MemId"));
+				order.setGoodTotalPrice(rs.getInt("GoodTotalPrice"));
+				order.setGoodDate(rs.getTimestamp("GoodDate"));
+				order.setBuyerName(rs.getString("buyerName"));
+				order.setBuyerAddress(rs.getString("buyerAddress"));
+				order.setBuyerPhone(rs.getString("buyerPhone"));
+				order.setGoodOrdStatus(rs.getInt("goodOrdStatus"));
+				orderList.add(order);
+			}
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace();
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return orderList;
 	}
 
 	public static void main(String[] args) {
@@ -359,4 +421,6 @@ public class GoodsOrderJDBCDAO implements GoodsOrderDAO_interface {
 		}
 
 	}
+
+	
 }
