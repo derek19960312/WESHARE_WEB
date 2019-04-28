@@ -582,6 +582,14 @@ public class MemberJDBCDAO implements MemberDAO_interface {
 
 	}
 
+
+
+	@Override
+	public void update_balance(MemberVO memberVO) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 
 

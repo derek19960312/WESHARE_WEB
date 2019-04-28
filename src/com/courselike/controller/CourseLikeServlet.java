@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import com.inscourse.model.InsCourseService;
 import com.inscourse.model.InsCourseVO;
 
-@WebServlet("/CourseLikeServlet")
+@WebServlet("/android/CourseLikeServlet")
 public class CourseLikeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

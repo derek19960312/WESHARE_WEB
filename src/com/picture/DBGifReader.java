@@ -18,9 +18,11 @@ import org.apache.tomcat.util.codec.binary.Base64;
 
 import sun.misc.BASE64Encoder;
 
-@WebServlet("/DBGifReader")
+@WebServlet("/android/DBGifReader")
 public class DBGifReader extends HttpServlet {
 
+
+	private static final long serialVersionUID = 1L;
 	private static DataSource ds;
 	static {
 		try {

@@ -25,7 +25,7 @@ import com.inscourse.model.InsCourseVO;
 import com.inscoursetime.model.InsCourseTimeService;
 import com.inscoursetime.model.InsCourseTimeVO;
 
-@WebServlet("/InsCourseServlet")
+@WebServlet("/android/InsCourseServlet")
 public class InsCourseServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

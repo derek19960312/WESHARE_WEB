@@ -8,7 +8,13 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import javax.naming.spi.DirStateFactory.Result;
+
+import com.goods.model.GoodsVO;
+import com.goodsdetails.model.GoodsDetailsJDBCDAO;
+import com.goodsdetails.model.GoodsDetailsVO;
 
 public class GoodsOrderJDBCDAO implements GoodsOrderDAO_interface {
 
@@ -30,14 +36,18 @@ public class GoodsOrderJDBCDAO implements GoodsOrderDAO_interface {
 	private static final String GET_GOOD_BY_MEMID = "SELECT * FROM GOODSORDER WHERE MEMID = ?";
 	
 	@Override
-	public void insert(GoodsOrderVO goodOrderVO) {
+	public void insert(GoodsOrderVO goodOrderVO,Map<GoodsVO,Integer> myCart) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try {
 			Class.forName(DRIVER);
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
-			pstmt = con.prepareStatement(INSERT_STMT);
-
+			con.setAutoCommit(false);
+			
+			int[] cols = {1};
+			pstmt = con.prepareStatement(INSERT_STMT,cols);
+			
 			pstmt.setString(1, goodOrderVO.getMemId());
 			pstmt.setInt(2, goodOrderVO.getGoodTotalPrice());
 			pstmt.setTimestamp(3, goodOrderVO.getGoodDate());
@@ -46,12 +56,40 @@ public class GoodsOrderJDBCDAO implements GoodsOrderDAO_interface {
 			pstmt.setString(6, goodOrderVO.getBuyerPhone());
 			pstmt.setInt(7, goodOrderVO.getGoodOrdStatus());
 			pstmt.executeUpdate();
+			
+			
+			rs = pstmt.getGeneratedKeys();
+			rs.next();
+			String goodOrderId = rs.getString(1);
+			
+			
+			for(GoodsVO goodsVO : myCart.keySet()) {
+				GoodsDetailsVO goodsDetailsVO = new GoodsDetailsVO();
+				goodsDetailsVO.setGoodOrderId(goodOrderId);
+				goodsDetailsVO.setGoodId(goodsVO.getGoodId());
+				goodsDetailsVO.setGoodAmount(myCart.get(goodsVO));
+				new GoodsDetailsJDBCDAO().insert_By_GoodsOrder(goodsDetailsVO, con);
+			}
+			
+			con.commit();
 			System.out.println("已新增");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 			if (pstmt != null) {
 				try {
 					pstmt.close();

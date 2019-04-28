@@ -2,7 +2,9 @@ package com.coursereservation.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,8 +25,11 @@ import com.inscourse.model.InsCourseService;
 import com.inscourse.model.InsCourseVO;
 import com.inscoursetime.model.InsCourseTimeService;
 import com.inscoursetime.model.InsCourseTimeVO;
+import com.member.model.MemberService;
+import com.member.model.MemberVO;
+import com.withdrawalrecord.model.WithdrawalRecordService;
 
-@WebServlet("/CourseReservationServlet")
+@WebServlet("/android/CourseReservationServlet")
 public class CourseReservationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -97,6 +102,21 @@ public class CourseReservationServlet extends HttpServlet {
 				crVO.setCrvRate(null);
 			}
 			
+			//確認是否有餘額
+			MemberService memSvc = new MemberService();
+			MemberVO memVO = memSvc.getOneMember(crVO.getMemId());
+			if(memVO.getMemBalance() < crVO.getCrvTotalPrice()) {
+				//android
+				if("make_new_reservation".equals(action)) {
+					out.print("Insufficient_account_balance");
+					return;
+				//WEB	
+				}else {
+					
+				}
+			}
+			
+			
 			
 			//確認是否已被訂走
 			InsCourseTimeService insctSvc = new InsCourseTimeService();
@@ -111,6 +131,15 @@ public class CourseReservationServlet extends HttpServlet {
 				
 				//刪除已無的時間
 				insctSvc.deleteInsCourseTime(crVO.getInscTimeId());
+				
+				
+				//扣款
+				memVO.setMemId(crVO.getMemId());
+				memVO.setMemBalance((int)(memVO.getMemBalance()-crVO.getCrvTotalPrice()));
+				memSvc.update_balance(memVO);
+				
+				WithdrawalRecordService wrSvc = new WithdrawalRecordService();
+				wrSvc.addWithdrawalRecord(memVO.getMemId(), (int)-crVO.getCrvTotalPrice(), new Date(new GregorianCalendar().getTimeInMillis()));
 				
 				
 				//新增成功

@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
-@WebServlet("/GoodsServlet")
+@WebServlet("/android/GoodsServlet")
 public class GoodsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

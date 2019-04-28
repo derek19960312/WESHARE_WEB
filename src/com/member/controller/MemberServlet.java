@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONObject;
 
-@WebServlet("/MemberServlet")
+@WebServlet("/android/MemberServlet")
 public class MemberServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

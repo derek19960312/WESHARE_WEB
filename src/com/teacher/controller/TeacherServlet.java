@@ -15,7 +15,7 @@ import com.teacher.model.TeacherService;
 import com.teacher.model.TeacherVO;
 
 
-@WebServlet("/TeacherServlet")
+@WebServlet("/android/TeacherServlet")
 public class TeacherServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

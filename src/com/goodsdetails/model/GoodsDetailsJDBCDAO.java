@@ -22,8 +22,33 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 	
 	
 	private static final String FIND_BY_ORDERID = "SELECT * FROM GOODSDETAILS WHERE GOODORDERID=?";
+	private static final String INSERT_BY_GOODSORDER = "INSERT INTO GoodsDetails VALUES (?,?,?,null,null)";
 	
 	
+	
+	@Override
+	public void insert_By_GoodsOrder(GoodsDetailsVO goodDetailsVO,Connection con) {
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement(INSERT_BY_GOODSORDER);
+			
+			pstmt.setString(1, goodDetailsVO.getGoodOrderId());
+			pstmt.setString(2, goodDetailsVO.getGoodId());
+			pstmt.setInt(3, goodDetailsVO.getGoodAmount());
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+		}
+	}
 	
 	@Override
 	public void insert(GoodsDetailsVO goodDetailsVO) {

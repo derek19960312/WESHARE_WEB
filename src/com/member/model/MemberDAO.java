@@ -37,8 +37,12 @@ public class MemberDAO implements MemberDAO_interface {
 	private static final String GET_ONE_STMT = "SELECT * FROM Member where memId = ?";
 	private static final String GET_LOGIN_STMT = "SELECT * FROM Member where memId = ? and memPsw =?";
 	private static final String UPDATE = "UPDATE Member set memPsw=?,memImage=?,memAdd=? ,memText=?, memBank=? ,memBalance=?,memBlock=?,memStatus=?,memSkill=?, memWantSkill=?,memPair=? where  memId =? ";
+	
 	private static final String EDIT_MEMBER_STMT = "UPDATE Member set memPsw=?,memImage=?,memAdd=? ,memText=?, memBank=?,memSkill=?, memWantSkill=? where  memId =? ";
 
+	
+	private static final String UPDATE_BALANCE = "UPDATE Member set memBalance=? where memId =? ";
+	
 	@Override
 	public void insert(MemberVO memberVO) {
 		Connection con = null;
@@ -361,6 +365,49 @@ public class MemberDAO implements MemberDAO_interface {
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public void update_balance(MemberVO memberVO) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			con = ds.getConnection();
+			con.setAutoCommit(false);
+			pstmt = con.prepareStatement(UPDATE_BALANCE);
+
+			pstmt.setInt(1, memberVO.getMemBalance());
+			pstmt.setString(1, memberVO.getMemId());
+			
+			pstmt.executeUpdate();
+			
+			con.commit();
+		} catch (SQLException se) {
+			try {
+				con.rollback();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+			
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		
 	}
 
 }

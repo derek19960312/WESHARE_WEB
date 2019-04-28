@@ -29,7 +29,7 @@ import com.member.model.MemberVO;
 import com.teacher.model.TeacherService;
 import com.teacher.model.TeacherVO;
 
-@WebServlet("/CourseTypeServlet")
+@WebServlet("/android/CourseTypeServlet")
 public class CourseTypeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
    

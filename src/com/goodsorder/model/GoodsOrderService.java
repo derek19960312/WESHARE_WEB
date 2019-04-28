@@ -2,6 +2,9 @@ package com.goodsorder.model;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
+
+import com.goods.model.GoodsVO;
 
 public class GoodsOrderService {
 	
@@ -19,22 +22,12 @@ public class GoodsOrderService {
 		return dao.getAll();
 	}
 	
-	public GoodsOrderVO insert(String goodOrderId, String memId, Integer goodTotalPrice,
-			Timestamp goodDate, String buyerName,String buyerAddress, String buyerPhone,
-			Integer goodOrdStatus) {
+	public GoodsOrderVO insert(GoodsOrderVO goodsOrderVO,Map<GoodsVO,Integer> myCart) {
 		
-		GoodsOrderVO goodOrderVO = new GoodsOrderVO();
-		goodOrderVO.setGoodOrderId(goodOrderId);
-		goodOrderVO.setMemId(memId);
-		goodOrderVO.setGoodTotalPrice(goodTotalPrice);
-		goodOrderVO.setGoodDate(goodDate);
-		goodOrderVO.setBuyerName(buyerName);
-		goodOrderVO.setBuyerAddress(buyerAddress);
-		goodOrderVO.setBuyerPhone(buyerPhone);
-		goodOrderVO.setGoodOrdStatus(goodOrdStatus);
-		dao.insert(goodOrderVO);
 		
-		return goodOrderVO;
+		dao.insert(goodsOrderVO,myCart);
+		
+		return goodsOrderVO;
 	}
 	
 	public GoodsOrderVO updateBuyerData(String buyerName, String buyerAddress, String buyerPhone) {

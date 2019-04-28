@@ -17,8 +17,10 @@ import com.goodslike.model.GoodsLikeService;
 import com.goodslike.model.GoodsLikeVO;
 import com.google.gson.Gson;
 
-@WebServlet("/GoodsLikeServlet")
+@WebServlet("/android/GoodsLikeServlet")
 public class GoodsLikeServlet extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);

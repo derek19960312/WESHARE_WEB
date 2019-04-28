@@ -12,6 +12,10 @@ public class MemberService {
 
 	}
 	
+	public void update_balance(MemberVO memberVO) {
+		dao.update(memberVO);
+	}
+	
 	public MemberVO addMember(String memId, String memSkill, String memWantSkill, String memPair, String memIdCard, String memPsw,
 			String memPswHint, String memName, Integer memSex, byte[] memImage, String memEmail, String memPhone,
 			Date memBirth, String memAdd, String memText, String memBank, Integer memBalance, Integer memBlock,

@@ -1,6 +1,7 @@
 package com.goods.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 	public class GoodsVO implements Serializable{
 	private String goodId;
@@ -57,10 +58,17 @@ import java.io.Serializable;
 	public void setGoodStatus(Integer goodStatus) {
 		this.goodStatus = goodStatus;
 	}
+
 	@Override
-	public String toString() {
-		return "GoodsVO [goodId=" + goodId + ", teacherId=" + teacherId + ", goodName=" + goodName + ", goodPrice="
-				+ goodPrice + ", goodInfo=" + goodInfo + ", goodImg=" + goodImg + ", goodStatus=" + goodStatus + "]";
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		GoodsVO goodsVO = (GoodsVO) o;
+		return Objects.equals(goodId, goodsVO.goodId);
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(goodId);
+	}
 }

@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
-@WebServlet("/GoodsDetailsServlet")
+@WebServlet("/android/GoodsDetailsServlet")
 public class GoodsDetailsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -38,13 +38,15 @@ public class GoodsDetailsServlet extends HttpServlet {
 		PrintWriter out = res.getWriter();
 		String action = req.getParameter("action");
 		System.out.println(action);
+		
+		
+		
 		if("find_good_detail_by_orderId".equals(action)) {
 			
 			String goodOrderId = req.getParameter("goodOrderId");
 			GoodsDetailsService gdetailSvc = new GoodsDetailsService();
 			List<GoodsDetailsVO> goodsDetailsVOs =  gdetailSvc.findByOrderId(goodOrderId);
-			
-			System.out.println("11111");
+
 			
 			GoodsService goodsSvc = new GoodsService();
 			List<GoodsVO> goodsVOs = new ArrayList<>();

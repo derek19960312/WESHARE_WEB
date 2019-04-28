@@ -11,6 +11,8 @@ public interface MemberDAO_interface {
 	  public void editMember(MemberVO memberVO);
       public MemberVO findByPrimaryKey(String memberId);
       public List<MemberVO> getAll();
+      //0428更新
+      public void update_balance(MemberVO memberVO);
       //萬用複合查詢(傳入參數型態Map)(回傳 List)
 //      public List<MemberVO> getAll(Map<String, String[]> map); 
 	
