@@ -38,6 +38,11 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 			pstmt.executeUpdate();
 			
 		} catch (SQLException e) {
+			try {
+				con.rollback();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			}
 			e.printStackTrace();
 		} finally {
 			if (pstmt != null) {
