@@ -82,7 +82,6 @@ public class CourseReservationServlet extends HttpServlet {
 					TeacherService teacherSvc = new TeacherService();
 					TeacherVO teacherVO = teacherSvc.findOneById(teacherId);
 					if (teacherVO != null && teacherVO.getMemId().equals(memId)) {
-						System.out.println("00000000");
 						out.print("can't_buy_your_course");
 						return;
 
