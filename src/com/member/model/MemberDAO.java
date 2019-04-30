@@ -32,17 +32,16 @@ public class MemberDAO implements MemberDAO_interface {
 
 	private static final String REGIST_STMT = "INSERT INTO Member(memId,memIdCard,memPsw,memPswHint,memName,memSex,memImage,memEmail,memPhone,memBirth,memAdd,memBalance,memBlock,memStatus)"
 			+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	
+
 	private static final String GET_ALL_STMT = "SELECT * FROM Member  order by memId";
 	private static final String GET_ONE_STMT = "SELECT * FROM Member where memId = ?";
 	private static final String GET_LOGIN_STMT = "SELECT * FROM Member where memId = ? and memPsw =?";
 	private static final String UPDATE = "UPDATE Member set memPsw=?,memImage=?,memAdd=? ,memText=?, memBank=? ,memBalance=?,memBlock=?,memStatus=?,memSkill=?, memWantSkill=?,memPair=? where  memId =? ";
-	
+	private static final String UPDATE1 = "UPDATE Member set memBalance=? ,memBlock=? where memId =? ";
 	private static final String EDIT_MEMBER_STMT = "UPDATE Member set memPsw=?,memImage=?,memAdd=? ,memText=?, memBank=?,memSkill=?, memWantSkill=? where  memId =? ";
 
-	
 	private static final String UPDATE_BALANCE = "UPDATE Member set memBalance=? where memId =? ";
-	
+
 	@Override
 	public void insert(MemberVO memberVO) {
 		Connection con = null;
@@ -253,7 +252,7 @@ public class MemberDAO implements MemberDAO_interface {
 				memberVO.setMemName(rs.getString("memName"));
 				memberVO.setMemSex(rs.getInt("memSex"));
 				memberVO.setMemImage(rs.getBytes("memImage"));
-				
+
 				memberVO.setMemEmail(rs.getString("memEmail"));
 				memberVO.setMemPhone(rs.getString("memPhone"));
 				memberVO.setMemBirth(rs.getDate("memBirth"));
@@ -379,9 +378,9 @@ public class MemberDAO implements MemberDAO_interface {
 
 			pstmt.setInt(1, memberVO.getMemBalance());
 			pstmt.setString(1, memberVO.getMemId());
-			
+
 			pstmt.executeUpdate();
-			
+
 			con.commit();
 		} catch (SQLException se) {
 			try {
@@ -390,7 +389,7 @@ public class MemberDAO implements MemberDAO_interface {
 				e.printStackTrace();
 			}
 			throw new RuntimeException("A database error occured. " + se.getMessage());
-			
+
 		} finally {
 			if (pstmt != null) {
 				try {
@@ -407,7 +406,44 @@ public class MemberDAO implements MemberDAO_interface {
 				}
 			}
 		}
-		
+
+	}
+
+	@Override
+	public void deduction(MemberVO memberVO, Connection con) {
+		PreparedStatement pstmt = null;
+
+		try {
+			pstmt = con.prepareStatement(UPDATE1);
+
+			pstmt.setInt(1, memberVO.getMemBalance());
+			pstmt.setInt(2, memberVO.getMemBlock());
+			pstmt.setString(3, memberVO.getMemId());
+
+			pstmt.executeUpdate();
+			// Handle any driver errors
+		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					// 3●設定於當有exception發生時之catch區塊內
+					System.err.print("Transaction is being ");
+					System.err.println("rolled back-由-emp");
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. " + excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+		}
 	}
 
 }

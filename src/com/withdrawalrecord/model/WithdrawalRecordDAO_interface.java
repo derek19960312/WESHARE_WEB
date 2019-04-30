@@ -16,5 +16,5 @@ public interface WithdrawalRecordDAO_interface {
 	public WithdrawalRecordVO findByPrimaryKey(String withdrawalRecordVO);
 
 //	       public Set<WithdrawalRecordVO> getEmpsByDeptno(Integer deptno);
-
+	public void insert2(WithdrawalRecordVO withdrawalRecordVO, java.sql.Connection con);
 }

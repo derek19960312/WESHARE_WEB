@@ -27,6 +27,7 @@ public class WithdrawalRecordJDBCDAO implements WithdrawalRecordDAO_interface {
 			"SELECT wrnum,memid,wrmoney,wrtime FROM WITHDRAWALRECORD ORDER BY WRMONEY DESC";
 	private static final String GET_ALL_STMT1 = 
 			"SELECT * FROM WITHDRAWALRECORD where (case when memid=? then 1 else 0 end+ case when wrnum=? then 1 else 0 end)>=1 ORDER BY WRNUM DESC";
+	private static final String INSERT_2="INSERT INTO WithdrawalRecord (wrnum,memid,wrmoney,wrtime) VALUES (('WI'||LPAD(to_char(WITHDRAWALRECORD_seq.NEXTVAL), 5, '0')), ?, ?, to_date( to_char( sysdate, 'dd-mm-yy' ), 'dd-mm-yy' ) )";
 //	private static final String GET_Emps_ByDeptno_STMT = "SELECT wrnum,memid,to_char(wrtime,'yyyy-mm-dd') wrtime,sal,FROM WITHDRAWALRECORD where memid = ? order by wrnum";		
 //	
 	@Override
@@ -420,13 +421,54 @@ public class WithdrawalRecordJDBCDAO implements WithdrawalRecordDAO_interface {
 			
 //			System.out.println("---------------------");
 		
-
+	}
 	
 
+		@Override
+		public void insert2(WithdrawalRecordVO withdrawalRecordVO, Connection con) {
+
+			PreparedStatement pstmt = null;
+
+			try {
+
+				pstmt = con.prepareStatement(INSERT_2);
+
+				pstmt.setString(1, withdrawalRecordVO.getMemid());
+				pstmt.setInt(2, withdrawalRecordVO.getWrmoney());
+
+				pstmt.executeUpdate();
+			} catch (SQLException se) {
+						if (con != null) {
+							try {
+								// 3●設定於當有exception發生時之catch區塊內
+								System.err.print("Transaction is being ");
+								System.err.println("rolled back-由-emp");
+								con.rollback();
+							} catch (SQLException excep) {
+								throw new RuntimeException("rollback error occured. "
+										+ excep.getMessage());
+							}
+						}
+						throw new RuntimeException("A database error occured. "
+								+ se.getMessage());
+						// Clean up JDBC resources
+					} finally {
+						if (pstmt != null) {
+							try {
+								pstmt.close();
+							} catch (SQLException se) {
+								se.printStackTrace(System.err);
+							}
+						}
+					}
+
+		
+		
+		
+		}
 
 
-
-	}
+	
 	
 	
 

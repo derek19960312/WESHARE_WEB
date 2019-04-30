@@ -16,5 +16,5 @@ public interface MemberDAO_interface {
       //萬用複合查詢(傳入參數型態Map)(回傳 List)
 //      public List<MemberVO> getAll(Map<String, String[]> map); 
 	
-
+      public void deduction(MemberVO memberVO , java.sql.Connection con);
 }

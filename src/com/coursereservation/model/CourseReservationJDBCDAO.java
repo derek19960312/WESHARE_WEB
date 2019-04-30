@@ -10,6 +10,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.inscoursetime.model.InsCourseTimeJDBCDAO;
+import com.inscoursetime.model.InsCourseTimeVO;
+import com.member.model.MemberJDBCDAO;
+import com.member.model.MemberVO;
+import com.withdrawalrecord.model.WithdrawalRecordJDBCDAO;
+import com.withdrawalrecord.model.WithdrawalRecordVO;
+
 
 public class CourseReservationJDBCDAO implements CourseReservationDAO_interface {
 	static CourseReservationJDBCDAO dao=new CourseReservationJDBCDAO();
@@ -511,5 +518,106 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 
 	}
 
+	@Override
+	public void insertWithMemberWithRecod(CourseReservationVO courseReservationVO, MemberVO memberVO,WithdrawalRecordVO withdrawalRecordVO,InsCourseTimeVO inscoursetimeVO) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, userid, passwd);
+	
+			// 1●設定於 pstm.executeUpdate()之前
+    		con.setAutoCommit(false);
+    		
+    		//新增訂單
+    		pstmt = con.prepareStatement(INSERT_STMT,Statement.RETURN_GENERATED_KEYS);
+			pstmt.setString(1,courseReservationVO.getTeacherId());
+			pstmt.setString(2,courseReservationVO.getMemId());
+			pstmt.setString(3,courseReservationVO.getInscId());
+			pstmt.setString(4,courseReservationVO.getTeamId());
+			pstmt.setInt(5,courseReservationVO.getCrvStatus());
+			pstmt.setInt(6,courseReservationVO.getClassStatus());
+			pstmt.setInt(7,courseReservationVO.getTranStatus());
+			pstmt.setTimestamp(8,courseReservationVO.getCrvMFD());
+			pstmt.setTimestamp(9,courseReservationVO.getCrvEXP());
+			pstmt.setString(10,courseReservationVO.getCrvLoc());
+			pstmt.setDouble(11,courseReservationVO.getCrvTotalTime());
+			pstmt.setDouble(12,courseReservationVO.getCrvTotalPrice());
+			pstmt.setString(13, courseReservationVO.getCrvRate());
+			pstmt.executeUpdate();
+		
+		    	//掘取對應的自增主鍵值
+				String crvId = null;
+				ResultSet rs = pstmt.getGeneratedKeys();
+				if (rs.next()) {
+					crvId = rs.getString(1);
+					System.out.println("自增主鍵值= " + crvId +"(剛新增成功的主編號");
+				} else {
+					System.out.println("未取得自增主鍵值");
+				}
+				rs.close();
+				//先刪除時間
+				InsCourseTimeJDBCDAO dao1 =new InsCourseTimeJDBCDAO();
+				dao1.delete(courseReservationVO.getInscTimeId());
+				
+				// 再同時修改餘額
+				MemberJDBCDAO dao2= new MemberJDBCDAO();
+				Integer dollar=courseReservationVO.getCrvTotalPrice().intValue();
+				Integer balance=memberVO.getMemBalance();
+				memberVO.setMemBalance(balance-dollar);
+				dao2.deduction(memberVO,con);
+				
+				//再同時新增交易紀錄
+				WithdrawalRecordJDBCDAO dao3=new WithdrawalRecordJDBCDAO();
+				withdrawalRecordVO.setMemid(memberVO.getMemId());
+				withdrawalRecordVO.setWrmoney(-dollar);
+				dao3.insert2(withdrawalRecordVO, con);
+				// 2●設定於 pstm.executeUpdate()之後
+				con.commit();
+				con.setAutoCommit(true);
+				System.out.println("訂單編號"+crvId+"購買人"+memberVO.getMemName()+"已扣了"+dollar+"剩餘"+memberVO.getMemBalance());
+				
+
+				// Handle any driver errors
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException("Couldn't load database driver. "
+						+ e.getMessage());
+				// Handle any SQL errors
+			} catch (SQLException se) {
+				if (con != null) {
+					try {
+						// 3●設定於當有exception發生時之catch區塊內
+						System.err.print("Transaction is being ");
+						System.err.println("rolled back-由-dept");
+						con.rollback();
+					} catch (SQLException excep) {
+						throw new RuntimeException("rollback error occured. "
+								+ excep.getMessage());
+					}
+				}
+				throw new RuntimeException("A database error occured. "
+						+ se.getMessage());
+				// Clean up JDBC resources
+			} finally {
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+
+	
+		}
+	}
 
 }
