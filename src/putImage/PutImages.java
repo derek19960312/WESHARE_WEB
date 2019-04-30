@@ -33,10 +33,10 @@ public class PutImages {
 	private static final String UPDATE_MEMPIC = 
 			"UPDATE Member set memImage=? where  memId =? ";
 	private static final String UPDATE_GOODSPIC = 
-			"UPDATE Member set goodImg=? where  goodId =? ";
+			"UPDATE GOODS set goodImg=? where  goodId =? ";
 	
-	private static final String GET_ALL = 
-			"SELECT * FROM Member ";
+	private static String GET_ALL ;
+			
 	
 	
 	public static void main(String args[]) {
@@ -46,8 +46,9 @@ public class PutImages {
 		BufferedInputStream bis = null;
 		try {
 			
-			formName = "Member";
-			UPDATE = UPDATE_MEMPIC;
+			UPDATE = UPDATE_MEMPIC; 
+			GET_ALL = 
+					"SELECT * FROM MEMBER";
 			List<String> memList = getAll();
 			for (int i = 1; i <= memList.size(); i++) {
 				file = new File("WebContent/images/Teacher/Teacher" + i + ".jpg");
@@ -58,24 +59,28 @@ public class PutImages {
 				update(memId,b);
 			}
 			
-//			
-//			formName = "Goods";
-//			UPDATE = UPDATE_GOODSPIC;
-//			List<String> goodsList = getAll();
-//			for (int i = 1; i <= goodsList.size(); i++) {
-//				file = new File("WebContent/images/Teacher/Teacher" + i + ".jpg");
-//				bis = new BufferedInputStream(new FileInputStream(file));
-//				byte[] b = new byte[(int)bis.available()];
-//				bis.read(b);
-//				String goodId = goodsList.get(i - 1);
-//				update(goodId,b);
-//			}
+			
+			UPDATE = UPDATE_GOODSPIC;
+			GET_ALL = 
+					"SELECT * FROM GOODS";
+			List<String> goodsList = getAll();
+			for (int i = 1; i <= goodsList.size(); i++) {
+				file = new File("WebContent/images/goods/mtri" + i + ".jpg");
+				bis = new BufferedInputStream(new FileInputStream(file));
+				byte[] b = new byte[(int)bis.available()];
+				bis.read(b);
+				String goodId = goodsList.get(i - 1);
+				update(goodId,b);
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				bis.close();
+				if(bis != null) {
+					bis.close();
+				}
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -145,7 +150,6 @@ public class PutImages {
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(GET_ALL);
-			//pstmt.setString(1, formName);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
