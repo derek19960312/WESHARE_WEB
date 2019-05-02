@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.OptionalDouble;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -46,7 +47,23 @@ public class CourseReservationServlet extends HttpServlet {
 
 		String action = req.getParameter("action");
 		System.out.println(action);
-
+		
+		
+		//取得評分星星
+		if("get_star_count".equals(action)) {
+			
+			String param = req.getParameter("param");
+			CourseReservationService crSvc = new CourseReservationService();
+			List<CourseReservationVO> crList = crSvc.findByPrimaryKey(param);
+			
+			OptionalDouble result = crList.stream().mapToDouble(cr -> cr.getCrvScore()).average();
+			System.out.println(result.getAsDouble());
+			out.print(result.getAsDouble());
+			
+		}
+		
+		
+		
 		// 我的預約
 		if ("find_my_reservation".equals(action)) {
 

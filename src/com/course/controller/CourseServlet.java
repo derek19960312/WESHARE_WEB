@@ -77,13 +77,21 @@ public class CourseServlet extends HttpServlet {
 			List<CourseVO> courseVOs = courseSvc.findByCourseType(courseTypeId);
 			List<InsCourseVO> insCourseVOs = new ArrayList<>();
 
+			InsCourseService insCourseSvc = new InsCourseService();
+			
+			
+			
+			
+			
+			
 			// 查詢對應課程
-			for (CourseVO cvo : courseVOs) {
-
-				InsCourseService insCourseSvc = new InsCourseService();
-				List<InsCourseVO> insCourseVOmass = insCourseSvc.findByCourse(cvo.getCourseId());
-				insCourseVOs.addAll(insCourseVOmass);
-			}
+			courseVOs.stream().forEach(cvo -> insCourseVOs.addAll(insCourseSvc.findByCourse(cvo.getCourseId())));
+//			for (CourseVO cvo : courseVOs) {
+//
+//				InsCourseService insCourseSvc = new InsCourseService();
+//				List<InsCourseVO> insCourseVOmass = insCourseSvc.findByCourse(cvo.getCourseId());
+//				insCourseVOs.addAll(insCourseVOmass);
+//			}
 
 			// 去除工程師資料
 			for (InsCourseVO icvo : insCourseVOs) {
