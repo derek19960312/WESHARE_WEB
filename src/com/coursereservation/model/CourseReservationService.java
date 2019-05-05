@@ -107,5 +107,9 @@ public class CourseReservationService {
 		return dao.getAll();
 		
 	}
+	
+	public void ConfirmCourse(String crvId) {
+		dao.updateClassStatus(crvId);
+	}
 
 }

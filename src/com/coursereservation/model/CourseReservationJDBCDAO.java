@@ -44,6 +44,9 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 	//複合查詢2
 		private static final String GET_STATUS_STMT ="SELECT * FROM CourseReservation where (case when crvStatus=? then 1 else 0 end+ case when classStatus=? then 1 else 0 end+ case when tranStatus=? then 1 else 0 end)>=1";
 	
+	//更新訂單狀態
+		private static final String UPDATE_CLASS_STATUS = "UPDATE CourseReservation set CLASSStatus=? WHERE CRVID=?";
+	
 	@Override
 	public void insert(CourseReservationVO courseReservationVO) {
 		Connection con = null;
@@ -617,6 +620,47 @@ public class CourseReservationJDBCDAO implements CourseReservationDAO_interface 
 				}
 
 	
+		}
+	}
+
+	@Override
+	public void updateClassStatus(String crvId) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, userid, passwd);
+			pstmt = con.prepareStatement(UPDATE_CLASS_STATUS);
+			pstmt.setInt(1,1);
+			pstmt.setString(2,crvId);
+			pstmt.executeUpdate();
+
+			// Handle any driver errors
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. "
+					+ e.getMessage());
+			// Handle any SQL errors
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
 		}
 	}
 

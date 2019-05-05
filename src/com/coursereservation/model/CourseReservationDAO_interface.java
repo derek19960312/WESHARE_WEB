@@ -10,6 +10,8 @@ public interface CourseReservationDAO_interface {
 	public void insert(CourseReservationVO courseReservationVO);
 
 	public void update(CourseReservationVO courseReservationVO);
+	
+	public void updateClassStatus(String crvId);
 
 	public List<CourseReservationVO> findByStatus(Integer xxxStatus);
 
