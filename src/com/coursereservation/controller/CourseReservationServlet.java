@@ -48,11 +48,14 @@ public class CourseReservationServlet extends HttpServlet {
 		String action = req.getParameter("action");
 		System.out.println(action);
 		
+		
+		//驗證上課
 		if("confirm_for_course".equals(action)) {
 			String crvId = req.getParameter("crvId");
 			
 			CourseReservationService crvSvc = new CourseReservationService();
 			crvSvc.ConfirmCourse(crvId);
+			
 			
 			return;
 		}
