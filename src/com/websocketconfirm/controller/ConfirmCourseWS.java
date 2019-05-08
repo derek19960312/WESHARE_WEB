@@ -1,10 +1,10 @@
-
-
+package com.websocketconfirm.controller;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +19,8 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import com.coursereservation.model.CourseReservationService;
+import com.coursereservation.model.CourseReservationVO;
 import com.google.gson.Gson;
 import com.websocketchat.model.ChatMessage;
 import com.websocketchat.model.State;
@@ -39,15 +41,23 @@ public class ConfirmCourseWS {
 
 	@OnMessage
 	public void onMessage(Session userSession, String message) {
-		State state = gson.fromJson(message, State.class);
-		String receiver = state.getUser();
-	
+		CourseReservationVO crVO = gson.fromJson(message, CourseReservationVO.class);
 		
-		Session receiverSession = sessionsMap.get(receiver);
-		if (receiverSession != null && receiverSession.isOpen()) {
-			receiverSession.getAsyncRemote().sendText(message);
+		String teacherId = valueGetKey(userSession);
+		Session studentSess = sessionsMap.get(crVO.getMemId());
+		
+		if(teacherId.equals(crVO.getTeacherId())) {
+			CourseReservationService crvSvc = new CourseReservationService();
+			crvSvc.ConfirmCourse(crVO.getCrvId());
+			userSession.getAsyncRemote().sendText("success");
+			studentSess.getAsyncRemote().sendText("success");
+		}else {
+			userSession.getAsyncRemote().sendText("fail");
+			studentSess.getAsyncRemote().sendText("fail");
 		
 		}
+		
+
 		System.out.println("Message received: " + message);
 	}
 
@@ -81,4 +91,18 @@ public class ConfirmCourseWS {
 				reason.getCloseCode().getCode(), userNames);
 		System.out.println(text);
 	}
+	
+	
+	 private String valueGetKey(Session userSession) {
+		    Set set = sessionsMap.entrySet();
+		    Iterator it = set.iterator();
+		    while(it.hasNext()) {
+		      Map.Entry entry = (Map.Entry)it.next();
+		      if(entry.getValue().equals(userSession)) {
+		        String s = (String)entry.getKey();
+		        return s;
+		      }
+		    }
+		    return "";
+	 }
 }

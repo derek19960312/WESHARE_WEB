@@ -1,16 +1,16 @@
+package com.websocketconfirm.model;
 
-
-public class CourseComfirm {
+public class ComfirmState {
 	private String type;
 	private String sender;
 	private String receiver;
-	private String check;
+	private String message;
 
-	public CourseComfirm(String type,String sender ,String receiver, String check) {
+	public ComfirmState(String type, String sender, String receiver, String message) {
 		this.type = type;
 		this.sender = sender;
 		this.receiver = receiver;
-		this.check = check;
+		this.message = message;
 	}
 
 	public String getSender() {
@@ -21,14 +21,6 @@ public class CourseComfirm {
 		this.sender = sender;
 	}
 
-	public String getCheck() {
-		return check;
-	}
-
-	public void setCheck(String check) {
-		this.check = check;
-	}
-
 	public String getReceiver() {
 		return receiver;
 	}
@@ -37,7 +29,13 @@ public class CourseComfirm {
 		this.receiver = receiver;
 	}
 
+	public String getMessage() {
+		return message;
+	}
 
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
 	public String getType() {
 		return type;

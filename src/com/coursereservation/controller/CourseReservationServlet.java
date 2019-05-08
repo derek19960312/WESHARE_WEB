@@ -19,6 +19,7 @@ import com.course.model.CourseService;
 import com.course.model.CourseVO;
 import com.coursereservation.model.CourseReservationService;
 import com.coursereservation.model.CourseReservationVO;
+import com.coursereservation.model.JedisConfirmShake;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.inscourse.model.InsCourseService;
@@ -47,35 +48,40 @@ public class CourseReservationServlet extends HttpServlet {
 
 		String action = req.getParameter("action");
 		System.out.println(action);
+
 		
-		
-		//驗證上課
-		if("confirm_for_course".equals(action)) {
+
+		// 搖搖驗證
+
+		if ("confirm_for_course_shake".equals(action)) {
+
 			String crvId = req.getParameter("crvId");
-			
 			CourseReservationService crvSvc = new CourseReservationService();
-			crvSvc.ConfirmCourse(crvId);
+			JedisConfirmShake jcs = new JedisConfirmShake();
 			
+			if (jcs.checkIfWait(crvId)) {
+				crvSvc.ConfirmCourse(crvId);
+				out.print("success");
+			} else {
+				jcs.setNewConfirm(crvId);
+				out.print("wait");
+			}
 			
-			return;
 		}
-		
-		
-		//取得評分星星
-		if("get_star_count".equals(action)) {
-			
+
+		// 取得評分星星
+		if ("get_star_count".equals(action)) {
+
 			String param = req.getParameter("param");
 			CourseReservationService crSvc = new CourseReservationService();
 			List<CourseReservationVO> crList = crSvc.findByPrimaryKey(param);
-			
+
 			OptionalDouble result = crList.stream().mapToDouble(cr -> cr.getCrvScore()).average();
 			System.out.println(result.getAsDouble());
 			out.print(result.getAsDouble());
-			
+
 		}
-		
-		
-		
+
 		// 我的預約
 		if ("find_my_reservation".equals(action)) {
 
@@ -115,17 +121,16 @@ public class CourseReservationServlet extends HttpServlet {
 						return;
 
 					}
-					
-					//判斷餘額
+
+					// 判斷餘額
 					MemberService memSvc = new MemberService();
-					MemberVO  memberVO = memSvc.getOneMember(crVO.getMemId());
-					if(memberVO.getMemBalance() < crVO.getCrvTotalPrice().intValue()) {
-						
+					MemberVO memberVO = memSvc.getOneMember(crVO.getMemId());
+					if (memberVO.getMemBalance() < crVO.getCrvTotalPrice().intValue()) {
+
 						out.print("Insufficient_account_balance");
 						return;
 					}
-					
-					
+
 					// Web取資料
 				} else {
 
