@@ -66,7 +66,7 @@ public class DBGifReader extends HttpServlet {
 					} else {
 						res.sendError(HttpServletResponse.SC_NOT_FOUND);
 					}
-					System.out.println("memId-圖片" + req.getParameter("memId"));
+					//System.out.println("memId-圖片" + req.getParameter("memId"));
 				} else
 
 				if ("get_goods_pic".equals(action)) {
@@ -79,7 +79,7 @@ public class DBGifReader extends HttpServlet {
 					} else {
 						res.sendError(HttpServletResponse.SC_NOT_FOUND);
 					}
-					System.out.println("goodId-圖片" + req.getParameter("goodId"));
+					//System.out.println("goodId-圖片" + req.getParameter("goodId"));
 
 				}
 			} catch (Exception e) {
@@ -99,13 +99,13 @@ public class DBGifReader extends HttpServlet {
 				}
 			}
 
-			System.out.println("壓縮前" + bPic.length);
+			//System.out.println("壓縮前" + bPic.length);
 			int imageSize = Integer.parseInt(req.getParameter("imageSize"));
 
 			bPic = ImageUtil.shrink(bPic, imageSize);
 
-			System.out.println("壓縮後" + bPic.length);
-			System.out.println("圖片大小" + imageSize);
+			//System.out.println("壓縮後" + bPic.length);
+			//System.out.println("圖片大小" + imageSize);
 
 			//base64 = Base64.encodeBase64String(bPic);
 			out.write(bPic);

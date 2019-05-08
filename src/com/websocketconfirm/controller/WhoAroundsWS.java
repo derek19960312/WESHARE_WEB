@@ -3,6 +3,7 @@ package com.websocketconfirm.controller;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,68 +26,48 @@ import com.websocketconfirm.model.ComfirmState;
 import com.websocketconfirm.model.MyLocationVO;
 import com.websocketconfirm.model.NearbyState;
 
-@ServerEndpoint("/WhoAroundsWS/{userName}/{Lat}/{Lng}")
+@ServerEndpoint("/WhoAroundsWS/{userName}")
 public class WhoAroundsWS {
-	private static Map<MyLocationVO, Session> sessionsMap = new ConcurrentHashMap<>();
+	private static Map<String, Session> sessionsMap = new ConcurrentHashMap<>();
+	private static Map<String, MyLocationVO> myLocationMap = new HashMap<>();
+
 	Gson gson = new Gson();
 
 	@OnOpen
-	public void onOpen(@PathParam("userName") String userName, @PathParam("Lat") Double Lat,
-			@PathParam("Lng") Double Lng, Session userSession) throws IOException {
-		MyLocationVO userLoc = new MyLocationVO();
-		userLoc.setMemberId(userName);
-		userLoc.setLat(Lat);
-		userLoc.setLng(Lng);
+	public void onOpen(@PathParam("userName") String userName, Session userSession) throws IOException {
 
-		Set<MyLocationVO> locations = sessionsMap.keySet();
+		sessionsMap.put(userName, userSession);
 
-		//通知大家有誰在線上
-		for(Session sess:sessionsMap.values()) {
-			sess.getAsyncRemote().sendText(gson.toJson(locations));
-		}
-		// 回傳給自己有誰在線上
-		userSession.getAsyncRemote().sendText(gson.toJson(locations));
-
-		sessionsMap.put(userLoc, userSession);
-
-		String text = String.format("Session ID = %s, connected; userName = %s; Lat = %s; Lng = %s",
-				userSession.getId(), userName, Lat, Lng);
+		String text = String.format("Session ID = %s, connected; userName = %s", userSession.getId(), userName);
 		System.out.println(text);
 	}
 
 	@OnMessage
 	public void onMessage(Session userSession, String message) {
-//		ComfirmState comfirmState = gson.fromJson(message, ComfirmState.class);
-//		String receiver = comfirmState.getReceiver();
-//		System.out.println(receiver);
-//		
-//		Set<MyLocationVO> locations = sessionsMap.keySet();
-//		MyLocationVO receiverLocation = null;
-//		for(MyLocationVO lo : locations) {
-//			if(receiver.equals(lo.getMemberId())) {
-//				receiverLocation = lo;
-//			}
-//		}
-//		Session receiverSession = sessionsMap.get(receiverLocation);
-//		System.out.println(receiverSession);
-//		if (receiverSession != null && receiverSession.isOpen()) {
-//			receiverSession.getAsyncRemote().sendText(message);
-//
-//		}
+
+		MyLocationVO mylocation = gson.fromJson(message, MyLocationVO.class);
+		myLocationMap.put(mylocation.getMemberId(), mylocation);
+		
+
+		Set<MyLocationVO> whoOnLine = myLocationMap.values().stream().distinct().collect(Collectors.toSet());
+
+		userSession.getAsyncRemote().sendText(gson.toJson(whoOnLine));
+
 		System.out.println("Message received: " + message);
 	}
 
-	@OnError
-	public void onError(Session userSession, Throwable e) {
-		System.out.println("Error: " + e.toString());
-	}
+//	@OnError
+//	public void onError(Session userSession, Throwable e) {
+//		System.out.println("Error: " + e.toString());
+//	}
 
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {
-		Set<MyLocationVO> userNames = sessionsMap.keySet();
+		Set<String> userNames = sessionsMap.keySet();
 
-		for (MyLocationVO userName : userNames) {
+		for (String userName : userNames) {
 			if (sessionsMap.get(userName).equals(userSession)) {
+				myLocationMap.remove(userName);
 				sessionsMap.remove(userName);
 				break;
 			}

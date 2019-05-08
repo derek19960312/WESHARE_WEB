@@ -76,8 +76,9 @@ public class CourseReservationServlet extends HttpServlet {
 			CourseReservationService crSvc = new CourseReservationService();
 			List<CourseReservationVO> crList = crSvc.findByPrimaryKey(param);
 
-			OptionalDouble result = crList.stream().mapToDouble(cr -> cr.getCrvScore()).average();
-			System.out.println(result.getAsDouble());
+			OptionalDouble result = crList.stream()
+					.filter(cr -> cr.getCrvScore() == null)
+					.mapToDouble(cr -> cr.getCrvScore()).average();
 			out.print(result.getAsDouble());
 
 		}
