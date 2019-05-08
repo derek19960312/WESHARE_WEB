@@ -50,16 +50,17 @@ public class WhoAroundsWS {
 		
 
 		Set<MyLocationVO> whoOnLine = myLocationMap.values().stream().distinct().collect(Collectors.toSet());
-
-		userSession.getAsyncRemote().sendText(gson.toJson(whoOnLine));
+		//傳給所有人
+		sessionsMap.values().stream()
+					.forEach(sess -> sess.getAsyncRemote().sendText(gson.toJson(whoOnLine)));
 
 		System.out.println("Message received: " + message);
 	}
 
-//	@OnError
-//	public void onError(Session userSession, Throwable e) {
-//		System.out.println("Error: " + e.toString());
-//	}
+	@OnError
+	public void onError(Session userSession, Throwable e) {
+		System.out.println("Error: " + e.toString());
+	}
 
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {

@@ -8,24 +8,27 @@ import redis.clients.jedis.JedisPool;
 public class JedisConfirmShake {
 	
 
-	public void setNewConfirm(String crvId) {
+	public void setNewConfirm(String crvId, String requestIP) {
 		Jedis jedis = new Jedis("localhost", 6379);
 		jedis.auth("123456");
-		jedis.set(crvId, "exsist");
+		jedis.set(crvId, requestIP);
 		jedis.close();
 	}
 
-	public boolean checkIfWait(String crvId) {
+	public String checkIfWait(String crvId, String requestIP ) {
 		// 對雙方來說，都要各存著歷史聊天記錄
 		Jedis jedis = new Jedis("localhost", 6379);
 		jedis.auth("123456");
 		
-		if("exsist".equals(jedis.get(crvId))) {
+		if(requestIP.equals(jedis.get(crvId))) {
 			jedis.close();
-			return true;
+			return "hadCome";
+		}else if(requestIP.isEmpty()){
+			jedis.close();
+			return "noData";
 		}else {
 			jedis.close();
-			return false;
+			return "success";
 		}
 		
 		

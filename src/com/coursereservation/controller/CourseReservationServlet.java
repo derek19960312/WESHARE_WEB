@@ -58,13 +58,17 @@ public class CourseReservationServlet extends HttpServlet {
 			String crvId = req.getParameter("crvId");
 			CourseReservationService crvSvc = new CourseReservationService();
 			JedisConfirmShake jcs = new JedisConfirmShake();
+			String requestIP = req.getLocalAddr();
 			
-			if (jcs.checkIfWait(crvId)) {
+			String state = jcs.checkIfWait(crvId,requestIP);
+			if ("success".equals(state)) {
 				crvSvc.ConfirmCourse(crvId);
-				out.print("success");
-			} else {
-				jcs.setNewConfirm(crvId);
+				out.print(state);
+			} else if("noData".equals(state)){
+				jcs.setNewConfirm(crvId,requestIP);
 				out.print("wait");
+			}else {
+				out.print(state);
 			}
 			
 		}
