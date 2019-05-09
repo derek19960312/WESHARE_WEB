@@ -41,11 +41,12 @@ public class ConfirmCourseWS {
 	public void onMessage(Session userSession, String message) {
 		CourseReservationVO crVO = gson.fromJson(message, CourseReservationVO.class);
 		TeacherService techSvc = new TeacherService();
-		String teacherId = techSvc.findByMemId(valueGetKey(userSession)).getTeacherId();
+		String memId = valueGetKey(userSession);
+		String teacherId = techSvc.findByMemId(memId).getTeacherId();
 		Session studentSess = sessionsMap.get(crVO.getMemId());
 		System.out.println("crVO"+crVO);
 		
-		if(teacherId.equals(crVO.getTeacherId())) {
+		if( memId.equals(crVO.getMemId()) || teacherId.equals(crVO.getTeacherId())) {
 			CourseReservationService crvSvc = new CourseReservationService();
 			crvSvc.ConfirmCourse(crVO.getCrvId());
 			userSession.getAsyncRemote().sendText("success");

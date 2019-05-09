@@ -58,14 +58,14 @@ public class CourseReservationServlet extends HttpServlet {
 			String crvId = req.getParameter("crvId");
 			CourseReservationService crvSvc = new CourseReservationService();
 			JedisConfirmShake jcs = new JedisConfirmShake();
-			String requestIP = req.getLocalAddr();
+			String memId = req.getParameter("memId");
 			
-			String state = jcs.checkIfWait(crvId,requestIP);
+			String state = jcs.checkIfWait(crvId,memId);
 			if ("success".equals(state)) {
 				crvSvc.ConfirmCourse(crvId);
 				out.print(state);
 			} else if("noData".equals(state)){
-				jcs.setNewConfirm(crvId,requestIP);
+				jcs.setNewConfirm(crvId,memId);
 				out.print("wait");
 			}else {
 				out.print(state);
@@ -81,7 +81,7 @@ public class CourseReservationServlet extends HttpServlet {
 			List<CourseReservationVO> crList = crSvc.findByPrimaryKey(param);
 
 			OptionalDouble result = crList.stream()
-					.filter(cr -> cr.getCrvScore() == null)
+					.filter(cr -> cr.getCrvScore() != null)
 					.mapToDouble(cr -> cr.getCrvScore()).average();
 			out.print(result.getAsDouble());
 

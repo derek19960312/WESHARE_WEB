@@ -1,29 +1,27 @@
 package com.coursereservation.model;
 
-import java.util.List;
 
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 public class JedisConfirmShake {
 	
 
-	public void setNewConfirm(String crvId, String requestIP) {
+	public void setNewConfirm(String crvId, String memId) {
 		Jedis jedis = new Jedis("localhost", 6379);
 		jedis.auth("123456");
-		jedis.set(crvId, requestIP);
+		jedis.set(crvId, memId);
 		jedis.close();
 	}
 
-	public String checkIfWait(String crvId, String requestIP ) {
+	public String checkIfWait(String crvId, String memId ) {
 		// 對雙方來說，都要各存著歷史聊天記錄
 		Jedis jedis = new Jedis("localhost", 6379);
 		jedis.auth("123456");
-		
-		if(requestIP.equals(jedis.get(crvId))) {
+		String memIdFromRedis = jedis.get(crvId);
+		if(memId.equals(memIdFromRedis)) {
 			jedis.close();
 			return "hadCome";
-		}else if(requestIP.isEmpty()){
+		}else if(memIdFromRedis == null){
 			jedis.close();
 			return "noData";
 		}else {
