@@ -65,7 +65,7 @@
     </FORM>
   </li>
 
-  <jsp:useBean id="InsCourseSVC" scope="page" class="com.inscourse.model.InsCourseService" />
+  <jsp:useBean id="InsCourseSVC" scope="page" class="android.com.inscourse.model.InsCourseService" />
    
   <li>
      <FORM METHOD="post" ACTION="InsCourse.do" >

@@ -1,14 +1,14 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.inscourse.model.*"%>
+<%@ page import="android.com.inscourse.model.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%-- 此頁暫練習採用 Script 的寫法取值 --%>
 
 <%
   InsCourseVO insCourseVO = (InsCourseVO) request.getAttribute("insCourseVO"); //EmpServlet.java(Concroller), 存入req的empVO物件
 %>
-<jsp:useBean id="memSvc" scope="request" class="com.member.model.MemberService"/>
-<jsp:useBean id="teacherSvc" scope="request" class="com.teacher.model.TeacherService"/>
-<jsp:useBean id="courseSvc" scope="request" class="com.course.model.CourseService"/>
+<jsp:useBean id="memSvc" scope="request" class="android.com.member.model.MemberService"/>
+<jsp:useBean id="teacherSvc" scope="request" class="android.com.teacher.model.TeacherService"/>
+<jsp:useBean id="courseSvc" scope="request" class="android.com.course.model.CourseService"/>
 <html>
 <head>
 <title>員工資料 - listOneInsCourse.jsp</title>

@@ -1,7 +1,6 @@
 package putImage;
 
 import java.io.BufferedInputStream;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,11 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.goods.model.GoodsService;
-import com.goods.model.GoodsVO;
-import com.member.model.MemberService;
-import com.member.model.MemberVO;
 
 public class PutImages {
 	

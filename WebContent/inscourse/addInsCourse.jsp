@@ -1,14 +1,14 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="com.inscourse.model.*"%>
+<%@ page import="android.com.inscourse.model.*"%>
 
 <%
 InsCourseVO insCourseVO = (InsCourseVO) request.getAttribute("insCourseVO"); 
 %>
-<jsp:useBean id="memSvc" scope="page" class="com.member.model.MemberService"/>
-<jsp:useBean id="insCourseSvc" scope="page" class="com.inscourse.model.InsCourseService"/>
-<jsp:useBean id="teacherSvc" scope="page" class="com.teacher.model.TeacherService"/>
-<jsp:useBean id="courseSvc" scope="page" class="com.course.model.CourseService"/>
+<jsp:useBean id="memSvc" scope="page" class="android.com.member.model.MemberService"/>
+<jsp:useBean id="insCourseSvc" scope="page" class="android.com.inscourse.model.InsCourseService"/>
+<jsp:useBean id="teacherSvc" scope="page" class="android.com.teacher.model.TeacherService"/>
+<jsp:useBean id="courseSvc" scope="page" class="android.com.course.model.CourseService"/>
 <html>
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
