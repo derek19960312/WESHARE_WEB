@@ -11,4 +11,5 @@ public interface GoodsDetailsDAO_interface {
 	List<GoodsDetailsVO>getAll();
 	public List<GoodsDetailsVO> findByOrderId (String goodOrderId);
 	public void insert_By_GoodsOrder(GoodsDetailsVO goodDetailsVO,Connection con);
+	public List<GoodsDetailsVO> getByGoodId(String goodId);
 }

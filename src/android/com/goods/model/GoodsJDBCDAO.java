@@ -366,5 +366,11 @@ System.out.println("修改一筆資料");
 //		}
 	}
 
+	@Override
+	public List<GoodsVO> findGoodsByTeacherId(String teacherId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

@@ -3,30 +3,50 @@ package android.com.goods.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import android.com.teacher.model.TeacherVO;
+	@Entity
+	@Table(name = "GOODS")
 	public class GoodsVO implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	private String goodId;
-	private String teacherId;
+	private TeacherVO teacherVO;
 	private String goodName;
 	private Integer goodPrice;
 	private String goodInfo;
 	private byte[] goodImg;
 	private Integer goodStatus;
 	
-	public GoodsVO() {
-		super();
-	}
 	
+	@Id
+	@GenericGenerator(name = "name2", strategy = "generator.GoodsGenerator")
+	@GeneratedValue(generator="name2")    
 	public String getGoodId() {
 		return goodId;
 	}
 	public void setGoodId(String goodId) {
 		this.goodId = goodId;
 	}
-	public String getTeacherId() {
-		return teacherId;
+	
+	
+	@ManyToOne()
+	@JoinColumn(name = "TEACHERID") 
+	public TeacherVO getTeacherId() {
+		return teacherVO;
 	}
-	public void setTeacherId(String teacherId) {
-		this.teacherId = teacherId;
+	public void setTeacherId(TeacherVO teacherVO) {
+		this.teacherVO = teacherVO;
 	}
 	public String getGoodName() {
 		return goodName;

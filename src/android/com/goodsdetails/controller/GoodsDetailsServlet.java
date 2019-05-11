@@ -63,6 +63,7 @@ public class GoodsDetailsServlet extends HttpServlet {
 		
 		
 		
+		
 	}
 
 }

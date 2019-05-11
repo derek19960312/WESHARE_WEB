@@ -26,11 +26,12 @@ public class WebmDBServlet extends HttpServlet {
 
 		res.setContentType("video/webm");
 		ServletOutputStream out = res.getOutputStream();
-
+		
+		
 		try {
 			pstmt = con.prepareStatement(SELECT_STMT);
-			pstmt.setString(1,"LV00001"); //測試用
-//			pstmt.setString(1,req.getParameter("lsId"));
+//			pstmt.setString(1,"LV00001"); //測試用
+			pstmt.setString(1,req.getParameter("lsId"));
 			rs = pstmt.executeQuery();
 	 
 

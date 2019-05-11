@@ -15,6 +15,8 @@ public class GoodsDetailsService {
 		return dao.findByOrderId(goodOrderId);
 	}
 	
-	
+	public List<GoodsDetailsVO> findByGoodId(String goodId) {
+		return dao.getByGoodId(goodId);
+	}
 	
 }

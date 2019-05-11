@@ -23,6 +23,7 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 	
 	private static final String FIND_BY_ORDERID = "SELECT * FROM GOODSDETAILS WHERE GOODORDERID=?";
 	private static final String INSERT_BY_GOODSORDER = "INSERT INTO GoodsDetails VALUES (?,?,?,null,null)";
+	private static final String FIND_BY_GOODID = "SELECT * FROM GOODSDETAILS WHERE GOODID=?";
 	
 	
 	
@@ -330,6 +331,60 @@ public class GoodsDetailsJDBCDAO implements GoodsDetailsDAO_interface{
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
 			pstmt = con.prepareStatement(FIND_BY_ORDERID);
 			pstmt.setString(1, goodOrderId);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+			    details = new GoodsDetailsVO();
+				details.setGoodOrderId(rs.getString("GOODORDERID"));
+				details.setGoodId(rs.getString("GoodId"));
+				details.setGoodAmount(rs.getInt("GoodAmount"));
+				details.setGoodScore(rs.getFloat("GoodScore"));
+				details.setGoodRate(rs.getString("GoodRate"));
+				detailsList.add(details);
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}			
+		return detailsList;
+	}
+
+	@Override
+	public List<GoodsDetailsVO> getByGoodId(String goodId) {
+		List<GoodsDetailsVO> detailsList = new ArrayList<GoodsDetailsVO>();
+		GoodsDetailsVO details = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(FIND_BY_GOODID);
+			pstmt.setString(1, goodId);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {

@@ -55,5 +55,10 @@ public class GoodsService {
 	public List<GoodsVO> getAll(){
 		return dao.getAll();
 	}
+	
+	
+	public List<GoodsVO> getByTeacherId(String teacherId){
+		return dao.findGoodsByTeacherId(teacherId);
+	}
 }
 

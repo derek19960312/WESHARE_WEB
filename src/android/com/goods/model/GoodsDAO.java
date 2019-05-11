@@ -31,6 +31,8 @@ public class GoodsDAO implements GoodsDAO_interface {
 	private static final String UpdateStatus_STMT = "UPDATE Goods SET goodStatus = ? WHERE GOODID = ?";
 	private static final String GET_ALL = "SELECT GoodId, TeacherId, goodName, goodPrice, goodInfo, goodStatus FROM GOODS";
 	private static final String DELETE_STMT = "DELETE FROM GOODS WHERE goodId = ?";
+	private static final String FIND_BY_TEACHERID = "SELECT * FROM GOODS WHERE teacherId = ?";
+	
 
 	@Override
 	public void insert(GoodsVO goodVO) {
@@ -228,6 +230,58 @@ public class GoodsDAO implements GoodsDAO_interface {
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ALL);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				goodsVO = new GoodsVO();
+				goodsVO.setGoodId(rs.getString("goodId"));
+				goodsVO.setTeacherId(rs.getString("teacherId"));
+				goodsVO.setGoodName(rs.getString("goodName"));
+				goodsVO.setGoodPrice(rs.getInt("goodPrice"));
+				goodsVO.setGoodInfo(rs.getString("goodInfo"));
+				goodsVO.setGoodStatus(rs.getInt("goodStatus"));
+				goodsList.add(goodsVO);
+			}
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return goodsList;
+	}
+	
+	@Override
+	public List<GoodsVO> findGoodsByTeacherId(String teacherId) {
+		List<GoodsVO> goodsList = new ArrayList<GoodsVO>();
+		GoodsVO goodsVO = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(FIND_BY_TEACHERID);
+
+			pstmt.setString(1, teacherId);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {

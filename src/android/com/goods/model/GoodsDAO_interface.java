@@ -11,4 +11,5 @@ public interface GoodsDAO_interface {
 	GoodsVO findByPK(String goodId);
 	List<GoodsVO>getAll();
 	
+	List<GoodsVO> findGoodsByTeacherId(String teacherId);
 }
