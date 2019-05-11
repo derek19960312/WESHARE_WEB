@@ -2,29 +2,47 @@ package android.com.goodsdetails.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import android.com.goods.model.GoodsVO;
+import android.com.goodsorder.model.GoodsOrderVO;
+
+@Entity()
+@Table(name="GOODSDETAILS")
 public class GoodsDetailsVO implements Serializable{
 
-	private String goodOrderId;
-	private String goodId;
+	private static final long serialVersionUID = 1L;
+	
+	private GoodsOrderVO goodsOrderVO;
+	private GoodsVO goodsVO;
 	private Integer goodAmount;
 	private Float goodScore;
 	private String goodRate;
 	
-	public GoodsDetailsVO() {
-		super();
+	
+	@Id
+	@ManyToOne
+	@JoinColumn(name = "GOODORDERID")
+	public GoodsOrderVO getGoodsOrderVO() {
+		return goodsOrderVO;
 	}
-	public String getGoodOrderId() {
-		return goodOrderId;
+	public void setGoodsOrderVO(GoodsOrderVO goodsOrderVO) {
+		this.goodsOrderVO = goodsOrderVO;
 	}
-	public void setGoodOrderId(String goodOrderId) {
-		this.goodOrderId = goodOrderId;
+	@Id
+	@ManyToOne
+	@JoinColumn(name = "GOODID")
+	public GoodsVO getGoodsVO() {
+		return goodsVO;
 	}
-	public String getGoodId() {
-		return goodId;
+	public void setGoodsVO(GoodsVO goodsVO) {
+		this.goodsVO = goodsVO;
 	}
-	public void setGoodId(String goodId) {
-		this.goodId = goodId;
-	}
+	
 	public Integer getGoodAmount() {
 		return goodAmount;
 	}

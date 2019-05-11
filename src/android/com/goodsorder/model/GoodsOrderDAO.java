@@ -1,4 +1,4 @@
-package android.com.goods.model;
+package android.com.goodsorder.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,20 +13,19 @@ import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import android.com.teacher.model.TeacherVO;
+import android.com.member.model.MemberVO;
 import hibernate.util.HibernateUtil;
 import hibernate.util.TransBean2Map;
 
-public class GoodsDAO implements GoodsDAO_interface {
-
-	private static final String GET_ALL = "from GoodsVO";
-
+public class GoodsOrderDAO implements GoodsOrderDAO_interface {
+	private static final String GET_ALL = "from GoodsOrderVO";
+	
 	@Override
-	public void insert(GoodsVO goodVO) {
+	public void insert(GoodsOrderVO goodOrderVO) {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			session.beginTransaction();
-			session.saveOrUpdate(goodVO);
+			session.saveOrUpdate(goodOrderVO);
 			session.getTransaction().commit();
 		} catch (RuntimeException ex) {
 			session.getTransaction().rollback();
@@ -36,41 +35,26 @@ public class GoodsDAO implements GoodsDAO_interface {
 	}
 
 	@Override
-	public void update(GoodsVO goodVO) {
+	public void update(GoodsOrderVO goodOrderVO) {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			session.beginTransaction();
-			session.saveOrUpdate(goodVO);
+			session.saveOrUpdate(goodOrderVO);
 			session.getTransaction().commit();
 		} catch (RuntimeException ex) {
 			session.getTransaction().rollback();
 			throw ex;
 		}
-	}
-
-	@Override
-	public GoodsVO findByPK(String goodId) {
-		GoodsVO goodsVO = null;
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		try {
-			session.beginTransaction();
-			goodsVO = (GoodsVO) session.get(GoodsVO.class, goodId);
-			session.getTransaction().commit();
-		} catch (RuntimeException ex) {
-			session.getTransaction().rollback();
-			throw ex;
-		}
-		return goodsVO;
 
 	}
 
 	@Override
-	public List<GoodsVO> getAll() {
-		List<GoodsVO> list = null;
+	public List<GoodsOrderVO> getAll() {
+		List<GoodsOrderVO> list = null;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			session.beginTransaction();
-			Query<GoodsVO> query = session.createQuery(GET_ALL, GoodsVO.class);
+			Query<GoodsOrderVO> query = session.createQuery(GET_ALL, GoodsOrderVO.class);
 			list = query.getResultList();
 			session.getTransaction().commit();
 		} catch (RuntimeException ex) {
@@ -80,24 +64,23 @@ public class GoodsDAO implements GoodsDAO_interface {
 		return list;
 	}
 
-
-	public List<GoodsVO> findByAnyGoodsVO(GoodsVO goodsVO) {
-
+	@Override
+	public List<GoodsOrderVO> findByAnyGoodsOrderVO(GoodsOrderVO goodsOrderVO) {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		List<GoodsVO> list = null;
+		List<GoodsOrderVO> list = null;
 		try {
 			// 【●創建 CriteriaBuilder】
 			CriteriaBuilder builder = session.getCriteriaBuilder();
 			// 【●創建 CriteriaQuery】
-			CriteriaQuery<GoodsVO> criteriaQuery = builder.createQuery(GoodsVO.class);
+			CriteriaQuery<GoodsOrderVO> criteriaQuery = builder.createQuery(GoodsOrderVO.class);
 			// 【●創建 Root】
-			Root<GoodsVO> root = criteriaQuery.from(GoodsVO.class);
+			Root<GoodsOrderVO> root = criteriaQuery.from(GoodsOrderVO.class);
 
 			List<Predicate> predicateList = new ArrayList<Predicate>();
 			
 			
-			Map<String, Object> map = TransBean2Map.transBean2Map(goodsVO);
+			Map<String, Object> map = TransBean2Map.transBean2Map(goodsOrderVO);
 			
 			
 			Set<String> keys = map.keySet();
@@ -110,7 +93,7 @@ public class GoodsDAO implements GoodsDAO_interface {
 			
 			criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 			
-			Query<GoodsVO> query = session.createQuery(criteriaQuery); 
+			Query<GoodsOrderVO> query = session.createQuery(criteriaQuery); 
 			list = query.getResultList();
 
 			session.getTransaction().commit();
@@ -122,24 +105,20 @@ public class GoodsDAO implements GoodsDAO_interface {
 
 	}
 
-	public static Predicate get_aPredicate_For_AnyDB(CriteriaBuilder builder, Root<GoodsVO> root, String columnName,
+	public static Predicate get_aPredicate_For_AnyDB(CriteriaBuilder builder, Root<GoodsOrderVO> root, String columnName,
 			Object value) {
 
 		Predicate predicate = null;
 
-		if ("goodPrice".equals(columnName) || "goodStatus".equals(columnName)) 
+		if ("goodOrdStatus".equals(columnName) || "goodTotalPrice".equals(columnName)) 
 			predicate = builder.equal(root.get(columnName), (int)value);
-		else if ("goodId".equals(columnName) || "goodName".equals(columnName) || "goodInfo".equals(columnName)) 
+		else if ("goodOrderId".equals(columnName) || "buyerName".equals(columnName) || "buyerAddress".equals(columnName) || "buyerPhone".equals(columnName)) 
 			predicate = builder.like(root.get(columnName), "%" + value + "%");
-		else if ("teacherVO".equals(columnName)) 
-			predicate = builder.equal(root.get(columnName), ((TeacherVO)value).getTeacherId());
-
+		else if ("memberVO".equals(columnName)) 
+			predicate = builder.equal(root.get(columnName), ((MemberVO)value).getMemId());
+		else if ("goodDate".equals(columnName)) // 用於date
+			predicate = builder.equal(root.get(columnName), (java.sql.Timestamp)value);
 		return predicate;
 	}
-	
-	
-	
-	
-	
 
 }

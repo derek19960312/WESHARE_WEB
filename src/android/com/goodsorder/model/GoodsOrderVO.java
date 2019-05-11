@@ -2,29 +2,55 @@ package android.com.goodsorder.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import android.com.goodsdetails.model.GoodsDetailsVO;
+import android.com.member.model.MemberVO;
+@Entity
+@Table(name = "GOODSORDER")
 public class GoodsOrderVO implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private String goodOrderId;
-	private String memId;
+	private MemberVO memberVO;
 	private Integer goodTotalPrice;
 	private Timestamp goodDate;
 	private String buyerName;
 	private String buyerAddress;
 	private String buyerPhone;
 	private Integer goodOrdStatus;
+	private Set<GoodsDetailsVO> goodsDetailsVOs;
 	
+	
+	@Id
+	@GenericGenerator(name = "goodsorder", strategy = "generator.GoodsOrderGenerator")
+	@GeneratedValue(generator = "goodsorder")
 	public String getGoodOrderId() {
 		return goodOrderId;
 	}
 	public void setGoodOrderId(String goodOrderId) {
 		this.goodOrderId = goodOrderId;
 	}
-	public String getMemId() {
-		return memId;
+	
+	@ManyToOne()
+	@JoinColumn(name = "MEMID")
+	public MemberVO getMemberVO() {
+		return memberVO;
 	}
-	public void setMemId(String memId) {
-		this.memId = memId;
+	public void setMemberVO(MemberVO memberVO) {
+		this.memberVO = memberVO;
 	}
 	public Integer getGoodTotalPrice() {
 		return goodTotalPrice;
@@ -32,6 +58,8 @@ public class GoodsOrderVO implements Serializable{
 	public void setGoodTotalPrice(Integer goodTotalPrice) {
 		this.goodTotalPrice = goodTotalPrice;
 	}
+	
+	
 	public Timestamp getGoodDate() {
 		return goodDate;
 	}
@@ -62,9 +90,15 @@ public class GoodsOrderVO implements Serializable{
 	public void setGoodOrdStatus(Integer goodOrdStatus) {
 		this.goodOrdStatus = goodOrdStatus;
 	}
-	public GoodsOrderVO() {
 	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="goodsOrderVO")
+	public Set<GoodsDetailsVO> getGoodsDetailsVOs() {
+		return goodsDetailsVOs;
 	}
+	public void setGoodsDetailsVOs(Set<GoodsDetailsVO> goodsDetailsVOs) {
+		this.goodsDetailsVOs = goodsDetailsVOs;
+	}
+	
 	
 	
 	

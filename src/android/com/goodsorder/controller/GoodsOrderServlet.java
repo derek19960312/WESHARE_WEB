@@ -58,6 +58,7 @@ public class GoodsOrderServlet extends HttpServlet {
 			GoodsDetailsService goodDetailSvc = new GoodsDetailsService();
 
 			List<GoodsDetailsVO> goodsdetailsVO = new ArrayList<>();
+			
 			myGoods.stream().map(goods -> goods.getGoodId()).map(gId -> goodDetailSvc.findByGoodId(gId))
 					.forEach(g -> goodsdetailsVO.addAll(g));
 			

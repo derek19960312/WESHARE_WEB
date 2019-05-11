@@ -4,12 +4,10 @@ import java.util.List;
 
 public interface GoodsDAO_interface {
 	
-	void insert(GoodsVO goodVO);
-	void updateGood(GoodsVO goodVO);
-	void updateStatus(GoodsVO goodVO);
-	void delete(String goodId);
-	GoodsVO findByPK(String goodId);
-	List<GoodsVO>getAll();
+	public void insert(GoodsVO goodVO);
+	public void update(GoodsVO goodVO);
+	public GoodsVO findByPK(String goodId);
+	public List<GoodsVO> getAll();
 	
-	List<GoodsVO> findGoodsByTeacherId(String teacherId);
+	public List<GoodsVO> findByAnyGoodsVO(GoodsVO goodsVO);
 }

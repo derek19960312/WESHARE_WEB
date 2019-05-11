@@ -2,23 +2,43 @@ package android.com.goodslike.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import android.com.goods.model.GoodsVO;
+import android.com.member.model.MemberVO;
+@Entity
+@Table(name = "GOODSLIKE")
 public class GoodsLikeVO implements Serializable{
 
-	private String goodId;
-	private String memId;
+
+	private static final long serialVersionUID = 1L;
+	private GoodsVO goodsVO;
+	private MemberVO memberVO;
+	
+	@Id
+	@ManyToOne()
+	@JoinColumn(name = "GOODID") 
+	public GoodsVO getGoodId() {
+		return goodsVO;
+	}
+	
+	public void setGoodId(GoodsVO goodsVO) {
+		this.goodsVO = goodsVO;
+	}
 	
 	
-	public String getGoodId() {
-		return goodId;
+	@Id
+	@ManyToOne()
+	@JoinColumn(name = "MEMBERID") 
+	public MemberVO getMemId() {
+		return memberVO;
 	}
-	public void setGoodId(String goodId) {
-		this.goodId = goodId;
-	}
-	public String getMemId() {
-		return memId;
-	}
-	public void setMemId(String memId) {
-		this.memId = memId;
+	public void setMemId(MemberVO memberVO) {
+		this.memberVO = memberVO;
 	}
 	
 }

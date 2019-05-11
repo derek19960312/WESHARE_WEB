@@ -1,6 +1,17 @@
 package android.com.teacher.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name = "TEACHER")
 public class TeacherVO implements java.io.Serializable{
+
+	private static final long serialVersionUID = 1L;
 	private String teacherId;
 	private String memId;
 	private Integer teacherStatus;
@@ -9,6 +20,9 @@ public class TeacherVO implements java.io.Serializable{
 	private byte[] diplomaImg;  //學歷照片
 	private String teacherText; //老師介紹
 	
+	@Id
+	@GenericGenerator(name = "teacher", strategy = "generator.TeacherGenerator")
+	@GeneratedValue(generator = "teacher")
 	public String getTeacherId() {
 		return teacherId;
 	}

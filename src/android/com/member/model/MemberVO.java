@@ -2,7 +2,13 @@ package android.com.member.model;
 
 import java.sql.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+@Entity
+@Table(name = "MEMBER")
 public class MemberVO  implements java.io.Serializable {
+	private static final long serialVersionUID = 1L;
 	private String memId;
 	private String memSkill;
 	private String memWantSkill;
@@ -24,10 +30,8 @@ public class MemberVO  implements java.io.Serializable {
 	private Integer memStatus;
 
 	
-	public MemberVO() {
-
-	}
-
+	
+	@Id
 	public String getMemId() {
 		return memId;
 	}

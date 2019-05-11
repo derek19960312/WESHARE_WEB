@@ -40,26 +40,26 @@ public class GoodsDetailsServlet extends HttpServlet {
 		System.out.println(action);
 		
 		
-		
-		if("find_good_detail_by_orderId".equals(action)) {
-			
-			String goodOrderId = req.getParameter("goodOrderId");
-			GoodsDetailsService gdetailSvc = new GoodsDetailsService();
-			List<GoodsDetailsVO> goodsDetailsVOs =  gdetailSvc.findByOrderId(goodOrderId);
-
-			
-			GoodsService goodsSvc = new GoodsService();
-			List<GoodsVO> goodsVOs = new ArrayList<>();
-			for(GoodsDetailsVO goodsDetailsVO : goodsDetailsVOs) {
-				GoodsVO goodsVO = goodsSvc.getOneGood(goodsDetailsVO.getGoodId());
-				goodsVO.setGoodStatus(goodsDetailsVO.getGoodAmount());
-				goodsVOs.add(goodsVO);		
-			}
-			
-			out.print(gson.toJson(goodsVOs));
-			
-			
-		}
+//		
+//		if("find_good_detail_by_orderId".equals(action)) {
+//			
+//			String goodOrderId = req.getParameter("goodOrderId");
+//			GoodsDetailsService gdetailSvc = new GoodsDetailsService();
+//			List<GoodsDetailsVO> goodsDetailsVOs =  gdetailSvc.findByOrderId(goodOrderId);
+//
+//			
+//			GoodsService goodsSvc = new GoodsService();
+//			List<GoodsVO> goodsVOs = new ArrayList<>();
+//			for(GoodsDetailsVO goodsDetailsVO : goodsDetailsVOs) {
+//				GoodsVO goodsVO = goodsSvc.getOneGood(goodsDetailsVO.getGoodId());
+//				goodsVO.setGoodStatus(goodsDetailsVO.getGoodAmount());
+//				goodsVOs.add(goodsVO);		
+//			}
+//			
+//			out.print(gson.toJson(goodsVOs));
+//			
+//			
+//		}
 		
 		
 		

@@ -7,208 +7,126 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
+import android.com.goods.model.GoodsVO;
+import android.com.member.model.MemberVO;
+import android.com.teacher.model.TeacherVO;
+import hibernate.util.HibernateUtil;
+import hibernate.util.TransBean2Map;
 
 public class GoodsLikeDAO implements GoodsLikeDAO_interface {
 
-	private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
-	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
-	private static final String USER = "weshare";
-	private static final String PASSWORD = "123456";
 
-	private static final String INSERT_STMT = "INSERT INTO GoodsLike VALUES (?,?)";
-	private static final String DELETE_STMT = "DELETE FROM GoodsLike where goodId = ? and memId = ? ";
 	private static final String GET_ALL = "SELECT * FROM GoodsLike";
-	private static final String GET_BY_MEMID = "SELECT * FROM GoodsLike where memId = ?";
 
 	@Override
 	public void insert(GoodsLikeVO goodLikeVO) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
-			pstmt = con.prepareStatement(INSERT_STMT);
-			pstmt.setString(1, goodLikeVO.getGoodId());
-			pstmt.setString(2, goodLikeVO.getMemId());
-			pstmt.executeUpdate();
-			System.out.println("已新增一筆資料");
-
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
+			session.beginTransaction();
+			session.saveOrUpdate(goodLikeVO);
+			session.getTransaction().commit();
+		} catch (RuntimeException ex) {
+			session.getTransaction().rollback();
+			throw ex;
 		}
+		
 	}
 
 	@Override
-	public void delete(String goodId, String memId) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
+	public void delete(GoodsLikeVO goodLikeVO) {
+		
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
-			pstmt = con.prepareStatement(DELETE_STMT);
-			pstmt.setString(1, goodId);
-			pstmt.setString(2, memId);
-			pstmt.executeUpdate();
-			System.out.println("已刪除一筆資料");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-				}
-			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-				}
-			}
+			session.beginTransaction();
+			session.delete(goodLikeVO);
+			session.getTransaction().commit();
+		} catch (RuntimeException ex) {
+			session.getTransaction().rollback();
+			throw ex;
 		}
 	}
 
 	@Override
 	public List<GoodsLikeVO> getAll() {
-		List<GoodsLikeVO> likeList = new ArrayList<GoodsLikeVO>();
-		GoodsLikeVO like = null;
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
+		List<GoodsLikeVO> list = null;
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
-			pstmt = con.prepareStatement(GET_ALL);
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				like = new GoodsLikeVO();
-				like.setGoodId(rs.getString("GoodId"));
-				like.setMemId(rs.getString("MemId"));
-				likeList.add(like);
-			}
-
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (rs == null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			if (pstmt == null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace();
-				}
-			}
-			if (con == null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			session.beginTransaction();
+			Query<GoodsLikeVO> query = session.createQuery(GET_ALL, GoodsLikeVO.class);
+			list = query.getResultList();
+			session.getTransaction().commit();
+		} catch (RuntimeException ex) {
+			session.getTransaction().rollback();
+			throw ex;
 		}
-		return likeList;
+		return list;
 	}
-	
+
 	@Override
-	public List<GoodsLikeVO> getByMemId(String memId) {
-		List<GoodsLikeVO> likeList = new ArrayList<GoodsLikeVO>();
-		GoodsLikeVO like = null;
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
+	public List<GoodsLikeVO> findByAnyGoodsLikeVO(GoodsLikeVO goodLikeVO) {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		List<GoodsLikeVO> list = null;
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
-			pstmt = con.prepareStatement(GET_BY_MEMID);
-			pstmt.setString(1, memId);
-			rs = pstmt.executeQuery();
+			// 【●創建 CriteriaBuilder】
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			// 【●創建 CriteriaQuery】
+			CriteriaQuery<GoodsLikeVO> criteriaQuery = builder.createQuery(GoodsLikeVO.class);
+			// 【●創建 Root】
+			Root<GoodsLikeVO> root = criteriaQuery.from(GoodsLikeVO.class);
+
+			List<Predicate> predicateList = new ArrayList<Predicate>();
 			
-			while (rs.next()) {
-				like = new GoodsLikeVO();
-				like.setGoodId(rs.getString("GoodId"));
-				like.setMemId(rs.getString("MemId"));
-				likeList.add(like);
+			
+			Map<String, Object> map = TransBean2Map.transBean2Map(goodLikeVO);
+			
+			
+			Set<String> keys = map.keySet();
+			for (String key : keys) {
+				Object value = map.get(key);
+				if (value != null) {
+					predicateList.add(get_aPredicate_For_AnyDB(builder, root, key, value));
+				}
 			}
 			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (rs == null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			if (pstmt == null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace();
-				}
-			}
-			if (con == null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+			
+			Query<GoodsLikeVO> query = session.createQuery(criteriaQuery); 
+			list = query.getResultList();
+
+			session.getTransaction().commit();
+		} catch (RuntimeException ex) {
+			session.getTransaction().rollback();
+			throw ex;
 		}
-		return likeList;
+		return list;
+
 	}
 
-	public static void main(String[] args) {
+	public static Predicate get_aPredicate_For_AnyDB(CriteriaBuilder builder, Root<GoodsLikeVO> root, String columnName,
+			Object value) {
 
-		GoodsLikeDAO dao = new GoodsLikeDAO();
-		// insert
-//		GoodsLikeVO goodLikeVO = new GoodsLikeVO();
-//		goodLikeVO.setGoodId("GD00003");
-//		goodLikeVO.setMemId("weshare03");
-//		dao.insert(goodLikeVO);
+		Predicate predicate = null;
+
 		
-////		 delete
-//		dao.delete("GD00002", "weshare01");
-//		
-		// getAll
-//		List<GoodsLikeVO> list = dao.getAll();
-//		for(GoodsLikeVO likes : list) {
-//			System.out.print(likes.getGoodId()+ ",");
-//			System.out.print(likes.getMemId());
-//			System.out.println();
-//		}
+		if ("goodsVO".equals(columnName)) 
+			predicate = builder.equal(root.get(columnName), ((GoodsVO)value).getGoodId());
+		else if ("memberVO".equals(columnName)) 
+			predicate = builder.equal(root.get(columnName), ((MemberVO)value).getMemId());
+
+		return predicate;
 	}
+
+	
 }

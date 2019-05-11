@@ -1,64 +1,33 @@
 package android.com.goods.model;
 
 import java.util.List;
-			
-public class GoodsService {  
-	
+
+public class GoodsService {
+
 	private GoodsDAO_interface dao;
 
 	public GoodsService() {
 		dao = new GoodsDAO();
-		
+
 	}
 	
-	public GoodsVO insertGood(String teacherId, String goodName, Integer goodPrice,String goodInfo,byte[] goodImg,Integer goodStatus) {
-		GoodsVO goodsVO = new GoodsVO();
-		goodsVO.setTeacherId(teacherId);
-		goodsVO.setGoodName(goodName);
-		goodsVO.setGoodPrice(goodPrice);
-		goodsVO.setGoodInfo(goodInfo);
-		goodsVO.setGoodImg(goodImg);
-		goodsVO.setGoodStatus(goodStatus);
+	public void add(GoodsVO goodsVO) {
 		dao.insert(goodsVO);
-		
-		return goodsVO;
 	}
-	
-	public GoodsVO updateGood(String goodId, String teacherId, String goodName, Integer goodPrice, String goodInfo, byte[] goodImg, Integer goodStatus) {
-		
-		GoodsVO goodsVO = new GoodsVO();
-		goodsVO.setGoodId(goodId);
-		goodsVO.setTeacherId(teacherId);
-		goodsVO.setGoodName(goodName);
-		goodsVO.setGoodPrice(goodPrice);
-		goodsVO.setGoodInfo(goodInfo);
-		goodsVO.setGoodImg(goodImg);
-		goodsVO.setGoodStatus(goodStatus);
-		dao.updateGood(goodsVO);
-		
-		return goodsVO;
+
+	public void update(GoodsVO goodsVO) {
+		dao.update(goodsVO);
 	}
-	
-	public void delete(String goodId) {
-		dao.delete(goodId);
-	}
-	
-	public void updateStatus(GoodsVO goodVO) {
-		dao.updateStatus(goodVO);
-	}
-	
-	public GoodsVO getOneGood(String goodId) {		
-//		GoodsVO goodsVO = dao.findByPK(goodId);		
+
+	public GoodsVO getOneGood(String goodId) {
 		return dao.findByPK(goodId);
 	}
-	
-	public List<GoodsVO> getAll(){
+
+	public List<GoodsVO> getAll() {
 		return dao.getAll();
 	}
-	
-	
-	public List<GoodsVO> getByTeacherId(String teacherId){
-		return dao.findGoodsByTeacherId(teacherId);
+
+	public List<GoodsVO> findByAnyGoodsVO(GoodsVO goodsVO) {
+		return dao.findByAnyGoodsVO(goodsVO);
 	}
 }
-

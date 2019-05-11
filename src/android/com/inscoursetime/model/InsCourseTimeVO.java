@@ -3,6 +3,10 @@ package android.com.inscoursetime.model;
 import java.sql.Timestamp ;
 
 public class InsCourseTimeVO implements java.io.Serializable  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String inscTimeId;
 	private String inscId;
 	private Timestamp inscMFD;

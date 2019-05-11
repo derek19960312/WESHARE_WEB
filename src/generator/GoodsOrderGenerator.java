@@ -10,7 +10,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
 
-public class GoodsGenerator implements IdentifierGenerator {
+public class GoodsOrderGenerator implements IdentifierGenerator {
 
 //	public Serializable generate(SessionImplementor session, Object object)
 	public Serializable generate(SharedSessionContractImplementor session, Object object)
@@ -18,19 +18,19 @@ public class GoodsGenerator implements IdentifierGenerator {
 
 		
 		System.out.println(String.valueOf(object));
-		String prefix = "GO0000";
-		String goodOrderId = null;
+		String prefix = "GD0000";
+		String goodId = null;
 		Connection con = session.connection();
 		try {
 			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT GoodsOrder_seq.NEXTVAL as nextval FROM DUAL");
+			ResultSet rs = stmt.executeQuery("SELECT Goods_seq.NEXTVAL as nextval FROM DUAL");
 			rs.next();
 			int nextval = rs.getInt("nextval");
-			goodOrderId = prefix + nextval;
+			goodId = prefix + nextval;
 //			con.close();   //於Hibernate 5 不可關閉連線
 		} catch (SQLException e) {
 			throw new HibernateException("Unable to generate Sequence");
 		}
-		return goodOrderId;
+		return goodId;
 	}
 }

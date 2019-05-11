@@ -7,11 +7,8 @@ import android.com.goods.model.GoodsVO;
 
 public interface GoodsOrderDAO_interface {
 	
-	void insert(GoodsOrderVO goodOrderVO,Map<GoodsVO,Integer> myCart);
-	void updateBuyerData(GoodsOrderVO goodOrderVO);
-	void updateAll(GoodsOrderVO goodOrderVO);
-	void delete(String goodOrderId);
-	GoodsOrderVO findByPk(String memId);
-	List<GoodsOrderVO> getAll();
-	public List<GoodsOrderVO> findGoodByMemId(String memId);
+	public void insert(GoodsOrderVO goodOrderVO);
+	public void update(GoodsOrderVO goodOrderVO);
+	public List<GoodsOrderVO> getAll();
+	public List<GoodsOrderVO> findByAnyGoodsOrderVO(GoodsOrderVO goodOrderVO);
 }

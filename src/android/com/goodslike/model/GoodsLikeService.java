@@ -10,29 +10,21 @@ public class GoodsLikeService {
 		dao = new GoodsLikeDAO();
 	}
 	
-	public GoodsLikeVO addGoodsLike(String memId, String goodId) {
-
-		GoodsLikeVO goodsLikeVO = new GoodsLikeVO();
-
-		goodsLikeVO.setMemId(memId);
-		goodsLikeVO.setGoodId(goodId);
+	public void addGoodsLike(GoodsLikeVO goodsLikeVO) {
 		dao.insert(goodsLikeVO);
-
-		return goodsLikeVO;
-
 	}
 
-	public void deleteGoodsLike(String memId, String goodId) {
-		dao.delete(goodId, memId);
-	}
-
-	public List<GoodsLikeVO> getMemIdGoodsLike(String memId) {
-		return dao.getByMemId(memId);
+	public void deleteGoodsLike(GoodsLikeVO goodsLikeVO) {
+		dao.delete(goodsLikeVO);
 	}
 
 	public List<GoodsLikeVO> getAll() {
 		return dao.getAll();
 	}
 	
+	
+	public List<GoodsLikeVO> findByAnyGoodsLikeVO(GoodsLikeVO goodsLikeVO) {
+		return dao.findByAnyGoodsLikeVO(goodsLikeVO);
+	}
 
 }
