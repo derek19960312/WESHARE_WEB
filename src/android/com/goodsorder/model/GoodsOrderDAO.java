@@ -19,7 +19,8 @@ import hibernate.util.TransBean2Map;
 
 public class GoodsOrderDAO implements GoodsOrderDAO_interface {
 	private static final String GET_ALL = "from GoodsOrderVO";
-	
+	private static final String FIND_BY_MEMID = "from GoodsOrderVO where memId= ?0";
+
 	@Override
 	public void insert(GoodsOrderVO goodOrderVO) {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -65,6 +66,23 @@ public class GoodsOrderDAO implements GoodsOrderDAO_interface {
 	}
 
 	@Override
+	public List<GoodsOrderVO> findMyGoodOrderByMemId(String memId) {
+		List<GoodsOrderVO> list = null;
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		try {
+			session.beginTransaction();
+			Query<GoodsOrderVO> query = session.createQuery(FIND_BY_MEMID, GoodsOrderVO.class);
+			query.setParameter(0, memId);
+			list = query.getResultList();
+			session.getTransaction().commit();
+		} catch (RuntimeException ex) {
+			session.getTransaction().rollback();
+			throw ex;
+		}
+		return list;
+	}
+
+	@Override
 	public List<GoodsOrderVO> findByAnyGoodsOrderVO(GoodsOrderVO goodsOrderVO) {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
@@ -78,11 +96,9 @@ public class GoodsOrderDAO implements GoodsOrderDAO_interface {
 			Root<GoodsOrderVO> root = criteriaQuery.from(GoodsOrderVO.class);
 
 			List<Predicate> predicateList = new ArrayList<Predicate>();
-			
-			
+
 			Map<String, Object> map = TransBean2Map.transBean2Map(goodsOrderVO);
-			
-			
+
 			Set<String> keys = map.keySet();
 			for (String key : keys) {
 				Object value = map.get(key);
@@ -90,10 +106,10 @@ public class GoodsOrderDAO implements GoodsOrderDAO_interface {
 					predicateList.add(get_aPredicate_For_AnyDB(builder, root, key, value));
 				}
 			}
-			
+
 			criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-			
-			Query<GoodsOrderVO> query = session.createQuery(criteriaQuery); 
+
+			Query<GoodsOrderVO> query = session.createQuery(criteriaQuery);
 			list = query.getResultList();
 
 			session.getTransaction().commit();
@@ -105,20 +121,20 @@ public class GoodsOrderDAO implements GoodsOrderDAO_interface {
 
 	}
 
-	public static Predicate get_aPredicate_For_AnyDB(CriteriaBuilder builder, Root<GoodsOrderVO> root, String columnName,
-			Object value) {
+	public static Predicate get_aPredicate_For_AnyDB(CriteriaBuilder builder, Root<GoodsOrderVO> root,
+			String columnName, Object value) {
 
 		Predicate predicate = null;
 
-		if ("goodOrdStatus".equals(columnName) || "goodTotalPrice".equals(columnName)) 
-			predicate = builder.equal(root.get(columnName), (int)value);
-		else if ("goodOrderId".equals(columnName) || "buyerName".equals(columnName) || "buyerAddress".equals(columnName) || "buyerPhone".equals(columnName)) 
+		if ("goodOrdStatus".equals(columnName) || "goodTotalPrice".equals(columnName))
+			predicate = builder.equal(root.get(columnName), (int) value);
+		else if ("goodOrderId".equals(columnName) || "buyerName".equals(columnName) || "buyerAddress".equals(columnName)
+				|| "buyerPhone".equals(columnName))
 			predicate = builder.like(root.get(columnName), "%" + value + "%");
-		else if ("memberVO".equals(columnName)) 
-			predicate = builder.equal(root.get(columnName), ((MemberVO)value).getMemId());
+		else if ("memberVO".equals(columnName))
+			predicate = builder.equal(root.get(columnName), ((MemberVO) value).getMemId());
 		else if ("goodDate".equals(columnName)) // 用於date
-			predicate = builder.equal(root.get(columnName), (java.sql.Timestamp)value);
+			predicate = builder.equal(root.get(columnName), (java.sql.Timestamp) value);
 		return predicate;
 	}
-
 }

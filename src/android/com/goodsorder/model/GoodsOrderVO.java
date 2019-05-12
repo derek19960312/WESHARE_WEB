@@ -24,7 +24,7 @@ public class GoodsOrderVO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private String goodOrderId;
-	private MemberVO memberVO;
+	private String memId;
 	private Integer goodTotalPrice;
 	private Timestamp goodDate;
 	private String buyerName;
@@ -35,7 +35,7 @@ public class GoodsOrderVO implements Serializable{
 	
 	
 	@Id
-	@GenericGenerator(name = "goodsorder", strategy = "generator.GoodsOrderGenerator")
+	@GenericGenerator(name = "goodsorder", strategy = "generator.MyGenerator")
 	@GeneratedValue(generator = "goodsorder")
 	public String getGoodOrderId() {
 		return goodOrderId;
@@ -44,13 +44,11 @@ public class GoodsOrderVO implements Serializable{
 		this.goodOrderId = goodOrderId;
 	}
 	
-	@ManyToOne()
-	@JoinColumn(name = "MEMID")
-	public MemberVO getMemberVO() {
-		return memberVO;
+	public String getMemId() {
+		return memId;
 	}
-	public void setMemberVO(MemberVO memberVO) {
-		this.memberVO = memberVO;
+	public void setMemId(String memId) {
+		this.memId = memId;
 	}
 	public Integer getGoodTotalPrice() {
 		return goodTotalPrice;

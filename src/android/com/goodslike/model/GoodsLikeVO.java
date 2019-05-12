@@ -22,22 +22,22 @@ public class GoodsLikeVO implements Serializable{
 	@Id
 	@ManyToOne()
 	@JoinColumn(name = "GOODID") 
-	public GoodsVO getGoodId() {
+	public GoodsVO getGoodsVO() {
 		return goodsVO;
 	}
 	
-	public void setGoodId(GoodsVO goodsVO) {
+	public void setGoodsVO(GoodsVO goodsVO) {
 		this.goodsVO = goodsVO;
 	}
 	
 	
 	@Id
 	@ManyToOne()
-	@JoinColumn(name = "MEMBERID") 
-	public MemberVO getMemId() {
+	@JoinColumn(name = "MEMID") 
+	public MemberVO getMemberVO() {
 		return memberVO;
 	}
-	public void setMemId(MemberVO memberVO) {
+	public void setMemberVO(MemberVO memberVO) {
 		this.memberVO = memberVO;
 	}
 	

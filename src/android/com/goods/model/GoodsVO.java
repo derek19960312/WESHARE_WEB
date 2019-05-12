@@ -20,15 +20,17 @@ public class GoodsVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String goodId;
-	private TeacherVO teacherVO;
+	private String teacherId;
 	private String goodName;
 	private Integer goodPrice;
 	private String goodInfo;
 	private byte[] goodImg;
 	private Integer goodStatus;
 
+	
+	
 	@Id
-	@GenericGenerator(name = "goods", strategy = "generator.GoodsGenerator")
+	@GenericGenerator(name = "goods", strategy = "generator.MyGenerator")
 	@GeneratedValue(generator = "goods")
 	public String getGoodId() {
 		return goodId;
@@ -38,14 +40,13 @@ public class GoodsVO implements Serializable {
 		this.goodId = goodId;
 	}
 
-	@ManyToOne()
-	@JoinColumn(name = "TEACHERID")
-	public TeacherVO getTeacherId() {
-		return teacherVO;
+	
+	public String getTeacherId() {
+		return teacherId;
 	}
 
-	public void setTeacherId(TeacherVO teacherVO) {
-		this.teacherVO = teacherVO;
+	public void setTeacherId(String teacherId) {
+		this.teacherId = teacherId;
 	}
 
 	public String getGoodName() {

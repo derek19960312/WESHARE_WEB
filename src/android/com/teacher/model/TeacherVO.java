@@ -21,7 +21,7 @@ public class TeacherVO implements java.io.Serializable{
 	private String teacherText; //老師介紹
 	
 	@Id
-	@GenericGenerator(name = "teacher", strategy = "generator.TeacherGenerator")
+	@GenericGenerator(name = "teacher", strategy = "generator.MyGenerator")
 	@GeneratedValue(generator = "teacher")
 	public String getTeacherId() {
 		return teacherId;

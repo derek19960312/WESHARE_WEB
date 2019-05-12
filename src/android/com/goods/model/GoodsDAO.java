@@ -19,6 +19,7 @@ import hibernate.util.TransBean2Map;
 
 public class GoodsDAO implements GoodsDAO_interface {
 
+	//private static final String GET_ALL = "select goodId, teacherId, goodName, goodPrice, goodInfo, goodStatus from Goods";
 	private static final String GET_ALL = "from GoodsVO";
 
 	@Override
@@ -77,6 +78,12 @@ public class GoodsDAO implements GoodsDAO_interface {
 			session.getTransaction().rollback();
 			throw ex;
 		}
+		
+		for(GoodsVO gvo : list) {
+			gvo.setGoodImg(null);
+		}
+		
+		
 		return list;
 	}
 

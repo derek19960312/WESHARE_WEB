@@ -3,6 +3,7 @@ package android.com.goodsdetails.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,7 +18,7 @@ public class GoodsDetailsVO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private GoodsOrderVO goodsOrderVO;
+	private transient GoodsOrderVO goodsOrderVO;
 	private GoodsVO goodsVO;
 	private Integer goodAmount;
 	private Float goodScore;

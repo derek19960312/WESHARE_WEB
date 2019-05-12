@@ -21,10 +21,18 @@ public class GoodsLikeService {
 	public List<GoodsLikeVO> getAll() {
 		return dao.getAll();
 	}
-	
-	
-	public List<GoodsLikeVO> findByAnyGoodsLikeVO(GoodsLikeVO goodsLikeVO) {
-		return dao.findByAnyGoodsLikeVO(goodsLikeVO);
+	public List<GoodsLikeVO> findByGoodId(String goodId) {
+		return dao.findByGoodId(goodId);
 	}
+	public List<GoodsLikeVO> findByMemId(String memId) {
+		return dao.findByMemId(memId);
+	}
+	
+	
+	
+	
+//	public List<GoodsLikeVO> findByAnyGoodsLikeVO(GoodsLikeVO goodsLikeVO) {
+//		return dao.findByAnyGoodsLikeVO(goodsLikeVO);
+//	}
 
 }

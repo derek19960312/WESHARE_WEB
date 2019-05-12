@@ -21,6 +21,9 @@ public class GoodsOrderService {
 	public List<GoodsOrderVO> getAllOrder() {
 		return dao.getAll();
 	}
+	public List<GoodsOrderVO> findMyGoodOrderByMemId(String memId) {
+		return dao.findMyGoodOrderByMemId(memId);
+	}
 	
 	public List<GoodsOrderVO> findByAnyGoodsOrderVO(GoodsOrderVO goodsOrderVO) {
 		return dao.findByAnyGoodsOrderVO(goodsOrderVO);

@@ -6,8 +6,10 @@ import java.lang.reflect.Type;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -50,41 +52,19 @@ public class GoodsOrderServlet extends HttpServlet {
 
 		if ("find_good_order_by_TeacherId".equals(action)) {
 
-			String teacherId = req.getParameter("teacherId");
-
-			GoodsService goodSvc = new GoodsService();
-			List<GoodsVO> myGoods = goodSvc.getByTeacherId(teacherId);
-
-			GoodsDetailsService goodDetailSvc = new GoodsDetailsService();
-
-			List<GoodsDetailsVO> goodsdetailsVO = new ArrayList<>();
-			
-			myGoods.stream().map(goods -> goods.getGoodId()).map(gId -> goodDetailSvc.findByGoodId(gId))
-					.forEach(g -> goodsdetailsVO.addAll(g));
-			
-			
-			GoodsOrderService goSvc = new GoodsOrderService();			
-			
-			Map<GoodsOrderVO, List<GoodsDetailsVO>> goodDetailMap = goodsdetailsVO.stream()
-					.collect(Collectors.groupingBy(gdvo -> (GoodsOrderVO)goSvc.findGoodByMemId(gdvo.getGoodOrderId())));
-			
-			
-			
-			Gson gon = new GsonBuilder()
-					.enableComplexMapKeySerialization()
-					.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-			
-			out.print(gon.toJson(goodDetailMap));
-			
-
 		}
 
 		if ("find_my_good_by_memId".equals(action)) {
 
 			String memId = req.getParameter("memId");
 			GoodsOrderService goSvc = new GoodsOrderService();
-			List<GoodsOrderVO> gvos = goSvc.findGoodByMemId(memId);
-
+			List<GoodsOrderVO> gvos = goSvc.findMyGoodOrderByMemId(memId);
+			for(GoodsOrderVO govo : gvos) {
+				for(GoodsDetailsVO gdvo : govo.getGoodsDetailsVOs()) {
+					gdvo.getGoodsVO().setGoodImg(null);
+				}
+			}
+			
 			out.print(gson.toJson(gvos));
 
 		}
@@ -113,10 +93,19 @@ public class GoodsOrderServlet extends HttpServlet {
 			goodsOrderVO.setBuyerPhone(memberVO.getMemPhone());
 			goodsOrderVO.setGoodOrdStatus(1);
 
+			// 建立訂單詳情
+			Set<GoodsDetailsVO> goodsDetailsVOs = new HashSet<>();
+			for (GoodsVO gvo : myCart.keySet()) {
+				GoodsDetailsVO gdvo = new GoodsDetailsVO();
+				gdvo.setGoodsVO(gvo);
+				gdvo.setGoodsOrderVO(goodsOrderVO);
+				gdvo.setGoodAmount(myCart.get(gvo));
+			}
+			goodsOrderVO.setGoodsDetailsVOs(goodsDetailsVOs);
+
 			// 建立訂單Service
 			GoodsOrderService goodsOrderSvc = new GoodsOrderService();
-
-			goodsOrderSvc.insert(goodsOrderVO, myCart);
+			goodsOrderSvc.add(goodsOrderVO);
 
 			// 扣除款項
 			memberVO.setMemBalance(memberVO.getMemBalance() - goodsOrderVO.getGoodTotalPrice());

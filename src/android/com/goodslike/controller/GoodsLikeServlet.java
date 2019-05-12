@@ -17,6 +17,7 @@ import android.com.goods.model.GoodsService;
 import android.com.goods.model.GoodsVO;
 import android.com.goodslike.model.GoodsLikeService;
 import android.com.goodslike.model.GoodsLikeVO;
+import android.com.member.model.MemberVO;
 
 @WebServlet("/android/GoodsLikeServlet")
 public class GoodsLikeServlet extends HttpServlet {
@@ -40,8 +41,19 @@ public class GoodsLikeServlet extends HttpServlet {
 			String goodId = req.getParameter("goodId");
 			String memId = req.getParameter("memId");
 			GoodsLikeService glSvc = new GoodsLikeService();
+			
+			GoodsLikeVO goodsLikeVO = new GoodsLikeVO();
 
-			glSvc.addGoodsLike(memId, goodId);
+			GoodsVO goodsVO = new GoodsVO();
+			goodsVO.setGoodId(goodId);
+
+			MemberVO memberVO = new MemberVO();
+			memberVO.setMemId(memId);
+
+			goodsLikeVO.setGoodsVO(goodsVO);
+			goodsLikeVO.setMemberVO(memberVO);
+
+			glSvc.addGoodsLike(goodsLikeVO);
 
 		}
 
@@ -50,25 +62,43 @@ public class GoodsLikeServlet extends HttpServlet {
 			String goodId = req.getParameter("goodId");
 			String memId = req.getParameter("memId");
 			GoodsLikeService glSvc = new GoodsLikeService();
-			glSvc.deleteGoodsLike(memId, goodId);
+			
+			
+
+			GoodsVO goodsVO = new GoodsVO();
+			goodsVO.setGoodId(goodId);
+
+			MemberVO memberVO = new MemberVO();
+			memberVO.setMemId(memId);
+			
+			GoodsLikeVO goodsLikeVO = new GoodsLikeVO();
+			goodsLikeVO.setGoodsVO(goodsVO);
+			goodsLikeVO.setMemberVO(memberVO);
+			
+			glSvc.deleteGoodsLike(goodsLikeVO);
 		}
 
 		// 查看我的收藏
 		if ("look_my_favorites".equals(action)) {
 			String memId = req.getParameter("memId");
 			GoodsLikeService glSvc = new GoodsLikeService();
-			List<GoodsLikeVO> goodsLikeVOs = glSvc.getMemIdGoodsLike(memId);
-			System.out.println(memId);
 			
-			GoodsService goodsSvc = new GoodsService();
+//			MemberVO memberVO = new MemberVO();
+//			memberVO.setMemId(memId);
+//			
+//			GoodsLikeVO goodsLikeVO = new GoodsLikeVO();
+//			goodsLikeVO.setMemberVO(memberVO);
+			
+			List<GoodsLikeVO> goodsLikeVOs = glSvc.findByMemId(memId);
+
 			List<GoodsVO> GoodsVOs = new ArrayList<>();
 
-			for(GoodsLikeVO glvo : goodsLikeVOs) {
-				GoodsVO gvo = goodsSvc.getOneGood(glvo.getGoodId());
-				gvo.setGoodImg(null);
-				GoodsVOs.add(gvo);
+			for (GoodsLikeVO glvo : goodsLikeVOs) {
+				GoodsVO goodsVO = glvo.getGoodsVO();
+				goodsVO.setGoodImg(null);
+				GoodsVOs.add(goodsVO);
 			}
-			
+
 			out.print(gson.toJson(GoodsVOs));
 
 		}

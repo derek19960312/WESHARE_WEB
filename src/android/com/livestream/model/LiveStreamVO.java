@@ -23,7 +23,7 @@ public class LiveStreamVO implements Serializable {
 	
 	
 	@Id
-	@GenericGenerator(name = "name2", strategy = "generator.LiveStreamGenerator")
+	@GenericGenerator(name = "name2", strategy = "generator.MyGenerator")
 	@GeneratedValue(generator = "name2")
 	public String getLsId() {
 		return lsId;
