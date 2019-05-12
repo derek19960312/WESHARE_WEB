@@ -18,7 +18,7 @@ public class GoodsOrderService {
 		dao.update(goodsOrderVO);
 	}
 	
-	public List<GoodsOrderVO> getAllOrder() {
+	public List<GoodsOrderVO> getAll() {
 		return dao.getAll();
 	}
 	public List<GoodsOrderVO> findMyGoodOrderByMemId(String memId) {

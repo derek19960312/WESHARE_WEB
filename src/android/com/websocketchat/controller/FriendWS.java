@@ -2,6 +2,7 @@ package android.com.websocketchat.controller;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,6 +18,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import com.google.gson.Gson;
 
+import android.com.websocketchat.jedis.JedisHandleMessage;
 import android.com.websocketchat.model.ChatMessage;
 import android.com.websocketchat.model.State;
 
@@ -53,15 +55,15 @@ public class FriendWS {
 		String sender = chatMessage.getSender();
 		String receiver = chatMessage.getReceiver();
 		
-//		if ("history".equals(chatMessage.getType())) {
-//			List<String> historyData = JedisHandleMessage.getHistoryMsg(sender, receiver);
-//			String historyMsg = gson.toJson(historyData);
-//			ChatMessage cmHistory = new ChatMessage("history", sender, receiver, historyMsg);
-//			if (userSession != null && userSession.isOpen()) {
-//				userSession.getAsyncRemote().sendText(gson.toJson(cmHistory));
-//				return;
-//			}
-//		}
+		if ("history".equals(chatMessage.getType())) {
+			List<String> historyData = JedisHandleMessage.getHistoryMsg(sender, receiver);
+			String historyMsg = gson.toJson(historyData);
+			ChatMessage cmHistory = new ChatMessage("history", sender, receiver, historyMsg);
+			if (userSession != null && userSession.isOpen()) {
+				userSession.getAsyncRemote().sendText(gson.toJson(cmHistory));
+				return;
+			}
+		}
 		
 		
 		Session receiverSession = sessionsMap.get(receiver);

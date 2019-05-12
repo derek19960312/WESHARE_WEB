@@ -2,16 +2,21 @@ package android.com.goods.model;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import android.com.goodsdetails.model.GoodsDetailsVO;
 import android.com.teacher.model.TeacherVO;
 
 @Entity
@@ -26,6 +31,7 @@ public class GoodsVO implements Serializable {
 	private String goodInfo;
 	private byte[] goodImg;
 	private Integer goodStatus;
+	private transient Set<GoodsDetailsVO> goodsDetails;
 
 	
 	
@@ -89,6 +95,16 @@ public class GoodsVO implements Serializable {
 		this.goodStatus = goodStatus;
 	}
 
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="goodsVO")
+	public Set<GoodsDetailsVO> getGoodsDetails() {
+		return goodsDetails;
+	}
+	
+	public void setGoodsDetails(Set<GoodsDetailsVO> goodsDetails) {
+		this.goodsDetails = goodsDetails;
+	}
+	
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -103,4 +119,7 @@ public class GoodsVO implements Serializable {
 	public int hashCode() {
 		return Objects.hash(goodId);
 	}
+	
+	
+	
 }

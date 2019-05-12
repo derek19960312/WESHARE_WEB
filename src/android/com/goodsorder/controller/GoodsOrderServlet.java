@@ -50,8 +50,59 @@ public class GoodsOrderServlet extends HttpServlet {
 		PrintWriter out = res.getWriter();
 		String action = req.getParameter("action");
 
+		
+		if("update_order_status".equals(action)) {
+			String goodOrderId = req.getParameter("goodOrderId");
+			Integer orderStatus = Integer.parseInt(req.getParameter("orderStatus"));
+			
+			//包裝資料
+			GoodsOrderVO goVO = new GoodsOrderVO();
+			goVO.setGoodOrderId(goodOrderId);
+			goVO.setGoodOrdStatus(orderStatus);
+			
+			GoodsOrderService goSvc = new GoodsOrderService();
+			goSvc.update(goVO);
+			
+			
+			
+		}
+		
+		
+		
+		
+		
 		if ("find_good_order_by_TeacherId".equals(action)) {
-
+			String teacherId = req.getParameter("teacherId");
+			
+			GoodsOrderService goSvc = new GoodsOrderService();
+			List<GoodsOrderVO> goVOs = goSvc.getAll();
+			
+			
+			//濾掉沒有的
+			List<GoodsOrderVO> goVOsfinal = 
+			goVOs.stream()
+			.filter( goVO -> goVO.getGoodsDetailsVOs().stream()
+					.filter( gdVO -> gdVO.getGoodsVO().getTeacherId().equals(teacherId))
+					.collect(Collectors.toSet())
+					.size() != 0 )
+			.collect(Collectors.toList());
+			
+			//殺掉圖片 去除非本人商品
+			for(GoodsOrderVO goVO : goVOsfinal) {
+				Set<GoodsDetailsVO> setfinal = new HashSet<>();
+				for(GoodsDetailsVO gdVO : goVO.getGoodsDetailsVOs()) {
+					if(gdVO.getGoodsVO().getTeacherId().equals(teacherId)) {
+						gdVO.getGoodsVO().setGoodImg(null);
+						setfinal.add(gdVO);		
+					}
+					
+				}
+				goVO.setGoodsDetailsVOs(setfinal);
+			}
+			
+			
+			out.print(gson.toJson(goVOsfinal));
+			
 		}
 
 		if ("find_my_good_by_memId".equals(action)) {
@@ -97,9 +148,11 @@ public class GoodsOrderServlet extends HttpServlet {
 			Set<GoodsDetailsVO> goodsDetailsVOs = new HashSet<>();
 			for (GoodsVO gvo : myCart.keySet()) {
 				GoodsDetailsVO gdvo = new GoodsDetailsVO();
+				System.out.println(gvo.getGoodId());
 				gdvo.setGoodsVO(gvo);
 				gdvo.setGoodsOrderVO(goodsOrderVO);
 				gdvo.setGoodAmount(myCart.get(gvo));
+				goodsDetailsVOs.add(gdvo);
 			}
 			goodsOrderVO.setGoodsDetailsVOs(goodsDetailsVOs);
 
