@@ -19,8 +19,7 @@ public class MyGenerator implements IdentifierGenerator {
 			throws HibernateException {
 
 		String prefix = GeneratorsType.prefix.get(object.getClass().toGenericString());
-		String zero4 = "0000";
-		String zero3 = "000";
+		
 		
 		String VOname = object.getClass().getSimpleName();
 		String sequenceName = VOname.substring(0, VOname.length()-2);
@@ -34,10 +33,12 @@ public class MyGenerator implements IdentifierGenerator {
 			rs.next();
 			int nextval = rs.getInt("nextval");
 			
-			if(nextval/10 > 0)
-				Id = prefix + zero3 + nextval;
-			else
-				Id = prefix + zero4 + nextval;
+		
+			ResultSet rsTable = stmt.executeQuery("SELECT * FROM "+sequenceName);
+			int stringLength = rsTable.getMetaData().getColumnDisplaySize(1);
+			
+			
+			Id = addZero(prefix, nextval, stringLength);
 			
 //			con.close();   //於Hibernate 5 不可關閉連線
 		} catch (SQLException e) {
@@ -45,4 +46,22 @@ public class MyGenerator implements IdentifierGenerator {
 		}
 		return Id;
 	}
+	
+	
+	private String addZero(String prefix, int nextval, int stringLength) {
+		int ZeroCount = stringLength - (prefix+nextval).length();
+		
+		String Zeros = "";
+		for(int i=0; i<ZeroCount; i++) {
+			Zeros += "0";
+		}
+		return prefix+Zeros+nextval;
+		
+	}
+	
+	
+	
 }
+
+
+

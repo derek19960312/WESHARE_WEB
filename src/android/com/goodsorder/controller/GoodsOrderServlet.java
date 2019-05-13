@@ -66,11 +66,7 @@ public class GoodsOrderServlet extends HttpServlet {
 			
 			
 		}
-		
-		
-		
-		
-		
+				
 		if ("find_good_order_by_TeacherId".equals(action)) {
 			String teacherId = req.getParameter("teacherId");
 			

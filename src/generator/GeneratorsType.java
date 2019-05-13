@@ -11,7 +11,11 @@ import android.com.teacher.model.TeacherVO;
 public class GeneratorsType {
 	
 	public static Map<String, String> prefix = new HashMap<>();
-
+	
+	
+	
+	
+	//註冊sequence的 prefix 名稱
 	static {
 		prefix.put(GoodsVO.class.toGenericString(), "GD");
 		prefix.put(GoodsOrderVO.class.toGenericString(), "GO");

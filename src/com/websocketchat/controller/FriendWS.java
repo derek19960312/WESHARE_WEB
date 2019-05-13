@@ -53,8 +53,8 @@ public class FriendWS {
 		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
 		String sender = chatMessage.getSender();
 		String receiver = chatMessage.getReceiver();
-		
 		if ("history".equals(chatMessage.getType())) {
+			System.out.println(": " + message);
 			List<String> historyData = JedisHandleMessage.getHistoryMsg(sender, receiver);
 			String historyMsg = gson.toJson(historyData);
 			ChatMessage cmHistory = new ChatMessage("history", sender, receiver, historyMsg);
@@ -68,7 +68,7 @@ public class FriendWS {
 		Session receiverSession = sessionsMap.get(receiver);
 		if (receiverSession != null && receiverSession.isOpen()) {
 			receiverSession.getAsyncRemote().sendText(message);
-			//JedisHandleMessage.saveChatMessage(sender, receiver, message);
+			JedisHandleMessage.saveChatMessage(sender, receiver, message);
 		}
 		System.out.println("Message received: " + message);
 	}
