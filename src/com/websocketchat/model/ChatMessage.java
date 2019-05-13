@@ -1,4 +1,4 @@
-package android.com.websocketchat.model;
+package com.websocketchat.model;
 
 public class ChatMessage {
 	private String type;

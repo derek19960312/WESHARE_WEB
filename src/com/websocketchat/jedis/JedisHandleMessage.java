@@ -1,4 +1,4 @@
-package android.com.websocketchat.jedis;
+package com.websocketchat.jedis;
 
 import java.util.List;
 

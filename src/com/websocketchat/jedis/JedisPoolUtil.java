@@ -1,4 +1,4 @@
-package android.com.websocketchat.jedis;
+package com.websocketchat.jedis;
 
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;

@@ -1,4 +1,4 @@
-package android.com.websocketchat.controller;
+package com.websocketchat.controller;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -17,10 +17,9 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 import com.google.gson.Gson;
-
-import android.com.websocketchat.jedis.JedisHandleMessage;
-import android.com.websocketchat.model.ChatMessage;
-import android.com.websocketchat.model.State;
+import com.websocketchat.jedis.JedisHandleMessage;
+import com.websocketchat.model.ChatMessage;
+import com.websocketchat.model.State;
 
 
 

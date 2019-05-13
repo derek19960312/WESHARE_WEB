@@ -3,6 +3,7 @@ package android.com.coursereservation.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.OptionalDouble;
@@ -61,16 +62,27 @@ public class CourseReservationServlet extends HttpServlet {
 			JedisConfirmShake jcs = new JedisConfirmShake();
 			String memId = req.getParameter("memId");
 			
-			String state = jcs.checkIfWait(crvId,memId);
-			if ("success".equals(state)) {
-				crvSvc.ConfirmCourse(crvId);
-				out.print(state);
-			} else if("noData".equals(state)){
-				jcs.setNewConfirm(crvId,memId);
-				out.print("wait");
-			}else {
-				out.print(state);
+			
+			
+			Long now = Calendar.getInstance().getTimeInMillis();
+			Long courseStart = crvSvc.findByPrimaryKey(crvId).get(0).getCrvMFD().getTime() - 15 * 60 * 1000;
+			if (now - courseStart < 0) {
+				out.print("not_yet");
+			} else {
+				String state = jcs.checkIfWait(crvId,memId);
+				if ("success".equals(state)) {
+					crvSvc.ConfirmCourse(crvId);
+					out.print(state);
+				} else if("noData".equals(state)){
+					jcs.setNewConfirm(crvId,memId);
+					out.print("wait");
+				}else {
+					out.print(state);
+				}
 			}
+			
+			
+			
 			
 		}
 
