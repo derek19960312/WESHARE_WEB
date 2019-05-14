@@ -1,5 +1,6 @@
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -33,18 +34,20 @@ public class FriendWS {
 	public void onOpen(@PathParam("userName") String userName, Session userSession) throws IOException {
 		/* save the new user in the map */
 
-		userSession.setMaxTextMessageBufferSize(200000);
+		int maxBufferSize = 500 * 1024;
+		userSession.setMaxTextMessageBufferSize(maxBufferSize);
+		userSession.setMaxBinaryMessageBufferSize(maxBufferSize);
 		sessionsMap.put(userName, userSession);
 		/* Sends all the connected users to the new user */
 		Set<String> userNames = sessionsMap.keySet();
 		State stateMessage = new State("open", userName, userNames);
 		String stateMessageJson = gson.toJson(stateMessage);
 		Collection<Session> sessions = sessionsMap.values();
-//		for (Session session : sessions) {
-//			if(session != null && session.isOpen()) {
-//				session.getAsyncRemote().sendText(stateMessageJson);
-//			}
-//		}
+		for (Session session : sessions) {
+			if(session != null && session.isOpen()) {
+				session.getAsyncRemote().sendText(stateMessageJson);
+			}
+		}
 
 		String text = String.format("Session ID = %s, connected; userName = %s%nusers: %s", userSession.getId(),
 				userName, userNames);
@@ -63,39 +66,54 @@ public class FriendWS {
 			List<String> historyData = JedisHandleMessage.getHistoryMsg(sender, receiver);// get the old info from redis
 
 			if (userSession != null && userSession.isOpen()) {
-				userSession.getAsyncRemote().sendText(historyData.toString());
+				for(String str : historyData) {
+					ChatMessage cm = gson.fromJson(str, ChatMessage.class);
+					if("image".equals(cm.gettOrm()))
+						try {
+							userSession.getBasicRemote().sendBinary(ByteBuffer.wrap(str.getBytes()));
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					else
+						try {
+							userSession.getBasicRemote().sendText(str);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+				
+				}
+
 
 				return;
 			}
 		}
 
 		if ("chat".equals(chatMessage.getType())) {
-			JSONArray array = new JSONArray();
+			
 			JedisHandleMessage.saveChatMessage(sender, receiver, message);
 
 			// send to session which receiver belongs to
 			Session receiverSession = sessionsMap.get(receiver);
 			Session senderSession = sessionsMap.get(sender);
-			try {
-				array.put(new JSONObject(message));
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			
+			if("image".equals(chatMessage.gettOrm())) {
+				if (senderSession != null && senderSession.isOpen()) {
+					senderSession.getAsyncRemote().sendBinary(ByteBuffer.wrap(message.getBytes()));
+				}
+				if (receiverSession != null && receiverSession.isOpen()) {
+					receiverSession.getAsyncRemote().sendBinary(ByteBuffer.wrap(message.getBytes()));
+				}		
+			}else {
+				if (senderSession != null && senderSession.isOpen()) {
+					senderSession.getAsyncRemote().sendText(message);
+				}
+				if (receiverSession != null && receiverSession.isOpen()) {
+					receiverSession.getAsyncRemote().sendText(message);
+				}
 			}
-			if (senderSession != null && senderSession.isOpen()) {
-
-				senderSession.getAsyncRemote().sendText(array.toString());
-
-			}
-
-			if (receiverSession != null && receiverSession.isOpen()) {
-
-				receiverSession.getAsyncRemote().sendText(array.toString());
-
-			}
+			
 		}
-
-// save in redis no need to save history
+		System.out.println("Message received: " + message);
 	}
 
 	@OnError
@@ -120,7 +138,7 @@ public class FriendWS {
 			String stateMessageJson = gson.toJson(stateMessage);
 			Collection<Session> sessions = sessionsMap.values();
 			for (Session session : sessions) {
-//				session.getAsyncRemote().sendText(stateMessageJson);
+				session.getAsyncRemote().sendText(stateMessageJson);
 			}
 		}
 

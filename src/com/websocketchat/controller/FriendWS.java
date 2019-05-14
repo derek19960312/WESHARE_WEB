@@ -23,7 +23,7 @@ import com.websocketchat.model.State;
 
 
 
-@ServerEndpoint("/FriendWS/{userName}")
+@ServerEndpoint("/android/FriendWS/{userName}")
 public class FriendWS {
 	private static Map<String, Session> sessionsMap = new ConcurrentHashMap<>();
 	Gson gson = new Gson();
@@ -31,6 +31,9 @@ public class FriendWS {
 	@OnOpen
 	public void onOpen(@PathParam("userName") String userName, Session userSession) throws IOException {
 		/* save the new user in the map */
+		
+		
+		
 		sessionsMap.put(userName, userSession);
 		/* Sends all the connected users to the new user */
 		Set<String> userNames = sessionsMap.keySet();
@@ -57,7 +60,7 @@ public class FriendWS {
 			System.out.println(": " + message);
 			List<String> historyData = JedisHandleMessage.getHistoryMsg(sender, receiver);
 			String historyMsg = gson.toJson(historyData);
-			ChatMessage cmHistory = new ChatMessage("history", sender, receiver, historyMsg);
+			ChatMessage cmHistory = new ChatMessage("history", sender, receiver, historyMsg, "");
 			if (userSession != null && userSession.isOpen()) {
 				userSession.getAsyncRemote().sendText(gson.toJson(cmHistory));
 				return;
