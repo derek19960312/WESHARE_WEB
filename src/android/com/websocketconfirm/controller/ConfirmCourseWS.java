@@ -32,7 +32,7 @@ public class ConfirmCourseWS {
 	public void onOpen(@PathParam("userName") String userName, Session userSession) throws IOException {
 		sessionsMap.put(userName, userSession);
 		String text = String.format("Session ID = %s, connected; userName = %s", userSession.getId(), userName);
-		// System.out.println(text);
+		 System.out.println("ConfirmCourseWS "+text);
 	}
 
 	@OnMessage
@@ -61,13 +61,13 @@ public class ConfirmCourseWS {
 			}
 		}
 
-		// System.out.println("Message received: " + message);
+		 System.out.println("Message received: " + message);
 	}
 
-	@OnError
-	public void onError(Session userSession, Throwable e) {
-		// System.out.println("Error: " + e.toString());
-	}
+//	@OnError
+//	public void onError(Session userSession, Throwable e) {
+//		// System.out.println("Error: " + e.toString());
+//	}
 
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {

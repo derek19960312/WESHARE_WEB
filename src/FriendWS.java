@@ -1,4 +1,5 @@
 
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Collection;
@@ -16,14 +17,12 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.websocketchat.jedis.JedisHandleMessage;
 import com.websocketchat.model.ChatMessage;
 import com.websocketchat.model.State;
+
 
 @ServerEndpoint("/FriendWS/{userName}")
 public class FriendWS {
@@ -67,15 +66,22 @@ public class FriendWS {
 
 			if (userSession != null && userSession.isOpen()) {
 				for(String str : historyData) {
+					try {
+						Thread.sleep(2);
+					} catch (InterruptedException e2) {
+						e2.printStackTrace();
+					};
 					ChatMessage cm = gson.fromJson(str, ChatMessage.class);
 					if("image".equals(cm.gettOrm()))
 						try {
+						System.out.println(str);
 							userSession.getBasicRemote().sendBinary(ByteBuffer.wrap(str.getBytes()));
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						}
 					else
 						try {
+							System.out.println(str);
 							userSession.getBasicRemote().sendText(str);
 						} catch (IOException e) {
 							e.printStackTrace();
