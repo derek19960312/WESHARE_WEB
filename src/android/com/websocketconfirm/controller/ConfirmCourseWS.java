@@ -45,20 +45,24 @@ public class ConfirmCourseWS {
 
 		Long now = Calendar.getInstance().getTimeInMillis();
 		Long courseStart = crVO.getCrvMFD().getTime() - 15 * 60 * 1000;
+		try {
 		if (now - courseStart < 0) {
-			userSession.getAsyncRemote().sendText("not_yet");
-			studentSess.getAsyncRemote().sendText("not_yet");
+			userSession.getBasicRemote().sendText("not_yet");
+			studentSess.getBasicRemote().sendText("not_yet");
 		} else {
 			// 驗證上課
 			if (memId.equals(crVO.getMemId()) || teacherId.equals(crVO.getTeacherId())) {
 				CourseReservationService crvSvc = new CourseReservationService();
 				crvSvc.ConfirmCourse(crVO.getCrvId());
-				userSession.getAsyncRemote().sendText("success");
-				studentSess.getAsyncRemote().sendText("success");
+				userSession.getBasicRemote().sendText("success");
+				studentSess.getBasicRemote().sendText("success");
 			} else {
-				userSession.getAsyncRemote().sendText("fail");
-				studentSess.getAsyncRemote().sendText("fail");
+				userSession.getBasicRemote().sendText("fail");
+				studentSess.getBasicRemote().sendText("fail");
 			}
+		}
+		}catch(Exception r) {
+			System.out.println("00"+r);
 		}
 
 		 System.out.println("Message received: " + message);

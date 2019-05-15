@@ -65,31 +65,32 @@ public class FriendWS {
 			List<String> historyData = JedisHandleMessage.getHistoryMsg(sender, receiver);// get the old info from redis
 
 			if (userSession != null && userSession.isOpen()) {
-				for(String str : historyData) {
-					try {
-						Thread.sleep(2);
-					} catch (InterruptedException e2) {
-						e2.printStackTrace();
-					};
-					ChatMessage cm = gson.fromJson(str, ChatMessage.class);
-					if("image".equals(cm.gettOrm()))
-						try {
-						System.out.println(str);
-							userSession.getBasicRemote().sendBinary(ByteBuffer.wrap(str.getBytes()));
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-					else
-						try {
-							System.out.println(str);
-							userSession.getBasicRemote().sendText(str);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+//				for(String str : historyData) {
+////					try {
+////						Thread.sleep(2);
+////					} catch (InterruptedException e2) {
+////						e2.printStackTrace();
+////					};
+//					ChatMessage cm = gson.fromJson(str, ChatMessage.class);
+//					if("image".equals(cm.gettOrm()))
+//						try {
+//						System.out.println(str);
+//							userSession.getBasicRemote().sendBinary(ByteBuffer.wrap(str.getBytes()));
+//						} catch (IOException e1) {
+//							e1.printStackTrace();
+//						}
+//					else
+//						try {
+//							System.out.println(str);
+//							userSession.getBasicRemote().sendText(str);
+//						} catch (IOException e) {
+//							e.printStackTrace();
+//						}
 				
-				}
-
-
+//				}
+				
+			userSession.getAsyncRemote().sendBinary(ByteBuffer.wrap(gson.toJson(historyData).getBytes()));
+			System.out.println(gson.toJson(historyData));
 				return;
 			}
 		}
