@@ -55,7 +55,8 @@ public class ConfirmCourseWS {
 					CourseReservationService crvSvc = new CourseReservationService();
 					try {
 						int classStatus = crvSvc.findByPrimaryKey(crVO.getCrvId()).get(0).getClassStatus();
-						if(classStatus != 0) {
+						System.out.println(classStatus);
+						if(classStatus == 0) {
 							crvSvc.ConfirmCourse(crVO.getCrvId());
 						}else {
 							userSession.getBasicRemote().sendText("had_success");
@@ -66,8 +67,8 @@ public class ConfirmCourseWS {
 						userSession.getBasicRemote().sendText("had_success");
 						return;
 					}
-					userSession.getBasicRemote().sendText("success");
-					studentSess.getBasicRemote().sendText("success");
+					userSession.getBasicRemote().sendText("successTeach");
+					studentSess.getBasicRemote().sendText("successStu");
 				} else {
 					userSession.getBasicRemote().sendText("fail");
 					studentSess.getBasicRemote().sendText("fail");
